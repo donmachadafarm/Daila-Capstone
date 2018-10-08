@@ -23,7 +23,7 @@
         if (mysqli_query($conn,$query)) {
 
           echo "<script>
-            alert('Recipe for $prodid is added');
+            alert('Recipe added!');
           </script>";
         }else {
           echo "<script> alert('Failed!');

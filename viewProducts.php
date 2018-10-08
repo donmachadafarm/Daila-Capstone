@@ -37,28 +37,32 @@
                             $result = mysqli_query($conn,'SELECT product.name AS productname,
                                                                  product.quantity AS quantity,
                                                                  product.description,
-                                                                 productType.name AS producttypename
+                                                                 productType.name AS producttypename,
+                                                                 product.productPrice,
+                                                                 product.productID AS ID
                                                           FROM product
                                                           INNER JOIN productType ON product.productTypeID=productType.productTypeID');
 
 
                             while($row = mysqli_fetch_array($result)){
-
+                              $id = $row['ID'];
                               $prodName = $row['productname'];
                               $prodType = $row['producttypename'];
                               $quantity = $row['quantity'];
-                              // $price = $row['price'];
+                              $price = $row['productPrice'];
 
                                   echo '<tr>';
-                                    echo '<td>';
+                                    echo '<td><a href="viewIndivProduct.php?id='.$id.'">';
                                       echo $prodName;
+                                    echo '</a></td>';
                                     echo '<td>';
                                       echo $quantity;
+                                    echo '</td>';
                                     echo '<td>';
                                       echo $prodType;
                                     echo'</td>';
                                     echo '<td>';
-                                      echo "0";//initial wala pa ung price column eh
+                                      echo $price;
                                     echo'</td>';
                                   echo '</tr>';
 

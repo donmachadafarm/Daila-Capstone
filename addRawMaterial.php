@@ -20,22 +20,31 @@
       $priceperunit=$_POST['priceperunit'];
       $unitofmeasurement=$_POST['unitofmeasurement'];
       $rawmattype=$_POST['rawmattype'];
+      $ing=$_POST['ingr'];
 
     if(!isset($message)){
-      $query="INSERT into RawMaterial (name,supplierID,quantity,capacityPerUnit,pricePerUnit,unitOfMeasurement,rawMaterialTypeID)
-                values ('{$name}','{$supplier}','{$quantity}','{$capperunit}','{$priceperunit}','{$unitofmeasurement}','{$rawmattype}')";
+      $query="INSERT INTO RawMaterial (name,supplierID,quantity,capacityPerUnit,pricePerUnit,unitOfMeasurement,rawMaterialTypeID)
+                VALUES ('{$name}','{$supplier}','{$quantity}','{$capperunit}','{$priceperunit}','{$unitofmeasurement}','{$rawmattype}')";
 
         if (mysqli_query($conn,$query)) {
-          $query2="SELECT * FROM RawMaterial ORDER BY rawMaterialID DESC LIMIT 1";
+          //get the latest inserted raw material
+          $query1="SELECT * FROM RawMaterial ORDER BY rawMaterialID DESC LIMIT 1";
 
-            $sql = mysqli_query($conn,$query2);
+            $sql = mysqli_query($conn,$query1);
 
             $row = mysqli_fetch_array($sql);
 
             $id = $row['rawMaterialID'];
 
-          $query3="INSERT INTO Supply(rawMaterialID,supplierID)
+          //insert the pairing for rawmat and supplier
+          $query2="INSERT INTO Supply(rawMaterialID,supplierID)
                     VALUES('{$id}','{$supplier}')";
+
+            $sql = mysqli_query($conn,$query2);
+
+          //insert the pairing for rawmat and ingredient
+          $query3="INSERT INTO RMIngredient(rawMaterialID,ingredientID)
+                    VALUES('{$id}','{$ing}')";
 
             $sql = mysqli_query($conn,$query3);
 
@@ -106,11 +115,22 @@
                                   </br>";
                                 }
                                ?>
-                              </select>
+                             </select><br>
+                             <label>Corresponding Ingredient:</label></br>
+                              <select class="form-control" name="ingr">
+                              <?php
+                                $result = mysqli_query($conn, 'SELECT * FROM Ingredient');
+
+                                while($row = mysqli_fetch_array($result)){
+                                  echo "<label><option value=\"{$row['ingredientID']}\">{$row['name']}</option></label>
+                                  <br>";
+                                }
+                               ?>
+                             </select><small class="form-text text-muted">Not in the list of Ingredients? <a href="addIngredient.php.php">Click here</a></small><br>
                         </p>
                     <input type="submit" name="submit" value="Add RawMaterial" class="btn btn-success"/></div>
                     </form>
-                    <small class="form-text text-muted">Add the corresponding ingredient? <a href="addIngredient.php">Click here</a></small>
+                    <small class="form-text text-muted">Add the corresponding ingredient? <a href="addIngredient.php">Click here</a></small><br><br>
                   </div>
               </div>
           </div>

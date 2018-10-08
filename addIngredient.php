@@ -16,28 +16,28 @@
       // $rm=$_POST['rawmat'];
 
     if(!isset($message)){
-      $query="insert into Ingredient (quantity,name) values ('0','{$name}')";
+      $query="INSERT into Ingredient (quantity,name) values ('0','{$name}')";
         if (mysqli_query($conn,$query)) {
 
-          $query1="SELECT * FROM RawMaterial WHERE rawMaterialID = $rm";
-
-            $sql = mysqli_query($conn,$query1);
-
-            $row=mysqli_fetch_array($sql);
-
-            $id1 = $row['rawMaterialID'];
-
-          $query2="SELECT * FROM Ingredient ORDER BY ingredientID DESC LIMIT 1";
-
-            $sql = mysqli_query($conn,$query2);
-
-            $row=mysqli_fetch_array($sql);
-
-            $id2 = $row['ingredientID'];
-
-          $query3="INSERT INTO RMIngredient (rawMaterialID,ingredientID) VALUES ('{$id1}','{$id2}')";
-
-            $sql = mysqli_query($conn,$query3);
+          // $query1="SELECT * FROM RawMaterial WHERE rawMaterialID = $rm";
+          //
+          //   $sql = mysqli_query($conn,$query1);
+          //
+          //   $row=mysqli_fetch_array($sql);
+          //
+          //   $id1 = $row['rawMaterialID'];
+          //
+          // $query2="SELECT * FROM Ingredient ORDER BY ingredientID DESC LIMIT 1";
+          //
+          //   $sql = mysqli_query($conn,$query2);
+          //
+          //   $row=mysqli_fetch_array($sql);
+          //
+          //   $id2 = $row['ingredientID'];
+          //
+          // $query3="INSERT INTO RMIngredient (rawMaterialID,ingredientID) VALUES ('{$id1}','{$id2}')";
+          //
+          //   $sql = mysqli_query($conn,$query3);
 
               echo "<script>
                 alert('Ingredient $name is added');
@@ -72,13 +72,13 @@
               <div class="panel panel-default">
 
                   <div class="panel-body">
-                    <form action="addRawMaterial.php" method="post">
+                    <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
                      <div class="form-group">
                         <p class="form-control-static">
                              <label>Name:</label></br>
                                <input type="text" name="name" class="form-control" required>
                              </br>
-                             <!-- <label>Corresponding Raw Material:</label></br>
+                              <!-- <label>Corresponding Raw Material:</label></br>
                                <select class="form-control" name="rawmat">
                                <?php
                                  // $result = mysqli_query($conn, 'SELECT * FROM RawMaterial');

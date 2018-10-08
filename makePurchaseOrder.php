@@ -19,7 +19,7 @@
       $orderdate=$_POST['orderdate'];
 
     if(!isset($message)){
-      $query="INSERT into PurchaseOrder (rawMaterialID,supplierID,quantity,orderDate) values ('{$rawmat}','{$supplier}','{$quantity}','{$orderdate}')";
+      $query="INSERT into PurchaseOrder (rawMaterialID,supplierID,quantity,orderDate,status) values ('{$rawmat}','{$supplier}','{$quantity}','{$orderdate}','Pending')";
 
         if (mysqli_query($conn,$query)) {
 
