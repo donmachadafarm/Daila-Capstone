@@ -72,7 +72,8 @@
                                   Recipe.unitOfMeasurement AS uom,
                                   Ingredient.name AS name
                           FROM Recipe
-                          INNER JOIN Ingredient ON Recipe.ingredientID=Ingredient.ingredientID";
+                          INNER JOIN Ingredient ON Recipe.ingredientID=Ingredient.ingredientID
+                          WHERE Recipe.productID = $id";
 
                 $sql = mysqli_query($conn,$query);
 
