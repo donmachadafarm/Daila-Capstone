@@ -11,12 +11,23 @@
           Inventory Management
         </a>
         <div class="dropdown-menu">
+          <h4 class="dropdown-header"><b>Inventory Management</b></h4>
+          <div class="dropdown-divider"></div>
+          <h6 class="dropdown-header text-center">-Ingredient-</h6>
           <!-- Add More Links if needed for every functionality -->
-          <a class="dropdown-item" href="#">Link 1</a>
-          <a class="dropdown-item" href="#">Link 2</a>
+          <a class="dropdown-item" href="addingredient.php">Add Ingredient</a>
+          <a class="dropdown-item" href="viewingredients.php">View Ingredients</a>
           <!-- use divider if needed -->
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="#">Link 3</a>
+          <h6 class="dropdown-header text-center">-Raw Materials-</h6>
+          <a class="dropdown-item" href="addrawmaterial.php">Add Raw Materials</a>
+          <a class="dropdown-item" href="viewrawmaterials.php">View Raw Materials</a>
+          <a class="dropdown-item" href="makepurchaseorder.php">Make Purchase Order</a>
+          <div class="dropdown-divider"></div>
+          <h6 class="dropdown-header text-center">-Products-</h6>
+          <a class="dropdown-item" href="addproduct.php">Add Product</a>
+          <a class="dropdown-item" href="viewproducts.php">View Products</a>
+          <a class="dropdown-item" href="makejoborder.php">Make Job Order</a>
         </div>
       </li>
       <li class="nav-item dropdown">
