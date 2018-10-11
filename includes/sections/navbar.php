@@ -45,7 +45,7 @@
       </li>
       <li class="nav-item dropdown">
         <a class="nav-link" href="#" id="navbardrop" data-toggle="dropdown">
-          Equipement Monitoring
+          Equipment Monitoring
         </a>
         <div class="dropdown-menu">
           <!-- Add More Links if needed for every functionality -->
