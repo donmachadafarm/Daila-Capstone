@@ -96,11 +96,12 @@
                                 }
                                ?>
                              </select><small class="form-text text-muted">Not in the list of suppliers? <a href="addSupplier.php">Click here</a></small><br>
-                             <label>Capacity per unit:</label></br>
-                               <input type="number" name="capacityperunit" class="form-control" required>
-                             </br>
+
                             <label>Price per unit:</label></br>
                               <input type="number" name="priceperunit" class="form-control" required>
+                            </br>
+                            <label>Capacity per unit:</label></br>
+                              <input type="number" name="capacityperunit" class="form-control" required>
                             </br>
                             <label>Unit of Measurement:</label></br>
                               <input type="text" name="unitofmeasurement" class="form-control" required>
