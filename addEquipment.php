@@ -12,13 +12,13 @@ if (!isset($_SESSION['userType'])){
 <?php
 // Query
 if (isset($_POST['submit'])){
-
+    $status="Available";
     $name=$_POST['name'];
     $type=$_POST['type'];
-    $acquiredDate=$_POST['acquiredDate'];
+    $date=$_POST['date'];
 
     if(!isset($message)){
-        $query="insert into Machine (name,type,acquiredDate) values ('{$name}','{$type}','{$acquireDate}')";
+        $query="INSERT into Machine (name,type,acquiredDate,status) values ('{$name}','{$type}','{$date}','{$status}')";
         if (mysqli_query($conn,$query)) {
 
             echo "<script>
@@ -62,7 +62,7 @@ if (isset($_POST['submit'])){
                                     <input type="text" name="type" class="form-control" required>
                                     </br>
                                     <label>Date Acquired:</label></br>
-                                    <input type="date" name="acquiredDate" class="form-control" required>
+                                    <input type="date" name="date" class="form-control" required>
                                     </br>
                                 </p>
                                 <input type="submit" name="submit" value="Add Equipment" class="btn btn-success"/></div>
