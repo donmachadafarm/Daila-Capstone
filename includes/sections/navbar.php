@@ -13,7 +13,7 @@
         <div class="dropdown-menu">
           <h4 class="dropdown-header"><b>Inventory Management</b></h4>
           <div class="dropdown-divider"></div>
-          <h6 class="dropdown-header text-center">-Ingredient-</h6>
+          <h6 class="dropdown-header text-center">-Ingredients-</h6>
           <!-- Add More Links if needed for every functionality -->
           <a class="dropdown-item" href="addingredient.php">Add Ingredient</a>
           <a class="dropdown-item" href="viewingredients.php">View Ingredients</a>
