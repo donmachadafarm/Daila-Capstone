@@ -15,19 +15,17 @@ if (isset($_POST['submit'])){
 
     $name=$_POST['name'];
     $type=$_POST['type'];
-    $acquireDate=$_POST['acquireDate'];
-    $status=$_POST['status'];
-    $hoursWorked=$_POST['hoursWorked'];
+    $acquiredDate=$_POST['acquiredDate'];
 
     if(!isset($message)){
-        $query="insert into Machine (name,type,acquireDate,status,hoursWorked) values ('{$name}','{$type}','{$acquireDate}','{$status}','{$hoursWorked}')";
+        $query="insert into Machine (name,type,acquiredDate) values ('{$name}','{$type}','{$acquireDate}')";
         if (mysqli_query($conn,$query)) {
 
             echo "<script>
-            alert('Customer $name is created');
+            alert('Equipment $name is created');
           </script>";
         }else {
-            echo "<script> alert('Failed to Add account!');
+            echo "<script> alert('Failed to Add Equipment!');
               </script>";
         }
     }else{
@@ -45,7 +43,7 @@ if (isset($_POST['submit'])){
         <div class="row">
             <div class="col-lg-12">
                 <h1 class="page-header"><br><br>
-                    Add Customer
+                    Add Equipment
                 </h1>
             </div>
         </div>
@@ -60,20 +58,14 @@ if (isset($_POST['submit'])){
                                     <label>Name:</label></br>
                                     <input type="text" name="name" class="form-control" required>
                                     </br>
-                                    <label>Payment Method:</label></br>
-                                    <input type="text" name="method" class="form-control" required>
+                                    <label>Type of Machine:</label></br>
+                                    <input type="text" name="type" class="form-control" required>
                                     </br>
-                                    <label>Email:</label></br>
-                                    <input type="email" name="email" class="form-control" required>
-                                    </br>
-                                    <label>Address:</label></br>
-                                    <input type="text" name="address" class="form-control" required>
-                                    </br>
-                                    <label>Contact Number:</label></br>
-                                    <input type="number" name="number" class="form-control" required>
+                                    <label>Date Acquired:</label></br>
+                                    <input type="date" name="acquiredDate" class="form-control" required>
                                     </br>
                                 </p>
-                                <input type="submit" name="submit" value="Add Customer" class="btn btn-success"/></div>
+                                <input type="submit" name="submit" value="Add Equipment" class="btn btn-success"/></div>
                         </form>
                     </div>
                 </div>
