@@ -11,31 +11,7 @@
 
 <?php
   // Query
-  if (isset($_POST['submit'])){
-
-      $desc=$_POST['desc'];
-      $name=$_POST['name'];
-      $quantity=0;
-      $producttype=$_POST['type'];
-      $prodprice=$_POST['price'];
-
-
-    if(!isset($message)){
-      $query="insert into Product (description,name,quantity,productTypeID,productPrice) values ('{$desc}','{$name}','{$quantity}','{$producttype}','{$prodprice}')";
-        if (mysqli_query($conn,$query)) {
-
-          echo "<script>
-            alert('Product $name is added');
-          </script>";
-        }else {
-          echo "<script> alert('Failed!');
-              </script>";
-        }
-    }else{
-      echo "<script> alert('$message');
-            </script>";
-    }
-  }/*End of main Submit conditional*/
+  
 ?>
 
 <!-- put all the contents here  -->
@@ -55,7 +31,7 @@
               <div class="panel panel-default">
 
                   <div class="panel-body">
-                    <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
+                    <form action="addrecipe.php" method="get">
                      <div class="form-group">
                         <p class="form-control-static">
                             <label>Name:</label></br>

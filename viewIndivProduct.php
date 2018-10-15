@@ -41,7 +41,7 @@
                    <?php echo $name; ?>
               </h1>
           </div>
-      </div>
+      </div><a href="viewProducts.php" class="btn btn-primary btn-sm float-right">go back</a>
       <div class="row">
           <div class="col-lg-10">
             <table class="table table-borderless" id="dataTables-example">
