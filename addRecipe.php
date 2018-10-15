@@ -7,23 +7,21 @@
   if (!isset($_SESSION['userType'])){
     echo "<script>window.location='logout.php'</script>";
   }
+
+  function fill_unit_select_box($conn){
+    $output = '';
+    $query = "SELECT Ingredient.name AS iname,Ingredient.ingredientID AS iid FROM Ingredient";
+    $sql = mysqli_query($conn,$query);
+
+    while($row = mysqli_fetch_array($sql)){
+      $output .= '<option value="'.$row["iid"].'">'.$row["iname"].'</option>';
+    }
+
+    return $output;
+  }
 ?>
 
 <?php
-      function fill_unit_select_box($conn){
-        $output = '';
-        $query = "SELECT Ingredient.name AS iname,Ingredient.ingredientID AS iid FROM Ingredient";
-        $sql = mysqli_query($conn,$query);
-
-        while($row = mysqli_fetch_array($sql)){
-          $output .= '<option value="'.$row["iid"].'">'.$row["iname"].'</option>';
-        }
-
-        return $output;
-      }
-
-
-
   // Query
       $desc=$_GET['desc'];
       $name=$_GET['name'];
@@ -32,9 +30,12 @@
       $prodprice=$_GET['price'];
 
 
-      $query="INSERT into Product (description,name,quantity,productTypeID,productPrice) values ('{$desc}','{$name}','{$quantity}','{$producttype}','{$prodprice}')";
 
-        mysqli_query($conn,$query);
+
+
+
+  if (isset($_POST['submit'])){
+      mysqli_query($conn,"INSERT into Product (description,name,quantity,productTypeID,productPrice) values ('{$desc}','{$name}','{$quantity}','{$producttype}','{$prodprice}')");
 
       $query="SELECT * FROM Product ORDER BY productID DESC LIMIT 1";
 
@@ -43,9 +44,7 @@
         $row = mysqli_fetch_array($sql);
 
         $proid = $row['productID'];
-
-  if (isset($_POST['submit'])){
-
+        
       $count = count($_POST['ingredient']);
 
       $ingid=$_POST['ingredient'];
@@ -55,16 +54,15 @@
       if($count > 0){
         for($i=0;$i<$count;$i++){
           $query="INSERT into Recipe (ingredientID,productID,quantity,unitOfMeasurement) values ('{$ingid[$i]}','{$proid}','{$qty[$i]}','{$uom[$i]}')";
-              mysqli_query($conn,$query);
-
-
+              $sql = mysqli_query($conn,$query);
         }
       }
 
       echo "<script>
         alert('Recipes added for product $name!');
-      </script>";
-      header("viewProducts.php");
+        window.location.replace('viewProducts.php');
+            </script>";
+
 
   }
 ?>
