@@ -44,7 +44,7 @@
         $row = mysqli_fetch_array($sql);
 
         $proid = $row['productID'];
-        
+
       $count = count($_POST['ingredient']);
 
       $ingid=$_POST['ingredient'];
@@ -60,7 +60,7 @@
 
       echo "<script>
         alert('Recipes added for product $name!');
-        window.location.replace('viewProducts.php');
+        window.location.replace('viewInventory.php');
             </script>";
 
 

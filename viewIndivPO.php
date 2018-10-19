@@ -14,73 +14,72 @@
 <?php
   $id = $_GET['id'];
 
-  $query = "SELECT * FROM Product WHERE productID = $id";
+  $query = "SELECT Supplier.name AS suppName,
+                                       PurchaseOrder.purchaseOrderID AS id,
+                                       PurchaseOrder.totalPrice AS price,
+                                       PurchaseOrder.orderDate AS date,
+                                       PurchaseOrder.status AS status
+                                  FROM PurchaseOrder
+                                  INNER JOIN Supplier ON PurchaseOrder.supplierID =Supplier.supplierID";
 
     $sql = mysqli_query($conn,$query);
 
     $row = mysqli_fetch_array($sql);
 
-    $name = $row['name'];
-    $desc = $row['description'];
-    $quantity = $row['quantity'];
-    $prodprice = $row['productPrice'];
-    $prodtype = $row['productTypeID'];
+    $name = $row['suppName'];
+    $price = $row['price'];
+    $status = $row['status'];
+    $date = $row['date'];
 
-  $query1 = "SELECT * FROM ProductType WHERE productTypeID = $prodtype";
-
-    $sql = mysqli_query($conn,$query1);
-
-    $row = mysqli_fetch_array($sql);
-
-    $typename = $row['name'];
  ?>
 <div class="container">
       <div class="row">
           <div class="col-lg-12">
               <h1 class="page-header"><br><br>
-                   <?php echo $name; ?>
+                   Purchase Order to supplier: <?php echo $name; ?>
               </h1>
           </div>
-      </div><a href="viewInventory.php" class="btn btn-primary btn-sm float-right">go back</a>
+      </div><a href="viewPurchaseOrders.php" class="btn btn-primary btn-sm float-right">go back</a>
       <div class="row">
           <div class="col-lg-10">
             <table class="table table-borderless" id="dataTables-example">
               <tr>
-                <td>Description: <?php echo $desc; ?></td>
-                <td>Quantity: <?php echo $quantity; ?></td>
-                <td>Price: <?php echo $prodprice; ?></td>
-                <td>Product Type: <?php echo $typename; ?></td>
+                <td>Total Cost for PO: <?php echo $price; ?></td>
+                <td>Current status of PO: <?php echo $status; ?></td>
+                <td>Purchase Order date posted: <?php echo $date; ?></td>
               </tr>
             </table>
           </div>
       </div><br><br><br>
       <div class="row">
         <div class="col-lg-12">
-          <h3>List of Recipe</h3>
+          <h3>List of Raw Materials Ordered</h3>
           <table class="table table-bordered table-hover" id="dataTables-example">
             <thead>
               <tr>
-                <th>Name</th>
+                <th>Raw Material</th>
                 <th>Quantity</th>
-                <th>Unit of Measurement</th>
+                <th>Sub Total</th>
               </tr>
             </thead>
             <tbody>
 
                 <?php
-                $query = "SELECT Recipe.quantity AS qty,
-                                  Recipe.unitOfMeasurement AS uom,
-                                  Ingredient.name AS name
-                          FROM Recipe
-                          INNER JOIN Ingredient ON Recipe.ingredientID=Ingredient.ingredientID
-                          WHERE Recipe.productID = $id";
+
+                $query = "SELECT RawMaterial.name AS rmname,
+                                 POItem.quantity AS qty,
+                                 POItem.subTotal AS sub
+                          FROM POItem
+                          INNER JOIN RawMaterial ON POItem.rawMaterialID = RawMaterial.rawMaterialID
+                          INNER JOIN PurchaseOrder ON POItem.purchaseOrderId = PurchaseOrder.purchaseOrderID
+                          WHERE PurchaseOrder.purchaseOrderID = $id";
 
                 $sql = mysqli_query($conn,$query);
 
                 while ($row = mysqli_fetch_array($sql)) {
-                    $name = $row['name'];
+                    $name = $row['rmname'];
                     $qty = $row['qty'];
-                    $uom = $row['uom'];
+                    $sub = $row['sub'];
 
                     echo "<tr>";
                       echo "<td>";
@@ -90,7 +89,7 @@
                         echo $qty;
                       echo "</td>";
                       echo "<td>";
-                        echo $uom;
+                        echo $sub;
                       echo "</td>";
                     echo "</tr>";
                 }

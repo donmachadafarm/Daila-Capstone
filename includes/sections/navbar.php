@@ -23,10 +23,11 @@
           <a class="dropdown-item text-center" href="addrawmaterial.php">Add Raw Materials</a>
           <a class="dropdown-item text-center" href="viewrawmaterials.php">View Raw Materials</a>
           <a class="dropdown-item text-center" href="makepurchaseorder.php">Make Purchase Order</a>
+          <a class="dropdown-item text-center" href="viewPurchaseOrders.php">View Purchase Orders</a>
           <div class="dropdown-divider"></div>
           <h6 class="dropdown-header text-center">-Products-</h6>
           <a class="dropdown-item text-center" href="addproduct.php">Add Product</a>
-          <a class="dropdown-item text-center" href="viewproducts.php">View Products</a>
+          <a class="dropdown-item text-center" href="viewInventory.php">View Inventory</a>
           <a class="dropdown-item text-center" href="makejoborder.php">Make Job Order</a>
         </div>
       </li>
@@ -60,8 +61,8 @@
     </ul>
     <span class="navbar-text">
       <div class="navbar-nav">
-        <a class="nav-item nav-link" href="logout.php">Logout</a>
+        <?php echo $_SESSION['username']; ?>
       </div>
-    </span>
+    </span><a class="nav-item nav-link" href="logout.php">Logout</a>
   </div>
-</nav><br>
+</nav>

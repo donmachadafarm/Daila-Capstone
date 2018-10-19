@@ -28,6 +28,7 @@
                                 <th>RawMaterial Name</th>
                                 <th>Quantity</th>
                                 <th>Capacity Per Unit</th>
+                                <th>Price per Unit</th>
                                 <th>Type</th>
                             </tr>
                         </thead>
@@ -38,7 +39,8 @@
                                                                  RawMaterial.quantity AS quantity,
                                                                  RawMaterial.capacityPerUnit AS capacity,
                                                                  RawMaterial.unitOfMeasurement AS uom,
-                                                                 RawMaterialType.name AS typename
+                                                                 RawMaterialType.name AS typename,
+                                                                 RawMaterial.pricePerUnit AS price
                                                           FROM RawMaterial
                                                           INNER JOIN RawMaterialType ON RawMaterial.rawMaterialTypeID=RawMaterialType.rawMaterialTypeID');
 
@@ -48,6 +50,7 @@
                               $name = $row['name'];
                               $qty = $row['quantity'];
                               $cap = $row['capacity'];
+                              $price = $row['price'];
                               $uom = $row['uom'];
                               $type = $row['typename'];
                               // $price = $row['price'];
@@ -62,6 +65,9 @@
                                     echo '<td>';
                                       echo $cap." ".$uom;
                                     echo'</td>';
+                                    echo '<td>';
+                                      echo $price;
+                                    echo '</td>';
                                     echo '<td>';
                                       echo $type;//initial wala pa ung price column eh
                                     echo'</td>';

@@ -14,13 +14,12 @@
   if (isset($_POST['submit'])){
 
       $name=$_POST['name'];
-      $method=$_POST['method'];
       $email=$_POST['email'];
       $address=$_POST['address'];
       $contact=$_POST['number'];
 
     if(!isset($message)){
-      $query="insert into Customer (name,paymentMethodCode,email,address,contactNum) values ('{$name}','{$method}','{$email}','{$address}','{$contact}')";
+      $query="insert into Customer (name,email,address,contactNum) values ('{$name}','{$email}','{$address}','{$contact}')";
         if (mysqli_query($conn,$query)) {
 
           echo "<script>
@@ -59,9 +58,6 @@
                         <p class="form-control-static">
                             <label>Name:</label></br>
                               <input type="text" name="name" class="form-control" required>
-                            </br>
-                            <label>Payment Method:</label></br>
-                              <input type="text" name="method" class="form-control" required>
                             </br>
                             <label>Email:</label></br>
                               <input type="email" name="email" class="form-control" required>
