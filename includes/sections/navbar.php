@@ -1,5 +1,5 @@
 <!-- navbar -->
-<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+<nav class="nav navbar navbar-expand-lg navbar-light bg-light fixed-top">
   <a class="navbar-brand bold" href="index.php">Daila Herbals</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
@@ -13,19 +13,19 @@
         <div class="dropdown-menu">
           <h4 class="dropdown-header"><b>Inventory Management</b></h4>
           <div class="dropdown-divider"></div>
-          <h6 class="dropdown-header text-center">-Ingredients-</h6>
+          <h6 class="dropdown-header text-center"><b> <-Ingredients-> </b></h6>
           <!-- Add More Links if needed for every functionality -->
           <a class="dropdown-item text-center" href="addingredient.php">Add Ingredient</a>
           <a class="dropdown-item text-center" href="viewingredients.php">View Ingredients</a>
           <!-- use divider if needed -->
           <div class="dropdown-divider"></div>
-          <h6 class="dropdown-header text-center">-Raw Materials-</h6>
+          <h6 class="dropdown-header text-center"><b> <-Raw Materials-> </b></h6>
           <a class="dropdown-item text-center" href="addrawmaterial.php">Add Raw Materials</a>
           <a class="dropdown-item text-center" href="viewrawmaterials.php">View Raw Materials</a>
           <a class="dropdown-item text-center" href="makepurchaseorder.php">Make Purchase Order</a>
           <a class="dropdown-item text-center" href="viewPurchaseOrders.php">View Purchase Orders</a>
           <div class="dropdown-divider"></div>
-          <h6 class="dropdown-header text-center">-Products-</h6>
+          <h6 class="dropdown-header text-center"><b><-Products-></b></h6>
           <a class="dropdown-item text-center" href="addproduct.php">Add Product</a>
           <a class="dropdown-item text-center" href="viewInventory.php">View Inventory</a>
           <a class="dropdown-item text-center" href="makejoborder.php">Make Job Order</a>

@@ -25,10 +25,10 @@
                     <table class="table table-hover" id="dataTables-example">
                         <thead>
                             <tr>
-                                <th>RawMaterial Name</th>
-                                <th>Quantity</th>
-                                <th>Capacity Per Unit</th>
+                                <th>Supplier Name</th>
+                                <th>Supplied RawMaterial</th>
                                 <th>Price per Unit</th>
+                                <th>Unit of Measurement</th>
                                 <th>Type</th>
                             </tr>
                         </thead>
@@ -36,40 +36,38 @@
 
                         <?php
                             $result = mysqli_query($conn,'SELECT RawMaterial.name AS name,
-                                                                 RawMaterial.quantity AS quantity,
-                                                                 RawMaterial.capacityPerUnit AS capacity,
                                                                  RawMaterial.unitOfMeasurement AS uom,
                                                                  RawMaterialType.name AS typename,
-                                                                 RawMaterial.pricePerUnit AS price
+                                                                 RawMaterial.pricePerUnit AS price,
+                                                                 Supplier.name AS suppName
                                                           FROM RawMaterial
-                                                          INNER JOIN RawMaterialType ON RawMaterial.rawMaterialTypeID=RawMaterialType.rawMaterialTypeID');
+                                                          INNER JOIN RawMaterialType ON RawMaterial.rawMaterialTypeID=RawMaterialType.rawMaterialTypeID
+                                                          INNER JOIN Supplier ON Supplier.supplierID=Rawmaterial.supplierID');
 
 
                             while($row = mysqli_fetch_array($result)){
 
                               $name = $row['name'];
-                              $qty = $row['quantity'];
-                              $cap = $row['capacity'];
                               $price = $row['price'];
                               $uom = $row['uom'];
+                              $supp = $row['suppName'];
                               $type = $row['typename'];
-                              // $price = $row['price'];
 
                                   echo '<tr>';
+                                    echo '<td>';
+                                      echo $supp;
+                                    echo '</td>';
                                     echo '<td>';
                                       echo $name;
                                     echo '</td>';
                                     echo '<td>';
-                                      echo $qty;
-                                    echo '</td>';
-                                    echo '<td>';
-                                      echo $cap." ".$uom;
-                                    echo'</td>';
-                                    echo '<td>';
                                       echo $price;
                                     echo '</td>';
                                     echo '<td>';
-                                      echo $type;//initial wala pa ung price column eh
+                                      echo $uom;
+                                    echo '</td>';
+                                    echo '<td>';
+                                      echo $type;
                                     echo'</td>';
                                   echo '</tr>';
 

@@ -45,7 +45,8 @@
                                    <br>";
                                  }
                                 ?>
-                              </select><br>
+                              </select><br><small class="form-text text-muted">Not in the list of suppliers? <a href="addSupplier.php">Click here</a></small><br>
+
                         </p>
                     <input type="submit" name="submit" value="Select Supplier" class="btn btn-success"/></div>
                     </form>

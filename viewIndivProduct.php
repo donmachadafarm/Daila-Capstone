@@ -21,7 +21,6 @@
     $row = mysqli_fetch_array($sql);
 
     $name = $row['name'];
-    $desc = $row['description'];
     $quantity = $row['quantity'];
     $prodprice = $row['productPrice'];
     $prodtype = $row['productTypeID'];
@@ -46,7 +45,6 @@
           <div class="col-lg-10">
             <table class="table table-borderless" id="dataTables-example">
               <tr>
-                <td>Description: <?php echo $desc; ?></td>
                 <td>Quantity: <?php echo $quantity; ?></td>
                 <td>Price: <?php echo $prodprice; ?></td>
                 <td>Product Type: <?php echo $typename; ?></td>

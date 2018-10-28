@@ -23,19 +23,14 @@
 
 <?php
   // Query
-      $desc=$_GET['desc'];
       $name=$_GET['name'];
       $quantity=0;
       $producttype=$_GET['type'];
       $prodprice=$_GET['price'];
 
 
-
-
-
-
   if (isset($_POST['submit'])){
-      mysqli_query($conn,"INSERT into Product (description,name,quantity,productTypeID,productPrice) values ('{$desc}','{$name}','{$quantity}','{$producttype}','{$prodprice}')");
+      mysqli_query($conn,"INSERT into Product (name,quantity,productTypeID,productPrice) values ('{$name}','{$quantity}','{$producttype}','{$prodprice}')");
 
       $query="SELECT * FROM Product ORDER BY productID DESC LIMIT 1";
 
@@ -96,7 +91,7 @@
                         <tr>
                           <td><select name="ingredient[]" class="form-control item_unit" required><option value="">Select Ingredient</option><?php echo fill_unit_select_box($conn); ?></select></td>
                           <td><input type="number" name="quantity[]" class="form-control item_name" required /></td>
-                          <td><input type="text" name="uom[]" class="form-control item_quantity" required /></td>
+                          <td><select name="uom[]" class="form-control item_name" required><option value="Liter">Liter</option><option value="Kilogram">Kilogram</option></select></td>
                           <td><button type="button" name="add" class="btn btn-success btn-sm add">+</button></td>
                         </tr>
                        </table>
@@ -120,7 +115,7 @@
       html += '<tr>';
       html += '<td><select name="ingredient[]" class="form-control item_unit"><option value="">Select Ingredient</option><?php echo fill_unit_select_box($conn); ?></select></td>';
       html += '<td><input type="number" name="quantity[]" class="form-control item_name" required /></td>';
-      html += '<td><input type="text" name="uom[]" class="form-control item_quantity" required /></td>';
+      html += '<td><select name="uom[]" class="form-control item_name" required><option value="Liter">Liter</option><option value="Kilogram">Kilogram</option></select></td>';
       html += '<td><button type="button" name="remove" class="btn btn-danger btn-sm remove">x</button></td></tr>';
       $('#item_table').append(html);
      });

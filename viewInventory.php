@@ -36,7 +36,6 @@
                         <?php
                             $result = mysqli_query($conn,'SELECT product.name AS productname,
                                                                  product.quantity AS quantity,
-                                                                 product.description,
                                                                  productType.name AS producttypename,
                                                                  product.productPrice,
                                                                  product.productID AS ID

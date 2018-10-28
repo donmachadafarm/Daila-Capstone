@@ -13,15 +13,18 @@
 
 <?php
 
-  // update status PO and add all the requested raw mats into inventory (INVENTORY AND RAW MATERIALS UPDATE)
-  if (isset($_POST['update'])) {
-    $poid = $_POST['po_id'];
+  // remove purchase order conditional submit button
+  if(isset($_POST['remove'])){
+    $id = $_POST['po_id'];
 
-    $query = "UPDATE Machine SET status = 'Under Maintenance' WHERE machineID = $repid";
+    $query = "UPDATE `PurchaseOrder` SET `status` = 'removed' WHERE `purchaseOrderID` = $id";
 
-    $sql = mysqli_query($conn,$query);
+    if(mysqli_query($conn,$query)){
+      echo "<script>alert('Removed Purchase Order from list!')</script>";
+    }
 
   }
+
  ?>
 
 <div class="container">
@@ -40,6 +43,7 @@
                     <th class="text-center">Supplier</th>
                     <th class="text-center">Total Cost</th>
                     <th class="text-center">Date Requested</th>
+                    <th class="text-center">Deadline</th>
                     <th class="text-center">Status</th>
                     <th class="text-center">Action</th>
                 </tr>
@@ -47,51 +51,57 @@
                 <tbody>
 
                 <?php
-                $result = mysqli_query($conn,'SELECT Supplier.name AS suppName,
+                if($result = mysqli_query($conn,'SELECT Supplier.name AS suppName,
                                                      PurchaseOrder.purchaseOrderID AS id,
                                                      PurchaseOrder.totalPrice AS price,
                                                      PurchaseOrder.orderDate AS date,
+                                                     PurchaseOrder.deadline AS deadline,
                                                      PurchaseOrder.status AS status
                                                 FROM PurchaseOrder
-                                                INNER JOIN Supplier ON PurchaseOrder.supplierID =Supplier.supplierID');
+                                                INNER JOIN Supplier ON PurchaseOrder.supplierID =Supplier.supplierID
+                                                WHERE PurchaseOrder.status <> "removed"')){
 
 
-                while($row = mysqli_fetch_array($result)){
-                    $id = $row['id'];
-                    $name = $row['suppName'];
-                    $price = $row['price'];
-                    $status = $row['status'];
-                    $date = $row['date'];
+                    while($row = mysqli_fetch_array($result)){
+                        $id = $row['id'];
+                        $name = $row['suppName'];
+                        $price = $row['price'];
+                        $status = $row['status'];
+                        $date = $row['date'];
+                        $deadline = $row['deadline'];
 
-                    echo '<tr>';
-                      echo '<td class="text-center">';
-                          echo $name;
-                      echo '</td>';
+                        echo '<tr>';
+                          echo '<td class="text-center">';
+                              echo $name;
+                          echo '</td>';
 
-                      echo '<td class="text-center">';
-                        echo $price;
-                      echo '</td>';
+                          echo '<td class="text-center">';
+                            echo $price;
+                          echo '</td>';
 
-                      echo '<td class="text-center">';
-                        echo $date;
-                      echo'</td>';
+                          echo '<td class="text-center">';
+                            echo $date;
+                          echo'</td>';
 
-                      echo '<td class="text-center">';
-                        echo $status;
-                      echo'</td>';
+                          echo '<td class="text-center">';
+                            echo $deadline;
+                          echo'</td>';
 
-                      echo '<td class="text-center">';
-                        echo '<a href="viewIndivPO.php?id='.$id.'"><button type="button" class="btn btn-primary btn-sm">View Details</button></a> ';
-                        echo '<a href="#update'.$id.'" data-target="#update'.$id.'" data-toggle="modal"><button type="button" class="btn btn-success btn-sm">Update Status</button></a>';
-                      echo '</td>';
+                          echo '<td class="text-center">';
+                            echo $status;
+                          echo'</td>';
 
-                    echo '</tr>';
+                          echo '<td class="text-center">';
+                            echo '<a href="viewIndivPO.php?id='.$id.'"><button type="button" class="btn btn-primary btn-sm">View Details</button></a> ';
+                            echo '<a href="#remove'.$id.'" data-target="#remove'.$id.'" data-toggle="modal"><button type="button" class="btn btn-danger btn-sm">Remove</button></a>';
+                          echo '</td>';
+
+                        echo '</tr>';
                     ?>
 
-                    <div id="update<?php echo $id; ?>" class="modal fade" role="dialog">
+                    <div id="remove<?php echo $id; ?>" class="modal fade" role="dialog">
                         <div class="modal-dialog">
                             <form method="post">
-                                <!-- Modal content-->
                                 <div class="modal-content">
 
                                     <div class="modal-header">
@@ -103,13 +113,13 @@
                                         <input type="hidden" name="po_id" value="<?php echo $id; ?>">
                                         <div class="text-center">
                                           <p>
-                                            <h6>Update Purchase Order Status?</h6>
+                                            <h6>Remove Purchase Order?</h6>
                                             <br>
-                                            <h6>Note: This action will add the requested Raw Materials into the inventory!</h6>
+                                            <h6>Note: This action will remove the purchase order from the list!</h6>
                                           </p>
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="submit" name="repair" class="btn btn-primary">Continue</button>
+                                            <button type="submit" name="remove" class="btn btn-primary">Continue</button>
                                             <button type="button" class="btn btn-default btn-outline-secondary" data-dismiss="modal">Close</button>
                                         </div>
                                     </div>
@@ -120,9 +130,9 @@
                     <?php
 
                 }
-                echo '<br><br>';
-                ?>
-
+              }
+                    ?>
+                  <br><br>
                 </tbody></table>
 
 

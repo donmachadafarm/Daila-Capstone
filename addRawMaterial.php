@@ -15,16 +15,14 @@
 
       $name=$_POST['name'];
       $supplier=$_POST['supplier'];
-      $quantity=0;
-      $capperunit=$_POST['capacityperunit'];
       $priceperunit=$_POST['priceperunit'];
       $unitofmeasurement=$_POST['unitofmeasurement'];
       $rawmattype=$_POST['rawmattype'];
       $ing=$_POST['ingr'];
 
     if(!isset($message)){
-      $query="INSERT INTO RawMaterial (name,supplierID,quantity,capacityPerUnit,pricePerUnit,unitOfMeasurement,rawMaterialTypeID)
-                VALUES ('{$name}','{$supplier}','{$quantity}','{$capperunit}','{$priceperunit}','{$unitofmeasurement}','{$rawmattype}')";
+      $query="INSERT INTO RawMaterial (name,supplierID,pricePerUnit,unitOfMeasurement,rawMaterialTypeID)
+                VALUES ('{$name}','{$supplier}','{$priceperunit}','{$unitofmeasurement}','{$rawmattype}')";
 
         if (mysqli_query($conn,$query)) {
           //get the latest inserted raw material
@@ -55,9 +53,6 @@
           echo "<script> alert('Failed!');
               </script>";
         }
-    }else{
-      echo "<script> alert('$message');
-            </script>";
     }
   }/*End of main Submit conditional*/
 ?>
@@ -96,15 +91,11 @@
                                 }
                                ?>
                              </select><small class="form-text text-muted">Not in the list of suppliers? <a href="addSupplier.php">Click here</a></small><br>
-
-                            <label>Price per unit:</label></br>
+                            <label>Price per Unit:</label></br>
                               <input type="number" name="priceperunit" class="form-control" required>
                             </br>
-                            <label>Capacity per unit:</label></br>
-                              <input type="number" name="capacityperunit" class="form-control" required>
-                            </br>
                             <label>Unit of Measurement:</label></br>
-                              <input type="text" name="unitofmeasurement" class="form-control" required>
+                              <select name="unitofmeasurement" class="form-control item_name" required><option value="Liter">Liter</option><option value="Kilogram">Kilogram</option></select>
                             </br>
                             <label>RawMaterial Type:</label></br>
                               <select class="form-control" name="rawmattype">
@@ -127,11 +118,10 @@
                                   <br>";
                                 }
                                ?>
-                             </select><small class="form-text text-muted">Not in the list of Ingredients? <a href="addIngredient.php.php">Click here</a></small><br>
+                             </select><small class="form-text text-muted">Not in the list of Ingredients? <a href="addIngredient.php">Click here</a></small><br>
                         </p>
                     <input type="submit" name="submit" value="Add RawMaterial" class="btn btn-success"/></div>
                     </form>
-                    <small class="form-text text-muted">Add the corresponding ingredient? <a href="addIngredient.php">Click here</a></small><br><br>
                   </div>
               </div>
           </div>

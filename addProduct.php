@@ -11,7 +11,7 @@
 
 <?php
   // Query
-  
+
 ?>
 
 <!-- put all the contents here  -->
@@ -37,9 +37,6 @@
                             <label>Name:</label></br>
                               <input type="text" name="name" class="form-control" required>
                             </br>
-                            <label>Description:</label></br>
-                              <textarea class="form-control" rows="3" name="desc"></textarea>
-                            </br>
                             <label>Product Type:</label></br>
                               <select class="form-control" name="type">
                               <?php
@@ -53,6 +50,16 @@
                              </select><br>
                              <label>Price:</label></br>
                                <input type="number" name="price" class="form-control" required>
+                             </br>
+                             <label>Unit of Measurement:</label></br>
+                               <select name="uom" class="form-control item_name" required>
+                                 <option value="Pieces">Pieces</option>
+                                 <option value="Liter">Liter</option>
+                                 <option value="Gallon">Gallon</option>
+                                 <option value="Kilogram">Kilogram</option>
+                                 <option value="Bottles">Bottles</option>
+                                 <option value="Pack">Pack</option>
+                               </select>
                              </br>
                         </p>
                     <input type="submit" name="submit" value="Add Product" class="btn btn-success"/></div>
