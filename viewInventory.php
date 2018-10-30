@@ -29,6 +29,7 @@
                                 <th>Quantity</th>
                                 <th>Type</th>
                                 <th>Price</th>
+                                <th class="text-center">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -63,6 +64,9 @@
                                     echo '<td>';
                                       echo $price;
                                     echo'</td>';
+                                    echo '<td class="text-center">';
+                                      echo '<a href="makeJobOrder.php?ids='.$id.'&name='.$prodName.'"><button type="button" class="btn btn-primary btn-sm">Restock</button></a> ';
+                                    echo '</td>';
                                   echo '</tr>';
 
 

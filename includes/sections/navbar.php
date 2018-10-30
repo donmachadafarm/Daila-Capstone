@@ -11,9 +11,10 @@
           Inventory Management
         </a>
         <div class="dropdown-menu">
-          <h4 class="dropdown-header"><b>Inventory Management</b></h4>
+          <h4 class="dropdown-header text-center"><b>Inventory</b></h4>
           <div class="dropdown-divider"></div>
           <h6 class="dropdown-header text-center"><b> <-Ingredients-> </b></h6>
+          <div class="dropdown-divider"></div>
           <!-- Add More Links if needed for every functionality -->
           <a class="dropdown-item text-center" href="addingredient.php">Add Ingredient</a>
           <a class="dropdown-item text-center" href="viewingredients.php">View Ingredients</a>
@@ -28,16 +29,21 @@
           <h6 class="dropdown-header text-center"><b><-Products-></b></h6>
           <a class="dropdown-item text-center" href="addproduct.php">Add Product</a>
           <a class="dropdown-item text-center" href="viewInventory.php">View Inventory</a>
-          <a class="dropdown-item text-center" href="makejoborder.php">Make Job Order</a>
+          <a class="dropdown-item text-center" href="makeCustomerJobOrder.php">Make Job Order</a>
+          <a class="dropdown-item text-center" href="viewJobOrders.php">Pending Job Orders</a>
         </div>
       </li>
       <li class="nav-item dropdown">
         <a class="nav-link" href="#" id="navbardrop" data-toggle="dropdown">
-          Production Scheduling
+          Production Management
         </a>
         <div class="dropdown-menu">
+          <h4 class="dropdown-header text-center"><b>Production</b></h4>
+          <div class="dropdown-divider"></div>
+          <h6 class="dropdown-header text-center"><b> <-Job Orders-> </b></h6>
+          <div class="dropdown-divider"></div>
           <!-- Add More Links if needed for every functionality -->
-          <a class="dropdown-item" href="#">Link 1</a>
+          <a class="dropdown-item" href="viewProductionJobOrder.php">Approved Job Orders</a>
           <a class="dropdown-item" href="#">Link 2</a>
           <!-- use divider if needed -->
           <div class="dropdown-divider"></div>

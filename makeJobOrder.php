@@ -10,39 +10,60 @@
 ?>
 
 <?php
-  // Query
+  $prodid = $_GET['ids'];
+  $prodname = $_GET['name'];
+
+  // main submit conditional
   if (isset($_POST['submit'])){
       // set variables from post
-      $rawmat=$_POST['rawmat'];
-      $supplier=$_POST['supplier'];
-      $quantity=$_POST['quantity'];
-      $orderdate=$_POST['orderdate'];
+      $prodid = $_POST['prodid'];
+      $quantity = $_POST['quantity'];
+      $remarks = $_POST['remarks'];
+      $duedate = $_POST['deadline'];
+      $today = date("Y-m-d");
+      $type = "Made to Stock";
+      $status = "Pending for approval";
 
-      // main table insert
-    if(!isset($message)){
-      $query="INSERT into PurchaseOrder (rawMaterialID,supplierID,quantity,orderDate,status) values ('{$rawmat}','{$supplier}','{$quantity}','{$orderdate}','Pending')";
+      $sql = mysqli_query($conn,"SELECT * FROM Product WHERE productID = $prodid");
 
+      $row = mysqli_fetch_array($sql);
 
+      // get total price
+      $prodprice = $row['productPrice'] * $quantity;
+
+      // query for insert single job order
+      $query = "INSERT INTO JobOrder(customerID,orderDate,dueDate,totalPrice,remarks,type,status)
+                  VALUES ('1','$today','$duedate','$prodprice','$remarks','$type','$status')";
+
+      // conditional if successfully added job order
+      if(mysqli_query($conn,$query)){
+        $sql = mysqli_query($conn,"SELECT * FROM JobOrder ORDER BY orderID DESC LIMIT 1");
+
+        $row = mysqli_fetch_array($sql);
+
+        $joid = $row['orderID'];
+
+        if(mysqli_query($conn,"INSERT INTO Receipt(orderID,productID,quantity,subtotal) VALUES('$joid','$prodid','$quantity','$prodprice')")){
           echo "<script>
-            alert('Purchase order listed!');
+            alert('Job order listed!');
+             window.location.replace('viewJobOrders.php');
           </script>";
-        }else {
-          echo "<script> alert('Failed!');
-              </script>";
+          }
         }
+
     }
 ?>
 
 <!-- put all the contents here  -->
 
-
+<br><br>
 <div class="container">
   <div id="page-wrapper">
       <div class="row">
           <div class="col-lg-12">
-              <h1 class="page-header"><br><br>
-                  Job Order Form
-              </h1>
+              <h3 class="page-header"><br><br>
+                  Job Order Form for <?php echo $prodname; ?>
+              </h3>
           </div>
       </div>
       <div class="row">
@@ -50,20 +71,19 @@
               <div class="panel panel-default">
 
                   <div class="panel-body"><br>
-                    <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
+                    <form method="post">
                      <div class="form-group">
                         <p class="form-control-static">
-                          <label>Product:</label></br>
-                            <select class="form-control" name="product">
-                            <?php
-                              $result = mysqli_query($conn, 'SELECT * FROM Product');
-
-                              while($row = mysqli_fetch_array($result)){
-                                echo "<label><option value=\"{$row['productID']}\">{$row['name']}</option></label>
-                                <br>";
-                              }
-                             ?>
-                           </select><br>
+                          <input type="hidden" name="prodid" value="<?php echo $prodid; ?>">
+                          <label>Quantity:</label></br>
+                            <input type="number" name="quantity" class="form-control" required>
+                          </br>
+                          <label><strong>Due Date:</strong></label></br>
+                            <input type="date" name="deadline" class="form-control" required>
+                          </br>
+                          <label>Remarks:</label>
+                            <textarea class="form-control" rows="3" name="remarks"></textarea>
+                          </br>
                         </p>
                     <input type="submit" name="submit" value="Add Job Order" class="btn btn-success"/></div>
                     </form>
