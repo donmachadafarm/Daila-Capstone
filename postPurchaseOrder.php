@@ -57,6 +57,7 @@
       // get total count of all added rawmats
       $count = count(array_unique($_POST['rawmat']));
 
+
       // variables storing post variable(array) -> regular variable(array)
       $rawmatid=$_POST['rawmat'];
       $qty=$_POST['quantity'];
@@ -64,7 +65,7 @@
       $total = 0;
 
       $result = array();
-      // combines the duplicates of rawmat id and adds the qty 
+      // combines the duplicates of rawmat id and adds the qty
       foreach($rawmatid as $index => $value) {
           if(!isset($result[$value])) {
               $result[$value] = 0;
@@ -84,9 +85,10 @@
 
           // multiply quantity to the price per unit for sub total per raw material
           $subtotal = $result[$arkey[$i]] * $row['pricePerUnit'];
+          $uom = $row['unitOfMeasurement'];
 
           $query="INSERT into POItem (purchaseOrderID,rawMaterialID,quantity,subTotal,unitOfMeasurement,status)
-                     values ('{$poid}','{$rawmatid[$i]}','{$result[$arkey[$i]]}','{$subtotal}','{$uom[$i]}','Not Delivered')";
+                     values ('{$poid}','{$arkey[$i]}','{$result[$arkey[$i]]}','{$subtotal}','{$uom}','Not Delivered')";
               $sql = mysqli_query($conn,$query);
               $total+=$subtotal;
         }
@@ -118,7 +120,8 @@
           <div class="col-lg-12">
               <h2 class="page-header"><br><br>
                  Items list for Purchase Order
-              </h2><h4>Supplier: <small><?php echo $resh['name']; ?></small></h4>
+              </h2><h4>Supplier: <small><?php echo $resh['name']; ?></small> <a href="makePurchaseOrder.php" class="btn btn-primary btn-sm float-right">go back</a>
+</h4>
               <hr class="style1">
           </div>
       </div>

@@ -163,6 +163,7 @@
                                      <p>
                                        <h6>Confirm Job Order?</h6>
                                        <br>
+                                       <h6>1% will be added to total produced</h6>
 
                                      </p>
                                    </div>

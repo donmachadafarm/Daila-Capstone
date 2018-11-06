@@ -21,12 +21,13 @@
           </div>
       </div>
       <div class="row">
-          <div class="col-lg-10">
+          <div class="col-lg-12">
                     <table class="table table-hover" id="dataTables-example">
                         <thead>
                             <tr>
                                 <th>Supplier Name</th>
                                 <th>Supplied RawMaterial</th>
+                                <th>Matching Ingredient</th>
                                 <th>Price per Unit</th>
                                 <th>Unit of Measurement</th>
                                 <th>Type</th>
@@ -39,14 +40,17 @@
                                                                  RawMaterial.unitOfMeasurement AS uom,
                                                                  RawMaterialType.name AS typename,
                                                                  RawMaterial.pricePerUnit AS price,
-                                                                 Supplier.name AS suppName
+                                                                 Supplier.name AS suppName,
+                                                                 Ingredient.name AS ingname
                                                           FROM RawMaterial
                                                           INNER JOIN RawMaterialType ON RawMaterial.rawMaterialTypeID=RawMaterialType.rawMaterialTypeID
-                                                          INNER JOIN Supplier ON Supplier.supplierID=Rawmaterial.supplierID');
+                                                          INNER JOIN Supplier ON Supplier.supplierID=Rawmaterial.supplierID
+                                                          INNER JOIN RMIngredient ON RawMaterial.rawMaterialID=RMIngredient.rawMaterialID
+                                                          INNER JOIN Ingredient ON Ingredient.ingredientID=RMIngredient.ingredientID');
 
 
                             while($row = mysqli_fetch_array($result)){
-
+                              $ingname = $row['ingname'];
                               $name = $row['name'];
                               $price = $row['price'];
                               $uom = $row['uom'];
@@ -59,6 +63,9 @@
                                     echo '</td>';
                                     echo '<td>';
                                       echo $name;
+                                    echo '</td>';
+                                    echo '<td>';
+                                      echo $ingname;
                                     echo '</td>';
                                     echo '<td>';
                                       echo $price;

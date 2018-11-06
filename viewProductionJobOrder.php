@@ -12,6 +12,57 @@
 <!-- put all the contents here  -->
 
 <?php
+  // function that checks if the ingredients are enuf to make the products
+  function check_for_inventory_level($orderid,$conn){
+    $query = "SELECT receipt.productID,
+                     receipt.quantity
+              FROM receipt
+              WHERE orderID = $orderid";
+
+    $sql = mysqli_query($conn,$query);
+
+    for ($i=0; $i < mysqli_num_rows($sql); $i++) {
+      $row = mysqli_fetch_array($sql);
+
+      $id = $row['productID'];
+      $recipeqty = $row['quantity'];
+
+      // print(" FOR receipt prodid and qty\n<pre>".print_r($row,true)."</pre>");
+      $query1 = "SELECT recipe.quantity,
+                        recipe.ingredientID
+                FROM recipe
+                WHERE productID = $id";
+
+          $sql1 = mysqli_query($conn,$query1);
+
+          for($j = 0; $j < mysqli_num_rows($sql1); $j++) {
+            // print(" FOR RECEPE ingid and qty\n<pre>".print_r($rowed,true)."</pre>");
+            $rowed = mysqli_fetch_array($sql1);
+            $ingid = $rowed['ingredientID'];
+            $query2 = "SELECT ingredient.quantity
+                        FROM ingredient
+                        WHERE ingredient.ingredientID = $ingid";
+
+            $sql2 = mysqli_query($conn,$query2);
+
+            $rowing = mysqli_fetch_array($sql2);
+            // print("FOR INGREDIENT qty\n<pre>".print_r($rowing,true)."</pre>");
+            $currentqty = $rowing['quantity'];
+            // echo $currentqty."\n".$recipeqty."\n".$id;
+
+
+            if ($currentqty < $recipeqty) {
+              // return true;
+              echo "true";
+            }else {
+              // return false;
+              // echo "false";
+              echo $ingid;
+            }
+          }
+
+        }
+  }
 
   // remove job order conditional submit button
   if(isset($_POST['remove'])){
@@ -25,8 +76,8 @@
 
   }
 
-  // approve job order conditional submit button puts the job order in production
-  if(isset($_POST['approve'])){
+  // start job order conditional submit button puts the job order in production
+  if(isset($_POST['start'])){
     $id = $_POST['jo_id'];
 
     // insert into production
@@ -106,13 +157,19 @@
 
                           echo '<td class="text-center">';
                             echo '<a href="viewIndivJO.php?id='.$id.'"><button type="button" class="btn btn-primary btn-sm">View Details</button></a>  ';
-                            echo '<a href="#approve'.$id.'" data-target="#approve'.$id.'" data-toggle="modal"><button type="button" class="btn btn-success btn-sm">Approve</button></a>  ';
-                            echo '<a href="#remove'.$id.'" data-target="#remove'.$id.'" data-toggle="modal"><button type="button" class="btn btn-danger btn-sm">Remove</button></a>';
+
+                            // insert conditional if ingredients are enough
+                            // if(check_for_inventory_level($id,$conn)){
+                              echo '<a href="#start'.$id.'" data-target="#start'.$id.'" data-toggle="modal"><button type="button" class="btn btn-success btn-sm">Start Production</button></a>  ';
+                            // }else {
+                              // echo '<button type="button" class="btn btn-sm btn-secondary" disabled>Not enough materials!</button> ';
+                            // }
+                            // echo '<a href="#remove'.$id.'" data-target="#remove'.$id.'" data-toggle="modal"><button type="button" class="btn btn-danger btn-sm">Remove</button></a>';
                           echo '</td>';
 
                         echo '</tr>';
                     ?>
-                    <div id="approve<?php echo $id; ?>" class="modal fade" role="dialog">
+                    <div id="start<?php echo $id; ?>" class="modal fade" role="dialog">
                         <div class="modal-dialog">
                             <form method="post">
                                 <div class="modal-content">
@@ -126,13 +183,13 @@
                                         <input type="hidden" name="jo_id" value="<?php echo $id; ?>">
                                         <div class="text-center">
                                           <p>
-                                            <h6>Approve Order?</h6>
+                                            <h6>Start Production?</h6>
                                             <br>
-                                            <h6>Note: This action will put the Job Order placed in production!</h6>
+                                            <h6>Note: This action will put the Job Order placed in production to start!</h6>
                                           </p>
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="submit" name="approve" class="btn btn-primary">Continue</button>
+                                            <button type="submit" name="start" class="btn btn-primary">Continue</button>
                                             <button type="button" class="btn btn-default btn-outline-secondary" data-dismiss="modal">Close</button>
                                         </div>
                                     </div>

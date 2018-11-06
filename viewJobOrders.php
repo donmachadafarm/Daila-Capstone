@@ -135,7 +135,7 @@
                                           <p>
                                             <h6>Approve Order?</h6>
                                             <br>
-                                            <h6>Note: This action will put the Job Order placed in production!</h6><br>
+                                            <h6>Note: This action will put the Job Order placed in production list!</h6><br>
 
                                           </p>
                                         </div>

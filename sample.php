@@ -1,8 +1,9 @@
 <?php
-// $a = array('1', '0', '1');
-// $b = array('50', '10', '20');
-// $c = array_combine($a, $b);
 
+include 'includes/sections/header.php';
+
+// pretty print assoc arrays
+// print("<pre>".print_r($result,true)."</pre>");
 
 function array_merge_numeric_values()
 {
@@ -29,57 +30,62 @@ function array_merge_numeric_values()
     return $merged;
 }
 
-// print_r(array_merge_recursive($a,$b));
 
-// print_r(array_merge_numeric_values($a,$b));
+function check_for_inventory_match($orderid,$conn){
+  $invgreat = 0;
 
-// print_r($c);
+  $query = "SELECT receipt.productID,
+                   receipt.quantity
+            FROM receipt
+            WHERE orderID = $orderid";
 
-// print_r(array_merge($a));
+  $sql = mysqli_query($conn,$query);
 
-// print_r(array_unique($a));
+    while($row = mysqli_fetch_array($sql)){
 
-// $levels = array('1', '0', '1');
-// $attributes = array('50', '10', '20');
-//
-// $ret = array();
-// foreach ($levels as $level) {
-//   $ret[$level] = array();
-//   foreach($attributes as $attribute) {
-//     $ret[$level][] = $attribute.'_'.$level;
-//     }
-//   }
-//
-// print_r($ret);
+    $id = $row['productID'];
+    $recipeqty = $row['quantity'];
 
-// $a = array('1', '0', '1');
-// $b = array('50', '10', '20');
-//
-// $result = array();
-// for($i = 0;$i<count($a);$i++) {
-//     $result[] = array(
-//         'rmid' => $a[$i],
-//         'qty' => $b[$i]
-//     );
-// }
-//
-// print("<pre>".print_r($result,true)."</pre>");
+    // echo "<br /><b>prodid:</b> " . $id . "<br />";
+    // echo "<b>prodqty on order:</b> " . $recipeqty . "<br />";
 
-//first array
-$k = array('1','0','1');
-//second array
-$v = array('50','10','20');
+    $query1 = "SELECT Recipe.productID AS ProductID,
+                      Recipe.ingredientID AS Ingredientid,
+                      Recipe.quantity AS NeededIngredientQuantity,
+                      Ingredient.quantity AS CurrentInventoryQuantity
+                FROM `Recipe`
+                INNER JOIN Ingredient ON Ingredient.ingredientID = Recipe.ingredientID
+                WHERE Recipe.productID = $id";
 
-$result = array();
+      $sql1 = mysqli_query($conn,$query1);
 
-foreach($k as $index => $value) {
-    if(!isset($result[$value])) {
-        $result[$value] = 0;
+
+      while ($rowed = mysqli_fetch_array($sql1)) {
+        $prodakid = $rowed['ProductID'];
+        $ingredid = $rowed['Ingredientid'];
+        $ingquant = $rowed['NeededIngredientQuantity'];
+        $currinvq = $rowed['CurrentInventoryQuantity'];
+
+        // printf("Product id -> %s <br> Ingredient id -> %s <br> NeededQuantity -> %s <br> CurrentInventoryQuantity -> %s<br /><br />", $prodakid,$ingredid,$ingquant,$rowed[3]);
+
+        if ($currinvq > $ingquant) {
+          $invgreat++;
+        }
+      }
     }
-    $result[$value] += $v[$index];
+    return $invgreat;
 }
 
-print_r($result);
+function check_time_diff_mins($start_time,$end_time){
+  $interval = $start_time->diff($end_time);
+  $hours   = $interval->format('%h');
+  $minutes = $interval->format('%i');
+  return $hours * 60 + $minutes;
+}
+
+
+
+
 
 
 

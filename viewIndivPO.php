@@ -63,7 +63,9 @@
 
         if(mysqli_query($conn,$query)){
 
-          mysqli_query($conn,"UPDATE POItem SET status = 'Delivered' WHERE rawMaterialID = $rmid");
+          mysqli_query($conn,"UPDATE POItem SET status = 'Delivered' WHERE rawMaterialID = $rmid AND purchaseOrderID = $poid");
+
+          echo "<meta http-equiv='refresh' content='0'>";
 
         }
 
