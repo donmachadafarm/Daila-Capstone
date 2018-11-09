@@ -61,11 +61,12 @@
   <div id="page-wrapper">
       <div class="row">
           <div class="col-lg-12">
-              <h3 class="page-header"><br><br>
+              <h2 class="page-header"><br><br><a href="viewInventory.php" class="btn btn-primary btn-sm float-right">go back</a>
                   Job Order Form for <?php echo $prodname; ?>
-              </h3>
+              </h2>
           </div>
       </div>
+      <hr class="style1">
       <div class="row">
           <div class="col-lg-8">
               <div class="panel panel-default">
@@ -78,7 +79,7 @@
                           <label>Quantity:</label></br>
                             <input type="number" name="quantity" class="form-control" required>
                           </br>
-                          <label><strong>Due Date:</strong></label></br>
+                          <label>Due Date:</label></br>
                             <input type="date" name="deadline" class="form-control" required>
                           </br>
                           <label>Remarks:</label>

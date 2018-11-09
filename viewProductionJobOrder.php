@@ -160,9 +160,9 @@
 
                             // insert conditional if ingredients are enough
                             // if(check_for_inventory_level($id,$conn)){
-                              echo '<a href="#start'.$id.'" data-target="#start'.$id.'" data-toggle="modal"><button type="button" class="btn btn-success btn-sm">Start Production</button></a>  ';
+                              // echo '<a href="#start'.$id.'" data-target="#start'.$id.'" data-toggle="modal"><button type="button" class="btn btn-success btn-sm">Start Production</button></a>  ';
                             // }else {
-                              // echo '<button type="button" class="btn btn-sm btn-secondary" disabled>Not enough materials!</button> ';
+                              echo '<button type="button" class="btn btn-sm btn-secondary" disabled>Not enough materials!</button> ';
                             // }
                             // echo '<a href="#remove'.$id.'" data-target="#remove'.$id.'" data-toggle="modal"><button type="button" class="btn btn-danger btn-sm">Remove</button></a>';
                           echo '</td>';

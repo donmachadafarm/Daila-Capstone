@@ -27,7 +27,7 @@
     	border-top: 1px solid #8c8b8b;
     }
     </style>
-
+    
     <title>Daila Herbals</title>
     <?php include 'includes/plugins.php';
 

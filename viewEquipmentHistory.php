@@ -21,7 +21,6 @@
     $row = mysqli_fetch_array($sql);
 
     $name = $row['name'];
-    $type = $row['type'];
     $date = $row['acquiredDate'];
     $status = $row['status'];
     $totalhrs = $row['hoursWorked'];
@@ -39,7 +38,6 @@
           <div class="col-lg-10">
             <table class="table table-borderless" id="dataTables-example">
               <tr>
-                <td>Machine Type: <?php echo $type; ?></td>
                 <td>Date Acquired: <?php echo $date; ?></td>
                 <td>Current Status: <?php echo $status; ?></td>
                 <td>Lifetime hours used: <?php echo $totalhrs; ?></td>

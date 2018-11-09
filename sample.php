@@ -51,8 +51,9 @@ function check_for_inventory_match($orderid,$conn){
 
     $query1 = "SELECT Recipe.productID AS ProductID,
                       Recipe.ingredientID AS Ingredientid,
-                      Recipe.quantity AS NeededIngredientQuantity,
-                      Ingredient.quantity AS CurrentInventoryQuantity
+                      Ingredient.quantity AS CurrentInventoryQuantity,
+                      Recipe.quantity AS IndivNeedINGQTY,
+                      Recipe.quantity*$recipeqty AS NeededIngredientQuantity
                 FROM `Recipe`
                 INNER JOIN Ingredient ON Ingredient.ingredientID = Recipe.ingredientID
                 WHERE Recipe.productID = $id";
@@ -63,18 +64,26 @@ function check_for_inventory_match($orderid,$conn){
       while ($rowed = mysqli_fetch_array($sql1)) {
         $prodakid = $rowed['ProductID'];
         $ingredid = $rowed['Ingredientid'];
+        $oriingid = $rowed['IndivNeedINGQTY'];
         $ingquant = $rowed['NeededIngredientQuantity'];
         $currinvq = $rowed['CurrentInventoryQuantity'];
 
-        // printf("Product id -> %s <br> Ingredient id -> %s <br> NeededQuantity -> %s <br> CurrentInventoryQuantity -> %s<br /><br />", $prodakid,$ingredid,$ingquant,$rowed[3]);
+        printf("Product id -> %s <br>
+                Ingredient id -> %s <br>
+                CurrentInventoryQuantity -> %s<br>
+                Original need qty -> %s <br>
+                NeededQuantity -> %s <br>
+                <br />", $prodakid,$ingredid,$currinvq,$oriingid,$ingquant);
 
-        if ($currinvq > $ingquant) {
+
+        if ($currinvq < $ingquant) {
           $invgreat++;
         }
       }
     }
     return $invgreat;
 }
+
 
 function check_time_diff_mins($start_time,$end_time){
   $interval = $start_time->diff($end_time);
@@ -83,7 +92,11 @@ function check_time_diff_mins($start_time,$end_time){
   return $hours * 60 + $minutes;
 }
 
+echo check_for_inventory_match(5,$conn);
 
+// echo check_for_inventory_match(2,$conn);
+
+// echo check_for_inventory_match(3,$conn);
 
 
 

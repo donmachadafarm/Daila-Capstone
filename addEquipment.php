@@ -14,11 +14,10 @@ if (!isset($_SESSION['userType'])){
 if (isset($_POST['submit'])){
     $status="Available";
     $name=$_POST['name'];
-    $type=$_POST['type'];
     $date=$_POST['date'];
+    $procid=$_POST['process'];
 
-    if(!isset($message)){
-        $query="INSERT into Machine (name,type,acquiredDate,status) values ('{$name}','{$type}','{$date}','{$status}')";
+        $query="INSERT into Machine (name,acquiredDate,status,hoursWorked,processTypeID) values ('{$name}','{$date}','{$status}','0','{$procid}')";
         if (mysqli_query($conn,$query)) {
 
             echo "<script>
@@ -28,10 +27,7 @@ if (isset($_POST['submit'])){
             echo "<script> alert('Failed to Add Equipment!');
               </script>";
         }
-    }else{
-        echo "<script> alert('$message');
-            </script>";
-    }
+
 }/*End of main Submit conditional*/
 ?>
 
@@ -58,12 +54,20 @@ if (isset($_POST['submit'])){
                                     <label>Name:</label></br>
                                     <input type="text" name="name" class="form-control" required>
                                     </br>
-                                    <label>Type of Machine:</label></br>
-                                    <input type="text" name="type" class="form-control" required>
-                                    </br>
                                     <label>Date Acquired:</label></br>
                                     <input type="date" name="date" class="form-control" required>
                                     </br>
+                                    <label>Product Process:</label></br>
+                                      <select class="form-control" name="process" required>
+                                      <?php
+                                        $result = mysqli_query($conn, 'SELECT * FROM ProcessType');
+
+                                        while($row = mysqli_fetch_array($result)){
+                                          echo "<label><option value=\"{$row['processTypeID']}\">{$row['name']}</option></label>
+                                          <br>";
+                                        }
+                                       ?>
+                                     </select><br>
                                 </p>
                                 <input type="submit" name="submit" value="Add Equipment" class="btn btn-success"/></div>
                         </form>

@@ -53,7 +53,6 @@
                 <thead>
                 <tr>
                     <th>Name</th>
-                    <th>Type</th>
                     <th>Status</th>
                     <th>Hours Woked</th>
                     <th>Action</th>
@@ -68,7 +67,6 @@
                 while($row = mysqli_fetch_array($result)){
                     $id = $row['machineID'];
                     $name = $row['name'];
-                    $type = $row['type'];
                     $status = $row['status'];
                     $hoursWorked = $row['hoursWorked'];
                     $acquiredDate = $row['acquiredDate'];
@@ -78,10 +76,6 @@
                         echo '<a href="viewEquipmentHistory.php?id='.$id.'">';
                           echo $name;
                         echo '</a>';
-                      echo '</td>';
-
-                      echo '<td class="text-center">';
-                        echo $type;
                       echo '</td>';
 
                       echo '<td class="text-center">';
@@ -156,9 +150,9 @@
                                         <input type="hidden" name="repair_id" value="<?php echo $id; ?>">
                                         <div>
                                           <p>
-                                            <h6>Are you sure you want repair <strong><?php echo $name; ?>?</strong></h6>
+                                            <h6 class="text-center">Are you sure you want repair <strong><?php echo $name; ?>?</strong></h6>
                                             <br>
-                                            <h6>This will put the machine under maintenance status!</h6>
+                                            <h6 class="text-center">This will put the machine under maintenance status!</h6>
                                           </p>
                                         </div>
                                         <div class="modal-footer">

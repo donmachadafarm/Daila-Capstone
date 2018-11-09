@@ -47,16 +47,35 @@
       $qty=$_POST['quantity'];
       $uom=$_POST['uom'];
 
+      $result = array();
+      // combines the duplicates of rawmat id and adds the qty
+      foreach($ingid as $index => $value) {
+          if(!isset($result[$value])) {
+              $result[$value] = 0;
+          }
+          $result[$value] += $qty[$index];
+      }
+      // print_r($result);
+
       if($count > 0){
         for($i=0;$i<$count;$i++){
-          $query="INSERT into Recipe (ingredientID,productID,quantity,unitOfMeasurement) values ('{$ingid[$i]}','{$proid}','{$qty[$i]}','{$uom[$i]}')";
+          $arkey = array_keys($result);
+
+          $sql3 = mysqli_query($conn,"SELECT DISTINCT RawMaterial.unitOfMeasurement FROM RawMaterial
+                                        INNER JOIN RMIngredient ON RMIngredient.rawMaterialID = RawMaterial.rawMaterialID
+                                        INNER JOIN Ingredient ON Ingredient.ingredientID = RMIngredient.ingredientID
+                                        WHERE Ingredient.ingredientID = {$arkey[$i]}");
+                $row = mysqli_fetch_row($sql3);
+                $unitom = $row['unitOfMeasurement'];
+                
+          $query="INSERT into Recipe (ingredientID,productID,quantity,unitOfMeasurement) values ('{$arkey[$i]}','{$proid}','{$result[$arkey[$i]]}','{$unitom}')";
               $sql = mysqli_query($conn,$query);
         }
       }
 
       echo "<script>
         alert('Recipes added for product $name!');
-        window.location.replace('viewInventory.php');
+        window.location.replace('addProductProcess.php?id=".$proid."');
             </script>";
 
 
@@ -97,7 +116,7 @@
                         </tr>
                        </table>
                        <div align="center">
-                        <input type="submit" name="submit" class="btn btn-success" value="Insert" />
+                        <input type="submit" name="submit" class="btn btn-success" value="Submit" />
                        </div>
                       </div>
                      </form>

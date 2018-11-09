@@ -82,7 +82,7 @@
 
         echo "<script>
           alert('Job Order Posted!');
-           window.location.replace('viewPurchaseOrders.php');
+           window.location.replace('viewJobOrders.php');
               </script>";
 
 
@@ -100,6 +100,8 @@
               <h1 class="page-header"><br><br>
                   Job Order Form
               </h1>
+
+              <hr class="style1">
           </div>
       </div>
       <div class="row">
@@ -132,8 +134,8 @@
                <hr class="style1">
                <div class="col-lg-4">
                      <div class="col">
-                       <label><strong>Deadline to supplier:</strong></label></br>
-                         <input type="date" name="deadline" class="form-control" required>
+                       <label><strong>Deadline to DAILA:</strong></label></br>
+                         <input type="date" name="deadline" id="txtDate" class="form-control" required>
                        </br>
                      </div>
                      <div class="col">

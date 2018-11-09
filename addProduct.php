@@ -62,7 +62,7 @@
                                </select>
                              </br>
                         </p>
-                    <input type="submit" name="submit" value="Add Product" class="btn btn-success"/></div>
+                    <input type="submit" name="submit" value="Next" class="btn btn-success"/></div>
                     </form>
                   </div>
               </div>
