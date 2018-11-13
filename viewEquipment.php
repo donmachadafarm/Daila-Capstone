@@ -48,11 +48,12 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-lg-10">
+        <div class="col-lg-12">
             <table class="table table-bordered table-hover" id="dataTables-example">
                 <thead>
                 <tr>
                     <th>Name</th>
+                    <th>Process Connected</th>
                     <th>Status</th>
                     <th>Hours Woked</th>
                     <th>Action</th>
@@ -61,7 +62,14 @@
                 <tbody>
 
                 <?php
-                $result = mysqli_query($conn,'SELECT * FROM Machine');
+                $result = mysqli_query($conn,'SELECT Machine.machineID,
+                                                     Machine.name,
+                                                     Machine.status,
+                                                     Machine.hoursWorked,
+                                                     Machine.acquiredDate,
+                                                     ProcessType.name AS procname
+                                                FROM Machine
+                                                INNER JOIN ProcessType ON ProcessType.processTypeID = Machine.processTypeID');
 
 
                 while($row = mysqli_fetch_array($result)){
@@ -70,6 +78,7 @@
                     $status = $row['status'];
                     $hoursWorked = $row['hoursWorked'];
                     $acquiredDate = $row['acquiredDate'];
+                    $proctype = $row['procname'];
 
                     echo '<tr>';
                       echo '<td class="text-center">';
@@ -77,6 +86,10 @@
                           echo $name;
                         echo '</a>';
                       echo '</td>';
+
+                      echo '<td class="text-center">';
+                        echo $proctype;
+                      echo'</td>';
 
                       echo '<td class="text-center">';
                         echo $status;
@@ -89,7 +102,7 @@
                       echo '<td class="text-center">';
                       //modal trigger button
                       if ($status == "Available") {
-                        echo '<a href="#repair'.$id.'" data-target="#repair'.$id.'" data-toggle="modal"><button type="button" class="btn btn-success btn-sm">Repair</button></a>';
+                        echo '<a href="#repair'.$id.'" data-target="#repair'.$id.'" data-toggle="modal"><button type="button" class="btn btn-success btn-sm"><i class="fas fa-wrench"></i> Repair</button></a>';
                       }else {
                         echo '<a href="#finish'.$id.'" data-target="#finish'.$id.'" data-toggle="modal"><button type="button" class="btn btn-secondary btn-sm">Finish Repair</button></a>';
                       }
@@ -177,7 +190,7 @@
         </div>
     </div>
 </div>
-
+<br><br>
 
 <!-- end of content -->
 

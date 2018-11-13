@@ -7,60 +7,6 @@
   if (!isset($_SESSION['userType'])){
       echo "<script>window.location='logout.php'</script>";
   }
-
-
-  function check_for_inventory_match($orderid,$conn){
-    $invgreat = 0;
-
-    $query = "SELECT receipt.productID,
-                     receipt.quantity
-              FROM receipt
-              WHERE orderID = $orderid";
-
-    $sql = mysqli_query($conn,$query);
-
-      while($row = mysqli_fetch_array($sql)){
-
-      $id = $row['productID'];
-      $recipeqty = $row['quantity'];
-
-      // echo "<br /><b>prodid:</b> " . $id . "<br />";
-      // echo "<b>prodqty on order:</b> " . $recipeqty . "<br />";
-
-      $query1 = "SELECT Recipe.productID AS ProductID,
-                        Recipe.ingredientID AS Ingredientid,
-                        Ingredient.quantity AS CurrentInventoryQuantity,
-                        Recipe.quantity AS IndivNeedINGQTY,
-                        Recipe.quantity*$recipeqty AS NeededIngredientQuantity
-                  FROM `Recipe`
-                  INNER JOIN Ingredient ON Ingredient.ingredientID = Recipe.ingredientID
-                  WHERE Recipe.productID = $id";
-
-        $sql1 = mysqli_query($conn,$query1);
-
-
-        while ($rowed = mysqli_fetch_array($sql1)) {
-          $prodakid = $rowed['ProductID'];
-          $ingredid = $rowed['Ingredientid'];
-          $oriingid = $rowed['IndivNeedINGQTY'];
-          $ingquant = $rowed['NeededIngredientQuantity'];
-          $currinvq = $rowed['CurrentInventoryQuantity'];
-
-          // printf("Product id -> %s <br>
-          //         Ingredient id -> %s <br>
-          //         CurrentInventoryQuantity -> %s<br>
-          //         Original need qty -> %s <br>
-          //         NeededQuantity -> %s <br>
-          //         <br />", $prodakid,$ingredid,$currinvq,$oriingid,$ingquant);
-
-
-          if ($currinvq < $ingquant) {
-            $invgreat++;
-          }
-        }
-      }
-      return $invgreat;
-  }
 ?>
 
 <!-- put all the contents here  -->
@@ -83,12 +29,25 @@
   if(isset($_POST['approve'])){
     $id = $_POST['jo_id'];
 
-    $query = "UPDATE `JobOrder` SET `status` = 'Approved' WHERE `orderID` = $id";
+    $query = "UPDATE `JobOrder` SET `status` = 'Production' WHERE `orderID` = $id";
 
     if(mysqli_query($conn,$query)){
       echo "<script>alert('Job order is now sent to the plant!')</script>";
     }
 
+    // check for all processes per product and match all available machines
+
+
+    // match one machine per product processes
+
+
+    // subtract ingredients per product based on Quantity
+    reduce_inventory_rawmats_production($conn,$id);
+
+    // compute total time for production
+
+
+    // start all products in production
 
 
 
@@ -109,6 +68,7 @@
             <table class="table table-borderless table-hover" id="dataTables-example">
                 <thead>
                 <tr>
+                    <th class="text-center">jo id</th>
                     <th class="text-center">Customer</th>
                     <th class="text-center">Date Requested</th>
                     <th class="text-center">Due Date</th>
@@ -143,6 +103,10 @@
 
                         echo '<tr>';
                           echo '<td class="text-center">';
+                              echo $id;
+                          echo '</td>';
+
+                          echo '<td class="text-center">';
                               echo $name;
                           echo '</td>';
 
@@ -165,7 +129,7 @@
                           echo '<td class="text-center">';
                             echo '<a href="viewIndivJO.php?id='.$id.'"><button type="button" class="btn btn-primary btn-sm"><i class="fas fa-eye"></i></button></a>  ';
                             echo '<a href="#remove'.$id.'" data-target="#remove'.$id.'" data-toggle="modal"><button type="button" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button></a>';
-                            if (check_for_inventory_match($id,$conn)>0) {
+                            if (check_for_inventory_match($conn,$id)>0) {
                               echo '<a href="#check'.$id.'" data-target="#check'.$id.'" data-toggle="modal">
                                 <button type="button" class="btn btn-secondary btn-sm">
                                   <i class="fas fa-exclamation-circle"></i>
@@ -206,6 +170,27 @@
                                         </div>
                                     </div>
                             </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="check<?php echo $id; ?>" class="modal fade" role="dialog">
+                        <div class="modal-dialog">
+                                <div class="modal-content">
+
+                                    <div class="modal-header">
+                                        <h4>Notice</h4>
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    </div>
+
+                                    <div class="modal-body">
+                                      <h5 class="text-center">Lacking ingredients on the following products:</h5>
+                                        <?php print_p(get_need_inventory($id,$conn)); ?>
+
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default btn-outline-secondary" data-dismiss="modal">Close</button>
+                                    </div>
                             </div>
                         </div>
                     </div>

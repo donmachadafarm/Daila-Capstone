@@ -27,9 +27,12 @@
     	border-top: 1px solid #8c8b8b;
     }
     </style>
-    
+
     <title>Daila Herbals</title>
-    <?php include 'includes/plugins.php';
+    <?php
+
+      include 'includes/plugins.php';
+      include 'functions.php';
 
     if (session_status() == PHP_SESSION_NONE) {
         session_start();

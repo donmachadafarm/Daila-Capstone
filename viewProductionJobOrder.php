@@ -92,7 +92,7 @@
     <div class="row">
         <div class="col-lg-12">
             <h1 class="page-header"><br><br>
-                Job Orders for Production
+                Job Orders in Production
             </h1>
         </div>
     </div>
@@ -103,7 +103,7 @@
                 <tr>
                     <th class="text-center">Job Order ID</th>
                     <th class="text-center">Customer</th>
-                    <th class="text-center">Date Requested</th>
+                    <th class="text-center">Job Order Type</th>
                     <th class="text-center">Due Date</th>
                     <th class="text-center">Status</th>
                     <th class="text-center">Action</th>
@@ -114,14 +114,13 @@
                 <?php
                 if($result = mysqli_query($conn,'SELECT JobOrder.orderID AS ID,
                                                         Customer.name AS custname,
-                                                        JobOrder.orderDate AS datereq,
                                                         JobOrder.dueDate AS duedate,
                                                         JobOrder.totalPrice AS price,
                                                         JobOrder.type AS type,
                                                         JobOrder.status AS status
                                                 FROM JobOrder
                                                 INNER JOIN Customer ON JobOrder.customerID =Customer.customerID
-                                                WHERE JobOrder.status = "Approved"')){
+                                                WHERE JobOrder.status = "Production"')){
 
 
                     while($row = mysqli_fetch_array($result)){
@@ -130,7 +129,6 @@
                         $price = $row['price'];
                         $status = $row['status'];
                         $duedate = $row['duedate'];
-                        $datereq = $row['datereq'];
                         $type = $row['type'];
 
                         echo '<tr>';
@@ -143,13 +141,12 @@
                           echo '</td>';
 
                           echo '<td class="text-center">';
-                            echo $datereq;
-                          echo'</td>';
+                              echo $type;
+                          echo '</td>';
 
                           echo '<td class="text-center">';
                             echo $duedate;
                           echo'</td>';
-
 
                           echo '<td class="text-center">';
                             echo $status;
@@ -157,80 +154,14 @@
 
                           echo '<td class="text-center">';
                             echo '<a href="viewIndivJO.php?id='.$id.'"><button type="button" class="btn btn-primary btn-sm">View Details</button></a>  ';
-
-                            // insert conditional if ingredients are enough
-                            // if(check_for_inventory_level($id,$conn)){
-                              // echo '<a href="#start'.$id.'" data-target="#start'.$id.'" data-toggle="modal"><button type="button" class="btn btn-success btn-sm">Start Production</button></a>  ';
-                            // }else {
-                              echo '<button type="button" class="btn btn-sm btn-secondary" disabled>Not enough materials!</button> ';
-                            // }
-                            // echo '<a href="#remove'.$id.'" data-target="#remove'.$id.'" data-toggle="modal"><button type="button" class="btn btn-danger btn-sm">Remove</button></a>';
                           echo '</td>';
 
                         echo '</tr>';
+
+                      }
+                    }
                     ?>
-                    <div id="start<?php echo $id; ?>" class="modal fade" role="dialog">
-                        <div class="modal-dialog">
-                            <form method="post">
-                                <div class="modal-content">
 
-                                    <div class="modal-header">
-                                        <h4>Notice</h4>
-                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                    </div>
-
-                                    <div class="modal-body">
-                                        <input type="hidden" name="jo_id" value="<?php echo $id; ?>">
-                                        <div class="text-center">
-                                          <p>
-                                            <h6>Start Production?</h6>
-                                            <br>
-                                            <h6>Note: This action will put the Job Order placed in production to start!</h6>
-                                          </p>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="submit" name="start" class="btn btn-primary">Continue</button>
-                                            <button type="button" class="btn btn-default btn-outline-secondary" data-dismiss="modal">Close</button>
-                                        </div>
-                                    </div>
-                            </form>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="remove<?php echo $id; ?>" class="modal fade" role="dialog">
-                        <div class="modal-dialog">
-                            <form method="post">
-                                <div class="modal-content">
-
-                                    <div class="modal-header">
-                                        <h4>Notice</h4>
-                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                    </div>
-
-                                    <div class="modal-body">
-                                        <input type="hidden" name="jo_id" value="<?php echo $id; ?>">
-                                        <div class="text-center">
-                                          <p>
-                                            <h6>Remove Job Order?</h6>
-                                            <br>
-                                            <h6>Note: This action will remove the job order from the list!</h6>
-                                          </p>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="submit" name="remove" class="btn btn-primary">Continue</button>
-                                            <button type="button" class="btn btn-default btn-outline-secondary" data-dismiss="modal">Close</button>
-                                        </div>
-                                    </div>
-                            </form>
-                            </div>
-                        </div>
-                    </div>
-                    <?php
-
-                }
-              }
-                    ?>
                   <br><br>
                 </tbody></table>
 
