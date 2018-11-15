@@ -317,7 +317,7 @@ function start_production($conn,$orderid){
     }else{
       // insert into production table  orderid, productid, status, quantity from order, 0 , 0 , 0, start time, 0
       $qry1 = "INSERT INTO Production (orderID,productID,status,quantity,totalGoods,totalYield,totalLost,startTime,endTime)
-                                VALUES($orderid,$produid,'Machine on Queue',$prodqty,0,0,0,'','')";
+                               VALUES ('{$orderid}','{$produid}','Machine in queue','{$prodqty}',0,0,0,'','')";
 
       // run insert (if success continue insert per productprocess)
       if($sql = mysqli_query($conn,$qry1)){

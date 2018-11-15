@@ -63,9 +63,17 @@
       <div class="row">
         <div class="col-lg-12">
           <h3>List of items in Production</h3>
+          <?php
+          $query = "";
+
+          $sql = mysqli_query($conn,$query);
+
+          while ($row = mysqli_fetch_array($sql)):
+
+           ?>
             <div class="card">
               <div class="card-header">
-                Featured
+                <?php echo $row['productname']; ?>
               </div>
               <div class="card-body">
                 <h5 class="card-title">Special title treatment</h5>
@@ -73,6 +81,11 @@
                 <a href="#" class="btn btn-primary">Go somewhere</a>
               </div>
             </div>
+
+            
+
+          <?php endwhile; ?>
+
         </div>
       </div>
 </div>

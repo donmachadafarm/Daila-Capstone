@@ -37,8 +37,7 @@
     reduce_inventory_rawmats_production($conn,$id);
 
     // start production
-
-
+    start_production($conn,$id);
 
   }
 

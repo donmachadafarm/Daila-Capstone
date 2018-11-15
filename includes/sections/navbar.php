@@ -11,22 +11,31 @@
           Inventory Management
         </a>
         <div class="dropdown-menu">
-          <h4 class="dropdown-header text-center"><b>Inventory</b></h4>
-          <div class="dropdown-divider"></div>
-          <h6 class="dropdown-header text-center"><b> <-Ingredients-> </b></h6>
-          <div class="dropdown-divider"></div>
+          <h6 class="dropdown-header text-center"><b> Ingredients </b></h6>
           <!-- Add More Links if needed for every functionality -->
           <a class="dropdown-item text-center" href="addingredient.php">Add Ingredient</a>
           <a class="dropdown-item text-center" href="viewingredients.php">View Ingredients</a>
           <!-- use divider if needed -->
           <div class="dropdown-divider"></div>
-          <h6 class="dropdown-header text-center"><b> <-Raw Materials-> </b></h6>
+          <h6 class="dropdown-header text-center"><b> Raw Materials </b></h6>
           <a class="dropdown-item text-center" href="addrawmaterial.php">Add Raw Materials</a>
           <a class="dropdown-item text-center" href="viewrawmaterials.php">View Raw Materials</a>
           <a class="dropdown-item text-center" href="makepurchaseorder.php">Make Purchase Order</a>
           <a class="dropdown-item text-center" href="viewPurchaseOrders.php">View Purchase Orders</a>
+        </div>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link" href="#" id="navbardrop" data-toggle="dropdown">
+          Production Management
+        </a>
+        <div class="dropdown-menu">
+          <h6 class="dropdown-header text-center"><b> Job Orders </b></h6>
           <div class="dropdown-divider"></div>
-          <h6 class="dropdown-header text-center"><b><-Products-></b></h6>
+          <!-- Add More Links if needed for every functionality -->
+          <a class="dropdown-item" href="viewProductionJobOrder.php">Approved Job Orders</a>
+
+          <div class="dropdown-divider"></div>
+          <h6 class="dropdown-header text-center"><b> Products </b></h6>
           <a class="dropdown-item text-center" href="addproduct.php">Add Product</a>
           <a class="dropdown-item text-center" href="viewInventory.php">View Inventory</a>
           <a class="dropdown-item text-center" href="makeCustomerJobOrder.php">Make Job Order</a>
@@ -35,33 +44,27 @@
       </li>
       <li class="nav-item dropdown">
         <a class="nav-link" href="#" id="navbardrop" data-toggle="dropdown">
-          Production Management
+          Equipment Monitoring
         </a>
         <div class="dropdown-menu">
-          <h4 class="dropdown-header text-center"><b>Production</b></h4>
+          <h6 class="dropdown-header text-center"><b> Machines </b></h6>
           <div class="dropdown-divider"></div>
-          <h6 class="dropdown-header text-center"><b> <-Job Orders-> </b></h6>
-          <div class="dropdown-divider"></div>
-          <!-- Add More Links if needed for every functionality -->
-          <a class="dropdown-item" href="viewProductionJobOrder.php">Approved Job Orders</a>
-          <a class="dropdown-item" href="#">Link 2</a>
-          <!-- use divider if needed -->
-          <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="#">Link 3</a>
+          <a class="dropdown-item text-center" href="addEquipment.php">Add Machine</a>
+          <a class="dropdown-item text-center" href="viewEquipment.php">Machine Monitoring</a>
         </div>
       </li>
       <li class="nav-item dropdown">
         <a class="nav-link" href="#" id="navbardrop" data-toggle="dropdown">
-          Equipment Monitoring
+          Reports
         </a>
         <div class="dropdown-menu">
+          <h6 class="dropdown-header text-center"><b> Job Order Reports </b></h6>
           <!-- Add More Links if needed for every functionality -->
-          <h4 class="dropdown-header text-center"><b>Equipment Monitoring</b></h4>
+          <a class="dropdown-item text-center" href="#">Job Order Reports(sales)</a>
           <div class="dropdown-divider"></div>
-          <h6 class="dropdown-header text-center">-Machines-</h6>
-          <div class="dropdown-divider"></div>
-          <a class="dropdown-item text-center" href="addEquipment.php">Add Machine</a>
-          <a class="dropdown-item text-center" href="viewEquipment.php">Machine Monitoring</a>
+          <h6 class="dropdown-header text-center"><b> Purchase Order Reports </b></h6>
+          <!-- Add More Links if needed for every functionality -->
+          <a class="dropdown-item text-center" href="#">Purchase Orders Reports(sales)</a>
         </div>
       </li>
     </ul>

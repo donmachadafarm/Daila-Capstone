@@ -12,57 +12,6 @@
 <!-- put all the contents here  -->
 
 <?php
-  // function that checks if the ingredients are enuf to make the products
-  function check_for_inventory_level($orderid,$conn){
-    $query = "SELECT receipt.productID,
-                     receipt.quantity
-              FROM receipt
-              WHERE orderID = $orderid";
-
-    $sql = mysqli_query($conn,$query);
-
-    for ($i=0; $i < mysqli_num_rows($sql); $i++) {
-      $row = mysqli_fetch_array($sql);
-
-      $id = $row['productID'];
-      $recipeqty = $row['quantity'];
-
-      // print(" FOR receipt prodid and qty\n<pre>".print_r($row,true)."</pre>");
-      $query1 = "SELECT recipe.quantity,
-                        recipe.ingredientID
-                FROM recipe
-                WHERE productID = $id";
-
-          $sql1 = mysqli_query($conn,$query1);
-
-          for($j = 0; $j < mysqli_num_rows($sql1); $j++) {
-            // print(" FOR RECEPE ingid and qty\n<pre>".print_r($rowed,true)."</pre>");
-            $rowed = mysqli_fetch_array($sql1);
-            $ingid = $rowed['ingredientID'];
-            $query2 = "SELECT ingredient.quantity
-                        FROM ingredient
-                        WHERE ingredient.ingredientID = $ingid";
-
-            $sql2 = mysqli_query($conn,$query2);
-
-            $rowing = mysqli_fetch_array($sql2);
-            // print("FOR INGREDIENT qty\n<pre>".print_r($rowing,true)."</pre>");
-            $currentqty = $rowing['quantity'];
-            // echo $currentqty."\n".$recipeqty."\n".$id;
-
-
-            if ($currentqty < $recipeqty) {
-              // return true;
-              echo "true";
-            }else {
-              // return false;
-              // echo "false";
-              echo $ingid;
-            }
-          }
-
-        }
-  }
 
   // remove job order conditional submit button
   if(isset($_POST['remove'])){
@@ -76,7 +25,7 @@
 
   }
 
-  
+
 
  ?>
 
