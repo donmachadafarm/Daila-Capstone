@@ -27,7 +27,7 @@
   if(isset($_POST['approve'])){
     $id = $_POST['jo_id'];
 
-    $query = "UPDATE `JobOrder` SET `status` = 'Production' WHERE `orderID` = $id";
+    $query = "UPDATE `JobOrder` SET `status` = 'Incomplete' WHERE `orderID` = $id";
 
     if(mysqli_query($conn,$query)){
       echo "<script>alert('Job order products are now in production!')</script>";

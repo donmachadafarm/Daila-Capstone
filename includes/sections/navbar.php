@@ -30,7 +30,6 @@
         </a>
         <div class="dropdown-menu">
           <h6 class="dropdown-header text-center"><b> Job Orders </b></h6>
-          <div class="dropdown-divider"></div>
           <!-- Add More Links if needed for every functionality -->
           <a class="dropdown-item" href="viewProductionJobOrder.php">Approved Job Orders</a>
 
@@ -48,30 +47,38 @@
         </a>
         <div class="dropdown-menu">
           <h6 class="dropdown-header text-center"><b> Machines </b></h6>
-          <div class="dropdown-divider"></div>
           <a class="dropdown-item text-center" href="addEquipment.php">Add Machine</a>
           <a class="dropdown-item text-center" href="viewEquipment.php">Machine Monitoring</a>
         </div>
       </li>
       <li class="nav-item dropdown">
         <a class="nav-link" href="#" id="navbardrop" data-toggle="dropdown">
-          Reports
+          Reports Management
         </a>
         <div class="dropdown-menu">
-          <h6 class="dropdown-header text-center"><b> Job Order Reports </b></h6>
+          <h6 class="dropdown-header text-center"><b> Job Order </b></h6>
           <!-- Add More Links if needed for every functionality -->
-          <a class="dropdown-item text-center" href="#">Job Order Reports(sales)</a>
+          <a class="dropdown-item text-center" href="#">Job Order Reports</a>
           <div class="dropdown-divider"></div>
-          <h6 class="dropdown-header text-center"><b> Purchase Order Reports </b></h6>
+          <h6 class="dropdown-header text-center"><b> Purchase Order </b></h6>
           <!-- Add More Links if needed for every functionality -->
-          <a class="dropdown-item text-center" href="#">Purchase Orders Reports(sales)</a>
+          <a class="dropdown-item text-center" href="#">Purchase Orders Reports</a>
         </div>
       </li>
     </ul>
-    <span class="navbar-text">
-      <div class="navbar-nav">
-        <?php echo $_SESSION['username']; ?>
-      </div>
-    </span><a class="nav-item nav-link" href="logout.php">Logout</a>
+    <ul class="navbar-nav">
+        <li class="nav-item dropdown">
+          <a class="nav-link" href="#" id="navbardrop" data-toggle="dropdown">
+            <?php echo $_SESSION['username']; ?>
+          </a>
+          <div class="dropdown-menu dropdown-menu-right">
+            <a class="dropdown-item" href="addCustomer.php">Add Customer</a>
+            <a class="dropdown-item" href="addSupplier.php">Add Supplier</a>
+            <div class="dropdown-divider"></div>
+            <a class="nav-item nav-link text-center" href="logout.php"><i class="fas fa-power-off"></i> Logout</a>
+          </div>
+        </li>
+    </ul>
+
   </div>
 </nav>

@@ -17,7 +17,7 @@ include 'includes/sections/header.php';
 // echo datetime_seconds('00:02:00');
 // echo seconds_datetime('20');
 // print_p(get_productprocess($conn,2));
-start_production($conn,5);
+// start_production($conn,5);
 // reduce_inventory_rawmats_production($conn,5);
 // print_p(check_available_machine($conn,1));
 // echo check_for_inventory_match(5,$conn);

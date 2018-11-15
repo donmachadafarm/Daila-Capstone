@@ -266,7 +266,7 @@ function start_production($conn,$orderid){
     $orderid = $row['orderID'];
     $produid = $row['productID'];
     $prodqty = $row['quantity'];
-    $datenow = date('Y-m-d H:i:s');
+    $datenow = date('Y-m-d');
 
     // $row[1] -> product id
     $cont = get_productprocess($conn,$row[1]);
@@ -300,15 +300,17 @@ function start_production($conn,$orderid){
 
           $totaltimeneed = $timeneed * $prodqty;
 
-          // insert into productionProcess table all deets product id process type id estimate time to finish per process
-          $qry3 = "INSERT INTO ProductionProcess(productID,processTypeID,timeEstimate)
-                                          VALUES($produid,$cont[$j],$totaltimeneed)";
+          $machidd = get_machine($conn,$cont[$j]);
 
-          $sql3 = mysqli_query($conn,$qry3);
+          // insert into productionProcess table all deets product id process type id estimate time to finish per process
+          $qry3 = "INSERT INTO ProductionProcess(productID,processTypeID,machineID,timeEstimate)
+                                          VALUES($produid,$cont[$j],$machidd[0],$totaltimeneed)";
 
           // update machine unavailable using machid
-          $machidd = get_machine($conn,$cont[$j]);
           $qry4 = "UPDATE Machine SET status = 'Used' WHERE machineID = $machidd[0]";
+
+
+          $sql3 = mysqli_query($conn,$qry3);
 
           $sql4 = mysqli_query($conn,$qry4);
 
@@ -334,9 +336,12 @@ function start_production($conn,$orderid){
 
           $totaltimeneed = $timeneed * $prodqty;
 
+          $machidd = get_machine($conn,$cont[$j]);
+
           // insert into productionProcess table all deets product id process type id estimate time to finish per process
-          $qry3 = "INSERT INTO ProductionProcess(productID,processTypeID,timeEstimate)
-                                          VALUES($produid,$cont[$j],$totaltimeneed)";
+          $qry3 = "INSERT INTO ProductionProcess(productID,processTypeID,machineID,timeEstimate)
+                                          VALUES($produid,$cont[$j],'',$totaltimeneed)";
+
           $sql3 = mysqli_query($conn,$qry3);
 
         }

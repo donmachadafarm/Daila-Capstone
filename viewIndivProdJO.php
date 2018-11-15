@@ -14,28 +14,17 @@
 <?php
   $id = $_GET['id'];
 
-  $query = "SELECT JobOrder.orderID AS ID,
-                                          Customer.name AS custname,
-                                          JobOrder.orderDate AS datereq,
-                                          JobOrder.dueDate AS duedate,
-                                          JobOrder.totalPrice AS price,
-                                          JobOrder.type AS type,
-                                          JobOrder.status AS status
-                                  FROM JobOrder
-                                  INNER JOIN Customer ON JobOrder.customerID =Customer.customerID
-                                  WHERE JobOrder.orderID = $id
-                                  ORDER BY id DESC LIMIT 1";
+  // add inventory if set
+  if(isset($_POST['add'])){
+    $id = $_POST['prodid'];
 
-    $sql = mysqli_query($conn,$query);
+    $query = "";
 
-    $row = mysqli_fetch_array($sql);
+    // if(mysqli_query($conn,$query)){
+    //
+    // }
 
-    $name = $row['custname'];
-    $pricez = $row['price'];
-    $deadline = $row['duedate'];
-    $status = $row['status'];
-    $type = $row['type'];
-    $date = $row['datereq'];
+  }
 
  ?>
 
@@ -48,48 +37,140 @@
           </div>
       </div>
       <a href="viewProductionJobOrder.php" class="btn btn-primary btn-sm float-right">go back</a>
-      <div class="row">
-          <div class="col-lg-12">
-            <table class="table table-borderless" id="dataTables-example">
-              <tr>
-                <td>Total Cost for JO: <b><?php echo $pricez; ?></b></td>
-                <td>JO Type: <?php echo $type; ?></td>
-                <td>Purchase Order date posted: <?php echo $date; ?></td>
-                <td>Deadline for supplier: <?php echo $deadline; ?></td>
-              </tr>
-            </table>
-          </div>
-      </div><br><br><br>
+
       <div class="row">
         <div class="col-lg-12">
+          <hr class="style1">
           <h3>List of items in Production</h3>
           <?php
-          $query = "";
+          $qry = "SELECT * FROM Receipt WHERE orderID = '$id'";
 
-          $sql = mysqli_query($conn,$query);
+          $sqli = mysqli_query($conn,$qry);
 
-          while ($row = mysqli_fetch_array($sql)):
+          // iterate thru all products within jo
+          while ($row = mysqli_fetch_array($sqli)) {
+            $qry1 = "SELECT * FROM Product WHERE productID = '$row[1]'";
 
-           ?>
+              $sql1 = mysqli_query($conn,$qry1);
+
+              $rowe = mysqli_fetch_array($sql1);
+
+            $q = "SELECT SUM(timeEstimate) FROM ProductionProcess WHERE productID = '$row[1]'";
+
+              $sq = mysqli_query($conn,$q);
+
+              $r = mysqli_fetch_array($sq);
+            ?>
+
+            <br>
             <div class="card">
               <div class="card-header">
-                <?php echo $row['productname']; ?>
+                <div class="row">
+                  <div class="col">
+                    <h5>Name: <strong><?php echo $rowe['name']; ?></strong></h5>
+                  </div>
+                  <div class="col">
+                    <h5>Quantity: <?php echo $row[2]; ?></h5>
+                  </div>
+                  <div class="col">
+                    <h5>Estimate total time: <?php echo round($r[0],2); ?></h5>
+                  </div>
+                </div>
+
               </div>
               <div class="card-body">
-                <h5 class="card-title">Special title treatment</h5>
-                <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                <a href="#" class="btn btn-primary">Go somewhere</a>
-              </div>
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th>Process Name</th>
+                      <th>Machine Name</th>
+                      <th>Estimated Time to finish</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+            <?
+              $qry2 = "SELECT ProductionProcess.processTypeID,
+                        	    ProductionProcess.machineID,
+                              ProductionProcess.timeEstimate AS time,
+                              ProcessType.name AS procname,
+                              Machine.name AS machname
+                        FROM ProductionProcess
+                        INNER JOIN ProcessType ON ProductionProcess.processTypeID = ProcessType.processTypeID
+                        INNER JOIN Machine ON ProductionProcess.machineID = Machine.machineID
+                        WHERE ProductionProcess.productID = '$row[1]'";
+
+                 $sql2 = mysqli_query($conn,$qry2);
+
+                 while($rowd = mysqli_fetch_array($sql2)){;
+            ?>
+                    <tr>
+                      <td><?php echo $rowd['procname']; ?></td>
+                      <td><?php echo $rowd['machname']; ?></td>
+                      <td><?php echo $rowd['time']; ?></td>
+                    </tr>
+
+            <?php
+            // CLOSING NG WHILE LOOP FOR PRODUCTS ITERATION DONT REMOVE
+              }
+              ?>
+            </tbody>
+          </table>
+              <!-- button float right -->
+              <?php echo '<a href="#add'.$row[1].'" data-target="#add'.$row[1].'" data-toggle="modal"><button type="button" class="btn btn-success float-right">Finish Production</button></a>'; ?>
             </div>
+          </div>
 
-            
+          <div id="add<?php echo $row[1]; ?>" class="modal fade" role="dialog">
+              <div class="modal-dialog">
+                  <form method="post">
+                      <!-- Modal content-->
+                      <div class="modal-content">
 
-          <?php endwhile; ?>
+                          <div class="modal-header">
+                              <h4>Notice</h4>
+                              <button type="button" class="close" data-dismiss="modal">&times;</button>
+                          </div>
+
+                          <div class="modal-body">
+                              <input type="hidden" name="prodid" value="<?php echo $row[1]; ?>">
+                              <div>
+                                <p>
+                                  <h5>Finished production for <strong><?php echo $rowe['name']; ?>?</strong></h5>
+                                  <br>
+                                </p>
+                              </div>
+                              <label>Total Yield:</label></br>
+                                <input type="number" name="yield" class="form-control" required>
+                              </br>
+                              <label>Total Good:</label></br>
+                                <input type="number" name="good" class="form-control" required>
+                              </br>
+                              <label>Total Loss:</label></br>
+                                <input type="number" name="loss" class="form-control" required>
+                              </br>
+                              <label>Date finished production:</label></br>
+                                <input type="date" name="datefinish" class="form-control" required>
+                              </br>
+                              <div class="modal-footer">
+                                  <button type="submit" name="add" class="btn btn-primary">Confirm</button>
+                                  <button type="button" class="btn btn-default btn-outline-secondary" data-dismiss="modal">Cancel</button>
+                              </div>
+                          </div>
+                  </form>
+                  </div>
+              </div>
+          </div>
+              <?php
+          }
+           ?>
+
+
+
 
         </div>
       </div>
 </div>
-
+<br><br>
 
 <!-- end of content -->
 
