@@ -9,8 +9,6 @@
   }
 ?>
 
-<!-- put all the contents here  -->
-
 <?php
 
   // remove job order conditional submit button
@@ -32,22 +30,13 @@
     $query = "UPDATE `JobOrder` SET `status` = 'Production' WHERE `orderID` = $id";
 
     if(mysqli_query($conn,$query)){
-      echo "<script>alert('Job order is now sent to the plant!')</script>";
+      echo "<script>alert('Job order products are now in production!')</script>";
     }
-
-    // check for all processes per product and match all available machines
-
-
-    // match one machine per product processes
-
 
     // subtract ingredients per product based on Quantity
     reduce_inventory_rawmats_production($conn,$id);
 
-    // compute total time for production
-
-
-    // start all products in production
+    // start production
 
 
 
@@ -68,7 +57,7 @@
             <table class="table table-borderless table-hover" id="dataTables-example">
                 <thead>
                 <tr>
-                    <th class="text-center">jo id</th>
+                    <th class="text-center">ID</th>
                     <th class="text-center">Customer</th>
                     <th class="text-center">Date Requested</th>
                     <th class="text-center">Due Date</th>
@@ -84,18 +73,16 @@
                                                         Customer.name AS custname,
                                                         JobOrder.orderDate AS datereq,
                                                         JobOrder.dueDate AS duedate,
-                                                        JobOrder.totalPrice AS price,
                                                         JobOrder.type AS type,
                                                         JobOrder.status AS status
                                                 FROM JobOrder
-                                                INNER JOIN Customer ON JobOrder.customerID =Customer.customerID
+                                                INNER JOIN Customer ON JobOrder.customerID = Customer.customerID
                                                 WHERE JobOrder.status = "Pending for approval"')){
 
 
                     while($row = mysqli_fetch_array($result)){
                         $id = $row['ID'];
                         $name = $row['custname'];
-                        $price = $row['price'];
                         $status = $row['status'];
                         $duedate = $row['duedate'];
                         $datereq = $row['datereq'];
@@ -185,13 +172,14 @@
 
                                     <div class="modal-body">
                                       <h5 class="text-center">Lacking ingredients on the following products:</h5>
-                                        <?php print_p(get_need_inventory($id,$conn)); ?>
+                                        <?php print_p(get_need_inventory($conn,$id)); ?>
 
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-default btn-outline-secondary" data-dismiss="modal">Close</button>
                                     </div>
-                            </div>
+
+                                </div>
                         </div>
                     </div>
 
@@ -223,13 +211,14 @@
                             </div>
                         </div>
                     </div>
-                    <?php
-
+                  <?php
                 }
-              }
-                    ?>
+                  }
+                      ?>
                   <br><br>
-                </tbody></table>
+                </tbody>
+
+              </table>
 
 
 

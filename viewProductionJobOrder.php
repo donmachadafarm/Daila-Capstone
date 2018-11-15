@@ -76,15 +76,7 @@
 
   }
 
-  // start job order conditional submit button puts the job order in production
-  if(isset($_POST['start'])){
-    $id = $_POST['jo_id'];
-
-    // insert into production
-    $today = date('Y-m-d H:i:s');
-
-
-  }
+  
 
  ?>
 
@@ -153,7 +145,7 @@
                           echo'</td>';
 
                           echo '<td class="text-center">';
-                            echo '<a href="viewIndivJO.php?id='.$id.'"><button type="button" class="btn btn-primary btn-sm">View Details</button></a>  ';
+                            echo '<a href="viewIndivProdJO.php?id='.$id.'"><button type="button" class="btn btn-primary btn-sm">View Details</button></a>  ';
                           echo '</td>';
 
                         echo '</tr>';

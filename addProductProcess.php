@@ -33,7 +33,7 @@
       if($count>0){
 
         for($i = 0; $i<$count; $i++){
-
+          datetime_seconds($timeNeed[$i]);
           $query = "INSERT INTO ProductProcess(productID,processTypeID,timeNeed) VALUES('{$prodid}','{$procid[$i]}','{$timeNeed[$i]}')";
 
 

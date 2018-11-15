@@ -103,8 +103,10 @@
                       //modal trigger button
                       if ($status == "Available") {
                         echo '<a href="#repair'.$id.'" data-target="#repair'.$id.'" data-toggle="modal"><button type="button" class="btn btn-success btn-sm"><i class="fas fa-wrench"></i> Repair</button></a>';
+                      }else if($status == "Used"){
+                        echo '<button type="button" class="btn btn-sm btn-secondary" disabled>In Use</button>';
                       }else {
-                        echo '<a href="#finish'.$id.'" data-target="#finish'.$id.'" data-toggle="modal"><button type="button" class="btn btn-secondary btn-sm">Finish Repair</button></a>';
+                        echo '<a href="#finish'.$id.'" data-target="#finish'.$id.'" data-toggle="modal"><button type="button" class="btn btn-secondary btn-sm"><i class="fas fa-wrench"></i> Fix</button></a>';
                       }
                       echo '</td>';
 

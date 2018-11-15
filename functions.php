@@ -159,12 +159,24 @@ function check_time_diff_mins($start_time,$end_time){
   return $hours * 60 + $minutes;
 }
 
+// datetime to seconds
+function datetime_seconds($time){
+  $parsed = date_parse($time);
+  $seconds = $parsed['hour'] * 3600 + $parsed['minute'] * 60 + $parsed['second'];
+  return $seconds;
+}
+
+// seconds to date time
+function seconds_datetime($seconds){
+  return gmdate("H:i:s",$seconds);
+}
+
 // returns an array(productid,ingredientid,needquantity)
 function get_need_inventory($conn,$orderid){
   $query = "SELECT receipt.productID,
                    receipt.quantity
-            FROM receipt
-            WHERE orderID = $orderid";
+            FROM Receipt
+            WHERE `orderID` = $orderid";
 
   $sql = mysqli_query($conn,$query);
   $needstock = array();
@@ -236,63 +248,100 @@ function reduce_inventory_rawmats_production($conn,$orderid){
         $ingid = $rowed['ingid'];
         $ingquant = $rowed['reducqty'];
 
-        $qry = "UPDATE Ingredient SET quantity -= $ingquant WHERE ingredientID = $ingid";
+        $qry = "UPDATE Ingredient SET quantity = quantity-$ingquant WHERE ingredientID = $ingid";
 
         mysqli_query($conn,$qry);
       }
     }
 }
 
-function check_available_machine($conn,$procid){
-  $query = "SELECT machineID FROM Machine WHERE status = 'Available' AND processTypeID = '$procid'";
-
-  $sql = mysqli_query($conn,$query);
-
-  $cont = array();
-
-  while($row = mysqli_fetch_array($sql)){
-    array_push($cont,$row['machineID']);
-  }
-  return $cont;
-}
-
-function check_available_machines_production($conn,$orderid){
+function start_production($conn,$orderid){
   $query = "SELECT * FROM Receipt WHERE orderID = $orderid";
 
-  $sql = mysqli_query($conn,$query);
+  $sqld = mysqli_query($conn,$query);
 
   $cont = array();
-  $machproc = array();
+  // per product Iteration
+  while ($row = mysqli_fetch_array($sqld)) {
+    $orderid = $row['orderID'];
+    $produid = $row['productID'];
+    $prodqty = $row['quantity'];
+    $datenow = date('Y-m-d H:i:s');
 
-  $i = 0;
-
-  while ($row = mysqli_fetch_array($sql)) {
-
+    // $row[1] -> product id
     $cont = get_productprocess($conn,$row[1]);
-
-    $counter = count($cont);
-
-    for ($i=0; $i < $counter; $i++) {
-      print_p(get_machine($conn,$cont[$i]));
+    $checker = 0;
+    // per product process iteration
+    for ($i=0; $i < count($cont); $i++) {
+      // if process has no available machine increment checker
+        if (count(get_machine($conn,$cont[$i]))==0) {
+          $checker++;
+        }
     }
-    // print_p($cont);
-    // $procar = array();
 
-    // for ($i=0; $i < count($cont); $i++) {
-    //   $procid = $cont[$i];
-    //
-    //   $query1 = "SELECT machineID FROM Machine WHERE status = 'Available' AND processTypeID = $procid";
-    //
-    //   $sql1 = mysqli_query($conn,$query1);
-    //
-    //   for ($i=0; $i < mysqli_num_rows($sql1); $i++) {
-    //     $row = mysqli_fetch_row($sql1);
-    //
-    //   }
-    //
-    //
-    //
-    // }
+    // if complete lahat ng machines para sa lahat ng process then start production using the first row ng machine id
+    if (empty($checker)) {
+      // insert into production table  orderid, productid, status, quantity from order, 0 , 0 , 0, start time, 0
+      $qry1 = "INSERT INTO Production (orderID,productID,status,quantity,totalGoods,totalYield,totalLost,startTime,endTime)
+                               VALUES ('{$orderid}','{$produid}','Started','{$prodqty}',0,0,0,'{$datenow}','')";
+
+      // run insert (if success continue insert per productprocess)
+      if($sql = mysqli_query($conn,$qry1)){
+        // iterate thru all process
+        for ($j=0; $j < count($cont); $j++) {
+          // compute time to finish(product process table time need * product quantity in receipt)
+          $qry2 = "SELECT timeNeed FROM ProductProcess WHERE productID = $produid AND processTypeID = $cont[$j]";
+
+          $sql2 = mysqli_query($conn,$qry2);
+
+          $row2 = mysqli_fetch_array($sql2);
+
+          $timeneed = $row2['timeNeed'];
+
+          $totaltimeneed = $timeneed * $prodqty;
+
+          // insert into productionProcess table all deets product id process type id estimate time to finish per process
+          $qry3 = "INSERT INTO ProductionProcess(productID,processTypeID,timeEstimate)
+                                          VALUES($produid,$cont[$j],$totaltimeneed)";
+
+          $sql3 = mysqli_query($conn,$qry3);
+
+          // update machine unavailable using machid
+          $machidd = get_machine($conn,$cont[$j]);
+          $qry4 = "UPDATE Machine SET status = 'Used' WHERE machineID = $machidd[0]";
+
+          $sql4 = mysqli_query($conn,$qry4);
+
+        }
+      }
+    }else{
+      // insert into production table  orderid, productid, status, quantity from order, 0 , 0 , 0, start time, 0
+      $qry1 = "INSERT INTO Production (orderID,productID,status,quantity,totalGoods,totalYield,totalLost,startTime,endTime)
+                                VALUES($orderid,$produid,'Machine on Queue',$prodqty,0,0,0,'','')";
+
+      // run insert (if success continue insert per productprocess)
+      if($sql = mysqli_query($conn,$qry1)){
+        // iterate thru all process
+        for ($j=0; $j < count($cont); $j++) {
+          // compute time to finish(product process table time need * product quantity in receipt)
+          $qry2 = "SELECT timeNeed FROM ProductProcess WHERE productID = $produid AND processTypeID = $cont[$j]";
+
+          $sql2 = mysqli_query($conn,$qry2);
+
+          $row2 = mysqli_fetch_array($sql2);
+
+          $timeneed = $row2['timeNeed'];
+
+          $totaltimeneed = $timeneed * $prodqty;
+
+          // insert into productionProcess table all deets product id process type id estimate time to finish per process
+          $qry3 = "INSERT INTO ProductionProcess(productID,processTypeID,timeEstimate)
+                                          VALUES($produid,$cont[$j],$totaltimeneed)";
+          $sql3 = mysqli_query($conn,$qry3);
+
+        }
+      }
+    }
 
   }
 
@@ -308,9 +357,8 @@ function get_machine($conn,$proc){
     for ($i=0; $i < mysqli_num_rows($sql); $i++) {
       $row = mysqli_fetch_array($sql);
 
-      $arrmach[$i]['machineid'] = $row['machineID'];
+      $arrmach[$i] = $row['machineID'];
     }
-    // print_p($arrmach);
     return $arrmach;
 }
 
