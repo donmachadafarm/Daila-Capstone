@@ -16,13 +16,34 @@
 
   // add inventory if set
   if(isset($_POST['add'])){
-    $id = $_POST['prodid'];
+    $pid = $_POST['prodid'];
+    $yield = $_POST['yield'];
+    $good = $_POST['good'];
+    $loss = $_POST['loss'];
+    $datef = $_POST['datef'];
 
-    $query = "";
+    // add qty to product inventory using ['good']
+    $query = "UPDATE Product SET quantity = quantity + $good  WHERE productID = $pid";
 
-    // if(mysqli_query($conn,$query)){
-    //
-    // }
+    mysqli_query($conn,$query);
+    // update production info total good, total yield, total loss, end date, status = finished
+    $query1 = "UPDATE Production SET status = 'Finished', totalYield = $yield, totalGoods = $good, totalLost = $loss, endTime = $datef WHERE productID = $pid";
+
+    mysqli_query($conn,$query1);
+    // machines used = available and timesused++
+    $query2 = "SELECT machineID FROM ProductionProcess WHERE productID = $pid";
+
+      $sql = mysqli_query($conn,$query2);
+
+      while ($row = mysqli_fetch_array($sql)) {
+        $query3 = "UPDATE Machine SET status = 'Available', timesUsed = timesUsed + 1 WHERE machineID = $row[0]";
+
+        mysqli_query($conn,$query3);
+      }
+      echo "<script>
+        alert('Products are added to inventory!');
+        window.location.replace('viewIndivProdJO.php?id=".$pid."');
+            </script>";
 
   }
 
@@ -43,19 +64,22 @@
           <hr class="style1">
           <h3>List of items in Production</h3>
           <?php
-          $qry = "SELECT * FROM Receipt WHERE orderID = '$id'";
+          $qry = "SELECT Receipt.productID AS prodid,Receipt.quantity AS prodqty,Production.status AS status
+                    FROM Receipt
+                    INNER JOIN Production ON Production.productID = Receipt.productID
+                    WHERE Receipt.orderID = '$id'";
 
           $sqli = mysqli_query($conn,$qry);
 
           // iterate thru all products within jo
           while ($row = mysqli_fetch_array($sqli)) {
-            $qry1 = "SELECT * FROM Product WHERE productID = '$row[1]'";
+            $qry1 = "SELECT * FROM Product WHERE productID = '$row[0]'";
 
               $sql1 = mysqli_query($conn,$qry1);
 
               $rowe = mysqli_fetch_array($sql1);
 
-            $q = "SELECT SUM(timeEstimate) FROM ProductionProcess WHERE productID = '$row[1]'";
+            $q = "SELECT SUM(timeEstimate) FROM ProductionProcess WHERE productID = '$row[0]'";
 
               $sq = mysqli_query($conn,$q);
 
@@ -70,7 +94,7 @@
                     <h5>Name: <strong><?php echo $rowe['name']; ?></strong></h5>
                   </div>
                   <div class="col">
-                    <h5>Quantity: <?php echo $row[2]; ?></h5>
+                    <h5>Quantity: <?php echo round($row[1]+($row[1]*0.01)); ?></h5>
                   </div>
                   <div class="col">
                     <h5>Estimate total time: <?php echo round($r[0],2); ?></h5>
@@ -97,7 +121,7 @@
                         FROM ProductionProcess
                         INNER JOIN ProcessType ON ProductionProcess.processTypeID = ProcessType.processTypeID
                         INNER JOIN Machine ON ProductionProcess.machineID = Machine.machineID
-                        WHERE ProductionProcess.productID = '$row[1]'";
+                        WHERE ProductionProcess.productID = '$row[0]'";
 
                  $sql2 = mysqli_query($conn,$qry2);
 
@@ -116,13 +140,17 @@
             </tbody>
           </table>
               <!-- button float right -->
-              <?php echo '<a href="#add'.$row[1].'" data-target="#add'.$row[1].'" data-toggle="modal"><button type="button" class="btn btn-success float-right">Finish Production</button></a>'; ?>
+              <?php if ($row[2] == 'Started'){
+                      echo '<a href="#add'.$row[0].'" data-target="#add'.$row[0].'" data-toggle="modal"><button type="button" class="btn btn-success float-right">Finish Production</button></a>';
+                    } else {
+                      echo '<button type="button" class="btn btn-sm btn-secondary btn-block" disabled>Finished!</button>';
+                    } ?>
             </div>
           </div>
 
-          <div id="add<?php echo $row[1]; ?>" class="modal fade" role="dialog">
+          <div id="add<?php echo $row[0]; ?>" class="modal fade" role="dialog">
               <div class="modal-dialog">
-                  <form method="post">
+                  <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                       <!-- Modal content-->
                       <div class="modal-content">
 
@@ -132,7 +160,7 @@
                           </div>
 
                           <div class="modal-body">
-                              <input type="hidden" name="prodid" value="<?php echo $row[1]; ?>">
+                              <input type="hidden" name="prodid" value="<?php echo $row[0]; ?>">
                               <div>
                                 <p>
                                   <h5>Finished production for <strong><?php echo $rowe['name']; ?>?</strong></h5>
@@ -149,7 +177,7 @@
                                 <input type="number" name="loss" class="form-control" required>
                               </br>
                               <label>Date finished production:</label></br>
-                                <input type="date" name="datefinish" class="form-control" required>
+                                <input type="date" name="datef" id="txtDate" class="form-control" required>
                               </br>
                               <div class="modal-footer">
                                   <button type="submit" name="add" class="btn btn-primary">Confirm</button>

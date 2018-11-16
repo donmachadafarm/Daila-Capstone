@@ -32,6 +32,7 @@
           <h6 class="dropdown-header text-center"><b> Job Orders </b></h6>
           <!-- Add More Links if needed for every functionality -->
           <a class="dropdown-item" href="viewProductionJobOrder.php">Approved Job Orders</a>
+          <a class="dropdown-item" href="viewProductionSchedule.php">Production Schedule</a>
 
           <div class="dropdown-divider"></div>
           <h6 class="dropdown-header text-center"><b> Products </b></h6>
@@ -39,6 +40,7 @@
           <a class="dropdown-item text-center" href="viewInventory.php">View Inventory</a>
           <a class="dropdown-item text-center" href="makeCustomerJobOrder.php">Make Job Order</a>
           <a class="dropdown-item text-center" href="viewJobOrders.php">Pending Job Orders</a>
+          <a class="dropdown-item text-center" href="salesInvoice.php">Generate Invoice</a>
         </div>
       </li>
       <li class="nav-item dropdown">

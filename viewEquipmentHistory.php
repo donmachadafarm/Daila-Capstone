@@ -23,7 +23,7 @@
     $name = $row['name'];
     $date = $row['acquiredDate'];
     $status = $row['status'];
-    $totalhrs = $row['hoursWorked'];
+    $totalhrs = $row['timesUsed'];
 
  ?>
 <div class="container">
@@ -40,7 +40,7 @@
               <tr>
                 <td>Date Acquired: <?php echo $date; ?></td>
                 <td>Current Status: <?php echo $status; ?></td>
-                <td>Lifetime hours used: <?php echo $totalhrs; ?></td>
+                <td>Lifetime times used: <?php echo $totalhrs; ?></td>
               </tr>
             </table>
           </div>
