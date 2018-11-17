@@ -309,7 +309,6 @@ function start_production($conn,$orderid){
           // update machine unavailable using machid
           $qry4 = "UPDATE Machine SET status = 'Used' WHERE machineID = $machidd[0]";
 
-
           $sql3 = mysqli_query($conn,$qry3);
 
           $sql4 = mysqli_query($conn,$qry4);

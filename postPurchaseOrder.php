@@ -158,7 +158,7 @@
                        <div class="col-lg-4">
                          <div class="container">
                            <label><strong>Deadline to supplier:</strong></label></br>
-                             <input type="date" name="deadline" class="form-control" required>
+                             <input type="date" id="txtDate" name="deadline" class="form-control" required>
                            </br>
                          </div>
                        </div>

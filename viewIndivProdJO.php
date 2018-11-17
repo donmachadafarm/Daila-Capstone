@@ -97,7 +97,7 @@
                     <h5>Quantity: <?php echo round($row[1]+($row[1]*0.01)); ?></h5>
                   </div>
                   <div class="col">
-                    <h5>Estimate total time: <?php echo round($r[0],2); ?></h5>
+                    <h5>Estimate total time: <?php echo seconds_datetime($r[0]); ?></h5>
                   </div>
                 </div>
 
