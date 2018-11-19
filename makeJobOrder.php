@@ -80,7 +80,7 @@
                             <input type="number" name="quantity" class="form-control" required>
                           </br>
                           <label>Due Date:</label></br>
-                            <input type="date" name="deadline" class="form-control" required>
+                            <input type="date" id="txtDate" name="deadline" class="form-control" required>
                           </br>
                           <label>Remarks:</label>
                             <textarea class="form-control" rows="3" name="remarks"></textarea>

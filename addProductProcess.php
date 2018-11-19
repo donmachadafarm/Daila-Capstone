@@ -25,16 +25,17 @@
   // Main submit conditional
   if (isset($_POST['submit'])){
       $prodid = $_GET['id'];
+      $seq = $_POST['sequence'];
       $procid = $_POST['process'];
       $timeNeed = $_POST['time'];
 
       $count = count($_POST['process']);
-
+      // print_p($seq);
       if($count>0){
 
         for($i = 0; $i<$count; $i++){
           $t = datetime_seconds($timeNeed[$i]);
-          $query = "INSERT INTO ProductProcess(productID,processTypeID,timeNeed) VALUES('{$prodid}','{$procid[$i]}','{$t}')";
+          $query = "INSERT INTO ProductProcess(productID,processTypeID,processSequence,timeNeed) VALUES('{$prodid}','{$procid[$i]}','{$seq[$i]}','{$t}')";
 
             mysqli_query($conn,$query);
 
@@ -69,17 +70,19 @@
           <div class="col-lg-12">
 
             <form method="post" id="insert_form">
-              <div class="col-lg-8">
+              <div class="col-lg-10">
                 <div class="panel panel-default">
                   <div class="panel-body">
 
                     <div class="table-repsonsive">
                        <table class="table table-borderless" id="item_table">
                         <tr>
+                         <th></th>
                          <th>Process Type</th>
                          <th>Time Needed per Individual Product<small> (HH:mm:ss) </small></th>
                         </tr>
                         <tr>
+                          <td><input type="hidden" class="form-control" name="sequence[]" value="1" />1</td>
                           <td><select name="process[]" class="form-control item_unit" required><option value="" disabled>Select Process</option><?php echo fill_process_select_box($conn); ?></select></td>
                           <td><input type="time" name="time[]" class="form-control" step="1" required></td>
                           <td><button type="button" name="add" class="btn btn-success btn-sm add">+</button></td>
@@ -131,10 +134,12 @@
 
 <script type="text/javascript">
   $(document).ready(function(){
-
+    var count = 1;
    $(document).on('click', '.add', function(){
       var html = '';
+      count++;
       html += '<tr>';
+      html += '<td><input type="hidden" name="sequence[]" value="'+count+'" />'+count+'</td>';
       html += '<td><select name="process[]" class="form-control item_unit" required><option value="" disabled>Select Process</option><?php echo fill_process_select_box($conn); ?></select></td>';
       html += '<td><input type="time" name="time[]" class="form-control" step="1" required></td>';
       html += '<td><button type="button" name="remove" class="btn btn-danger btn-sm remove">x</button></td></tr>';

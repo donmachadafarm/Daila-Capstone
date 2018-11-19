@@ -153,7 +153,9 @@ function check_for_inventory_match($conn,$orderid){
 
 // returns the time difference in minutes
 function check_time_diff_mins($start_time,$end_time){
-  $interval = $start_time->diff($end_time);
+  $e = new DateTime($end_time);
+  $s = new DateTime($start_time);
+  $interval = $s->diff($e);
   $hours   = $interval->format('%h');
   $minutes = $interval->format('%i');
   return $hours * 60 + $minutes;
@@ -282,7 +284,7 @@ function start_production($conn,$orderid){
     // if complete lahat ng machines para sa lahat ng process then start production using the first row ng machine id
     if (empty($checker)) {
       // insert into production table  orderid, productid, status, quantity from order, 0 , 0 , 0, start time, 0
-      $qry1 = "INSERT INTO Production (orderID,productID,status,quantity,totalGoods,totalYield,totalLost,startTime,endTime)
+      $qry1 = "INSERT INTO Production (orderID,productID,status,quantity,totalGoods,totalYield,totalLost,startDate,endDate)
                                VALUES ('{$orderid}','{$produid}','Started','{$prodqty}',0,0,0,'{$datenow}','')";
 
       // run insert (if success continue insert per productprocess)
@@ -303,8 +305,8 @@ function start_production($conn,$orderid){
           $machidd = get_machine($conn,$cont[$j]);
 
           // insert into productionProcess table all deets product id process type id estimate time to finish per process
-          $qry3 = "INSERT INTO ProductionProcess(productID,processTypeID,machineID,timeEstimate)
-                                          VALUES($produid,$cont[$j],$machidd[0],$totaltimeneed)";
+          $qry3 = "INSERT INTO ProductionProcess(orderID,productID,processTypeID,machineID,timeEstimate)
+                                          VALUES($orderid,$produid,$cont[$j],$machidd[0],$totaltimeneed)";
 
           // update machine unavailable using machid
           $qry4 = "UPDATE Machine SET status = 'Used' WHERE machineID = $machidd[0]";
@@ -317,7 +319,7 @@ function start_production($conn,$orderid){
       }
     }else{
       // insert into production table  orderid, productid, status, quantity from order, 0 , 0 , 0, start time, 0
-      $qry1 = "INSERT INTO Production (orderID,productID,status,quantity,totalGoods,totalYield,totalLost,startTime,endTime)
+      $qry1 = "INSERT INTO Production (orderID,productID,status,quantity,totalGoods,totalYield,totalLost,startDate,endDate)
                                VALUES ('{$orderid}','{$produid}','Machine in queue','{$prodqty}',0,0,0,'','')";
 
       // run insert (if success continue insert per productprocess)
@@ -338,8 +340,8 @@ function start_production($conn,$orderid){
           $machidd = get_machine($conn,$cont[$j]);
 
           // insert into productionProcess table all deets product id process type id estimate time to finish per process
-          $qry3 = "INSERT INTO ProductionProcess(productID,processTypeID,machineID,timeEstimate)
-                                          VALUES($produid,$cont[$j],'',$totaltimeneed)";
+          $qry3 = "INSERT INTO ProductionProcess(orderID,productID,processTypeID,machineID,timeEstimate)
+                                          VALUES($orderid,$produid,$cont[$j],'',$totaltimeneed)";
 
           $sql3 = mysqli_query($conn,$qry3);
 
@@ -349,6 +351,21 @@ function start_production($conn,$orderid){
 
   }
 
+}
+
+function get_machine_for_queue($conn,$proc){
+    $query = "SELECT machineID FROM Machine WHERE status <> 'Under Maintenance' AND processTypeID = $proc";
+
+    $sql = mysqli_query($conn,$query);
+
+    $arrmach = array();
+
+    for ($i=0; $i < mysqli_num_rows($sql); $i++) {
+      $row = mysqli_fetch_array($sql);
+
+      $arrmach[$i] = $row['machineID'];
+    }
+    return $arrmach;
 }
 
 function get_machine($conn,$proc){
@@ -367,7 +384,7 @@ function get_machine($conn,$proc){
 }
 
 function get_productprocess($conn,$prodid){
-  $query = "SELECT * FROM ProductProcess WHERE productID = $prodid";
+  $query = "SELECT * FROM ProductProcess WHERE productID = $prodid ORDER BY processSequence";
 
   $sql = mysqli_query($conn,$query);
 

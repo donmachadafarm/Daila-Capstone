@@ -51,7 +51,9 @@
               </tr>
             </table>
           </div>
-      </div><br><br><br>
+      </div>
+      <hr class="style1">
+      
       <div class="row">
         <div class="col-lg-12">
           <h3>List of Recipe</h3>

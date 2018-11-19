@@ -21,7 +21,7 @@
           </div>
       </div>
       <div class="row">
-          <div class="col-lg-10">
+          <div class="col-lg-12">
                     <table class="table table-bordered table-hover" id="dataTables-example">
                         <thead>
                             <tr>

@@ -14,7 +14,7 @@
 <?php
   $id = $_GET['id'];
 
-  // add inventory if set
+  // add inventory if finished production
   if(isset($_POST['add'])){
     $pid = $_POST['prodid'];
     $yield = $_POST['yield'];
@@ -31,6 +31,7 @@
 
     mysqli_query($conn,$query1);
     // machines used = available and timesused++
+    // check first if bakante na lahat ng machines wala ng queue
     $query2 = "SELECT machineID FROM ProductionProcess WHERE productID = $pid";
 
       $sql = mysqli_query($conn,$query2);
@@ -94,7 +95,7 @@
                     <h5>Name: <strong><?php echo $rowe['name']; ?></strong></h5>
                   </div>
                   <div class="col">
-                    <h5>Quantity: <?php echo round($row[1]+($row[1]*0.01)); ?></h5>
+                    <h5>Quantity(1% total added): <?php echo round($row[1]+($row[1]*0.01)); ?></h5>
                   </div>
                   <div class="col">
                     <h5>Estimate total time: <?php echo seconds_datetime($r[0]); ?></h5>
@@ -130,7 +131,7 @@
                     <tr>
                       <td><?php echo $rowd['procname']; ?></td>
                       <td><?php echo $rowd['machname']; ?></td>
-                      <td><?php echo $rowd['time']; ?></td>
+                      <td><?php echo seconds_datetime($rowd['time']); ?></td>
                     </tr>
 
             <?php
@@ -139,15 +140,10 @@
               ?>
             </tbody>
           </table>
-              <!-- button float right -->
-              <?php if ($row[2] == 'Started'){
-                      echo '<a href="#add'.$row[0].'" data-target="#add'.$row[0].'" data-toggle="modal"><button type="button" class="btn btn-success float-right">Finish Production</button></a>';
-                    } else {
-                      echo '<button type="button" class="btn btn-sm btn-secondary btn-block" disabled>Finished!</button>';
-                    } ?>
             </div>
           </div>
 
+          <!--  add modal for final addition to the products inventory -->
           <div id="add<?php echo $row[0]; ?>" class="modal fade" role="dialog">
               <div class="modal-dialog">
                   <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">

@@ -26,7 +26,6 @@
                         <thead>
                             <tr>
                                 <th>Name</th>
-                                <th>Payment Method</th>
                                 <th>Email</th>
                                 <th>Address</th>
                                 <th>Contact Number</th>
@@ -41,7 +40,6 @@
                             while($row = mysqli_fetch_array($result)){
 
                               $name = $row['name'];
-                              $method = $row['paymentMethodCode'];
                               $email = $row['email'];
                               $address = $row['address'];
                               $contactnum = $row['contactNum'];
@@ -49,9 +47,6 @@
                                   echo '<tr>';
                                     echo '<td>';
                                       echo $name;
-                                    echo '</td>';
-                                    echo '<td>';
-                                      echo $method;
                                     echo '</td>';
                                     echo '<td>';
                                       echo $email;

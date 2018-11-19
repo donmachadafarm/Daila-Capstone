@@ -15,9 +15,10 @@
 
       $name=$_POST['name'];
       $address=$_POST['address'];
+      $duration=$_POST['duration'];
 
     if(!isset($message)){
-      $query="insert into Supplier (name,address) values ('{$name}','{$address}')";
+      $query="insert into Supplier (name,address,duration) values ('{$name}','{$address}','{$duration}')";
         if (mysqli_query($conn,$query)) {
 
           echo "<script>
@@ -49,7 +50,7 @@
       <div class="row">
           <div class="col-lg-8">
               <div class="panel panel-default">
-                  
+
                   <div class="panel-body">
                     <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
                      <div class="form-group">
@@ -59,6 +60,9 @@
                             </br>
                             <label>Address:</label>
                               <textarea class="form-control" rows="3" name="address"></textarea>
+                            </br>
+                            <label>Delivery Days:</label></br>
+                              <input type="number" name="duration" class="form-control" required>
                             </br>
                         </p>
                     <input type="submit" name="submit" value="Add Supplier" class="btn btn-success"/></div>

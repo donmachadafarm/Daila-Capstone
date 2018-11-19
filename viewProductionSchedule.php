@@ -24,9 +24,9 @@
 <div class="container">
     <div class="row">
         <div class="col-lg-12">
-            <h1 class="page-header"><br><br>
+            <h2 class="page-header"><br><br>
                 Production Schedule for <?php echo date("F j, Y"); ?>
-            </h1>
+            </h2>
         </div>
     </div>
     <div class="row">
@@ -34,60 +34,52 @@
             <table class="table table-borderless table-hover" id="dataTables-example">
                 <thead>
                 <tr>
-                    <th class="text-center">ID</th>
-                    <th class="text-center">Customer</th>
-                    <th class="text-center">Date Requested</th>
-                    <th class="text-center">Due Date</th>
-                    <th class="text-center">Type</th>
-                    <th class="text-center">Status</th>
+                    <th class="text-center">Machine</th>
+                    <th class="text-center">Job Order</th>
+                    <th class="text-center">ProductID</th>
+                    <th class="text-center">Early Start</th>
+                    <th class="text-center">Late Start</th>
+                    <th class="text-center">Early End</th>
+                    <th class="text-center">Late End</th>
                     <th class="text-center">Action</th>
                 </tr>
                 </thead>
                 <tbody>
 
                 <?php
-                if($result = mysqli_query($conn,'SELECT JobOrder.orderID AS ID,
-                                                        Customer.name AS custname,
-                                                        JobOrder.orderDate AS datereq,
-                                                        JobOrder.dueDate AS duedate,
-                                                        JobOrder.type AS type,
-                                                        JobOrder.status AS status
-                                                FROM JobOrder
-                                                INNER JOIN Customer ON JobOrder.customerID = Customer.customerID
-                                                WHERE JobOrder.status = "Pending for approval"')){
+                if($result = mysqli_query($conn,'')){
 
 
                     while($row = mysqli_fetch_array($result)){
-                        $id = $row['ID'];
-                        $name = $row['custname'];
-                        $status = $row['status'];
-                        $duedate = $row['duedate'];
-                        $datereq = $row['datereq'];
-                        $type = $row['type'];
+
 
                         echo '<tr>';
                           echo '<td class="text-center">';
-                              echo $id;
+                              //echo $machid;
                           echo '</td>';
 
                           echo '<td class="text-center">';
-                              echo $name;
+                              //echo $joid;
                           echo '</td>';
 
                           echo '<td class="text-center">';
-                            echo $datereq;
+                            //echo $prodid;
                           echo'</td>';
 
                           echo '<td class="text-center">';
-                            echo $duedate;
+                            //echo $earlystart;
                           echo'</td>';
 
                           echo '<td class="text-center">';
-                            echo $type;
+                            //echo $latestart;
                           echo'</td>';
 
                           echo '<td class="text-center">';
-                            echo $status;
+                            //echo $earlyend;
+                          echo'</td>';
+
+                          echo '<td class="text-center">';
+                            //echo $lateend;
                           echo'</td>';
 
                           echo '<td class="text-center">';

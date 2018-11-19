@@ -61,13 +61,13 @@
         for($i=0;$i<$count;$i++){
           $arkey = array_keys($result);
 
-          $sql3 = mysqli_query($conn,"SELECT DISTINCT RawMaterial.unitOfMeasurement FROM RawMaterial
+          $sql3 = mysqli_query($conn,"SELECT DISTINCT RawMaterial.unitOfMeasurement AS uom FROM RawMaterial
                                         INNER JOIN RMIngredient ON RMIngredient.rawMaterialID = RawMaterial.rawMaterialID
                                         INNER JOIN Ingredient ON Ingredient.ingredientID = RMIngredient.ingredientID
                                         WHERE Ingredient.ingredientID = {$arkey[$i]}");
                 $row = mysqli_fetch_row($sql3);
-                $unitom = $row['unitOfMeasurement'];
-                
+                $unitom = $row[0];
+
           $query="INSERT into Recipe (ingredientID,productID,quantity,unitOfMeasurement) values ('{$arkey[$i]}','{$proid}','{$result[$arkey[$i]]}','{$unitom}')";
               $sql = mysqli_query($conn,$query);
         }

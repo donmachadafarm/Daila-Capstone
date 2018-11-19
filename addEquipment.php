@@ -17,7 +17,7 @@ if (isset($_POST['submit'])){
     $date=$_POST['date'];
     $procid=$_POST['process'];
 
-        $query="INSERT into Machine (name,acquiredDate,status,hoursWorked,processTypeID) values ('{$name}','{$date}','{$status}','0','{$procid}')";
+        $query="INSERT into Machine (name,acquiredDate,status,timesUsed,processTypeID) values ('{$name}','{$date}','{$status}','0','{$procid}')";
         if (mysqli_query($conn,$query)) {
 
             echo "<script>
@@ -63,7 +63,7 @@ if (isset($_POST['submit'])){
                                         $result = mysqli_query($conn, 'SELECT * FROM ProcessType');
 
                                         while($row = mysqli_fetch_array($result)){
-                                          echo "<label><option value=\"{$row['processTypeID']}\">{$row['name']}</option></label>
+                                          echo "<label><option value=\"{$row['processTypeID']}\">{$row['processTypeID']} - {$row['name']}</option></label>
                                           <br>";
                                         }
                                        ?>
