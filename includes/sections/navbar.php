@@ -54,21 +54,23 @@
           <a class="dropdown-item text-center" href="viewEquipment.php">Machine Monitoring</a>
         </div>
       </li>
+
       <li class="nav-item dropdown">
-        <a class="nav-link" href="#" id="navbardrop" data-toggle="dropdown">
-          Reports Management
-        </a>
+        <a class="nav-link" href="#" id="navbardrop" data-toggle="dropdown">Reports</a>
         <div class="dropdown-menu">
-          <h6 class="dropdown-header text-center"><b> Job Order </b></h6>
-          <!-- Add More Links if needed for every functionality -->
-          <a class="dropdown-item text-center" href="#">Job Order Reports</a>
-          <div class="dropdown-divider"></div>
-          <h6 class="dropdown-header text-center"><b> Purchase Order </b></h6>
-          <!-- Add More Links if needed for every functionality -->
-          <a class="dropdown-item text-center" href="#">Purchase Orders Reports</a>
+            <h6 class="dropdown-header text-center"><b> Job Order Reports </b></h6>
+            <!-- Add More Links if needed for every functionality -->
+            <a class="dropdown-item text-center" href="jobOrderReportMTS.php">Made-To-Stock</a>
+            <a class="dropdown-item text-center" href="jobOrderReportMTO.php">Made-To-Order</a>
+            <!-- use divider if needed -->
+            <div class="dropdown-divider"></div>
+            <h6 class="dropdown-header text-center"><b> Purchase Order Report </b></h6>
+            <a class="dropdown-item text-center" href="purchaseOrderReport.php">Purchase Order Report</a>
+            <div class="dropdown-divider"></div>
         </div>
       </li>
     </ul>
+
     <ul class="navbar-nav">
         <li class="nav-item dropdown">
           <a class="nav-link" href="#" id="navbardrop" data-toggle="dropdown">

@@ -16,8 +16,11 @@
       <div class="row">
           <div class="col-lg-12">
               <h1 class="page-header"><br><br>
-                  View Customers
+                  Customer List
               </h1>
+              <h6>
+                  Click a Customer's name to view transaction history
+              </h6>
           </div>
       </div>
       <div class="row">
@@ -34,7 +37,7 @@
                         <tbody>
 
                         <?php
-                            $result = mysqli_query($conn,'SELECT * FROM Customer');
+                            $result = mysqli_query($conn,'SELECT * FROM Customer WHERE customer.customerID!=1');
 
 
                             while($row = mysqli_fetch_array($result)){

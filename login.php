@@ -58,8 +58,7 @@ if (isset($_POST['submit'])){
     if ($row["userType"]==101)
     {      $_SESSION['userType']=101;
            $_SESSION['userid']=$row["userID"];
-           echo "<script>window.location.replace('index.php');</script>";
-
+           header("Location: http://".$_SERVER['HTTP_HOST'].  dirname($_SERVER['PHP_SELF'])."/index.php");
 
     } else {
      $message.='<div id="note" class="text-center"><br /><br /><p>Incorrect username or password. Please try again.</p></div>';
