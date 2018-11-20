@@ -84,7 +84,7 @@
                         <tr>
                           <td><input type="hidden" class="form-control" name="sequence[]" value="1" />1</td>
                           <td><select name="process[]" class="form-control item_unit" required><option value="" disabled>Select Process</option><?php echo fill_process_select_box($conn); ?></select></td>
-                          <td><input type="time" name="time[]" class="form-control" step="1" required></td>
+                          <td><input type="time" name="time[]" class="form-control without_ampm" min="00:00:00" step="1" required></td>
                           <td><button type="button" name="add" class="btn btn-success btn-sm add">+</button></td>
                         </tr>
                        </table>

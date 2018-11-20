@@ -41,18 +41,6 @@
       $date = $_POST['date'];
       $total = 0;
 
-      $query = "INSERT INTO Sales (saleDate,totalPrice) VALUES ('$date',0)";
-
-        mysqli_query($conn,$query);
-
-      $query = "SELECT * FROM Sales ORDER BY salesID DESC LIMIT 1";
-
-        $sql = mysqli_query($conn,$query);
-
-        $row = mysqli_fetch_array($sql);
-
-      $salesid = $row['salesID'];
-
       $count = count(array_unique($_POST['product']));
 
       $result = array();
@@ -64,37 +52,72 @@
           $result[$value] += $qty[$index];
       }
 
+      // array keys -> prod id
+      $arkey = array_keys($result);
+      $counter =0;
+      $prodn = array();
+
+      // iterate thru all products
       if ($count > 0) {
         for ($i=0; $i < $count; $i++) {
-          $arkey = array_keys($result);
-
-          $sql = mysqli_query($conn,"SELECT * FROM Product WHERE productID = $arkey[$i]");
-
-          $row = mysqli_fetch_array($sql);
-
-          $subtotal = $result[$arkey[$i]] * $row['productPrice'];
-
-          $query1 = "INSERT INTO ProductSales(productID,salesID,quantity,subTotal) VALUES('{$arkey[$i]}','{$salesid}','{$result[$arkey[$i]]}','{$subtotal}')";
-
-            $sql = mysqli_query($conn,$query1);
-
-            $total += $subtotal;
-
-          $query2 = "UPDATE Product SET quantity = quantity - '{$result[$arkey[$i]]}' WHERE productID = '{$arkey[$i]}'";
-
-            mysqli_query($conn,$query2);
-
+            if ($result[$arkey[$i]]>get_prodqty($conn,$arkey[$i])) {
+              $counter++;
+              array_push($prodn,$arkey[$i]);
+            }
         }
-
-
-          $query3 = "UPDATE Sales SET totalPrice = $total WHERE salesID = $salesid";
-
-            mysqli_query($conn,$query3);
       }
+      if ($counter>0) {
 
-      echo "<script>
-        alert('Invoice posted!');
-            </script>";
+        $str = '';
+        for ($i=0; $i < $counter; $i++) {
+          $str = $str . " " . get_prodname($conn,$prodn[$i]). " ";
+        }
+        echo "<script>alert('Invoice invalid not enough $str');</script>";
+
+      }else{
+          $query = "INSERT INTO Sales (saleDate,totalPrice) VALUES ('$date',0)";
+
+            mysqli_query($conn,$query);
+
+          $query = "SELECT * FROM Sales ORDER BY salesID DESC LIMIT 1";
+
+            $sql = mysqli_query($conn,$query);
+
+            $row = mysqli_fetch_array($sql);
+
+          $salesid = $row['salesID'];
+
+
+            for ($i=0; $i < $count; $i++) {
+
+              $sql = mysqli_query($conn,"SELECT * FROM Product WHERE productID = $arkey[$i]");
+
+              $row = mysqli_fetch_array($sql);
+
+              $subtotal = $result[$arkey[$i]] * $row['productPrice'];
+
+              $query1 = "INSERT INTO ProductSales(productID,salesID,quantity,subTotal) VALUES('{$arkey[$i]}','{$salesid}','{$result[$arkey[$i]]}','{$subtotal}')";
+
+                $sql = mysqli_query($conn,$query1);
+
+                $total += $subtotal;
+
+              $query2 = "UPDATE Product SET quantity = quantity - '{$result[$arkey[$i]]}' WHERE productID = '{$arkey[$i]}'";
+
+                mysqli_query($conn,$query2);
+
+            }
+
+
+              $query3 = "UPDATE Sales SET totalPrice = $total WHERE salesID = $salesid";
+
+                mysqli_query($conn,$query3);
+
+
+          echo "<script>
+            alert('Invoice posted!');
+                </script>";
+          }
   }
 ?>
 
@@ -125,7 +148,7 @@
                   </div>
                   <div class="col">
                     <label><strong>Date:</strong></label></br>
-                      <input type="date" name="date" class="form-control" required>
+                      <input type="date" name="date" class="form-control" id="txtDateMax" required>
                     </br>
                   </div>
                 </div>

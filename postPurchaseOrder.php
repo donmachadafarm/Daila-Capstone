@@ -40,9 +40,10 @@
   if (isset($_POST['submit'])){
       // get deadline
       $deadline = $_POST['deadline'];
+      $user = $_SESSION['userid'];
 
       // insert purchase order
-      mysqli_query($conn,"INSERT into PurchaseOrder (supplierID,totalPrice,orderDate,status,deadline) values ('{$supid}','0','{$today}','Pending','{$deadline}')");
+      mysqli_query($conn,"INSERT into PurchaseOrder (supplierID,totalPrice,orderDate,status,deadline,createdBy) values ('{$supid}','0','{$today}','Pending','{$deadline}'),'{$user}'");
 
       // select recently added PO
       $query="SELECT * FROM PurchaseOrder ORDER BY purchaseOrderID DESC LIMIT 1";
@@ -140,12 +141,10 @@
                                 <tr>
                                  <th>Raw Material</th>
                                  <th>Quantity</th>
-                                 <th>Unit of Measurement</th>
                                 </tr>
                                 <tr>
                                   <td><select name="rawmat[]" class="form-control item_unit" required><option value="" disabled>Select Raw Material</option><?php echo fill_unit_select_box($conn); ?></select></td>
                                   <td><input type="number" name="quantity[]" class="form-control item_name" required /></td>
-                                  <td><select name="uom[]" class="form-control item_name" required><option value="Liter">Liter</option><option value="Kilogram">Kilogram</option></select></td>
                                   <td><button type="button" name="add" class="btn btn-success btn-sm add">+</button></td>
                                 </tr>
                                </table>
@@ -216,7 +215,6 @@
       html += '<tr>';
       html += '<td><select name="rawmat[]" class="form-control item_unit"><option value="">Select Raw Material</option><?php echo fill_unit_select_box($conn); ?></select></td>';
       html += '<td><input type="number" name="quantity[]" class="form-control item_name" required /></td>';
-      html += '<td><select name="uom[]" class="form-control item_name" required><option value="Liter">Liter</option><option value="Kilogram">Kilogram</option></select></td>';
       html += '<td><button type="button" name="remove" class="btn btn-danger btn-sm remove">x</button></td></tr>';
       $('#item_table').append(html);
      });

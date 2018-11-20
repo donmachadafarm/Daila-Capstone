@@ -23,6 +23,7 @@
       $today = date("Y-m-d");
       $type = "Made to Stock";
       $status = "Pending for approval";
+      $user = $_SESSION['userid'];
 
       $sql = mysqli_query($conn,"SELECT * FROM Product WHERE productID = $prodid");
 
@@ -32,8 +33,8 @@
       $prodprice = $row['productPrice'] * $quantity;
 
       // query for insert single job order
-      $query = "INSERT INTO JobOrder(customerID,orderDate,dueDate,totalPrice,remarks,type,status)
-                  VALUES ('1','$today','$duedate','$prodprice','$remarks','$type','$status')";
+      $query = "INSERT INTO JobOrder(customerID,orderDate,dueDate,totalPrice,remarks,type,status,createdBy)
+                  VALUES ('1','$today','$duedate','$prodprice','$remarks','$type','$status','$user')";
 
       // conditional if successfully added job order
       if(mysqli_query($conn,$query)){

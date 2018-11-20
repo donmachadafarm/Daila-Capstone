@@ -26,6 +26,20 @@
     hr.style1{
     	border-top: 1px solid #8c8b8b;
     }
+
+    /* no am pm  */
+    .without_ampm::-webkit-datetime-edit-ampm-field {
+     display: none;
+   }
+   input[type=time]::-webkit-clear-button {
+     -webkit-appearance: none;
+     -moz-appearance: none;
+     -o-appearance: none;
+     -ms-appearance:none;
+     appearance: none;
+     margin: -10px;
+   }
+
     </style>
 
     <title>Daila Herbals</title>

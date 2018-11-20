@@ -20,7 +20,7 @@
           <h6 class="dropdown-header text-center"><b> Raw Materials </b></h6>
           <a class="dropdown-item text-center" href="addrawmaterial.php">Add Raw Materials</a>
           <a class="dropdown-item text-center" href="viewrawmaterials.php">View Raw Materials</a>
-          <a class="dropdown-item text-center" href="makepurchaseorder.php">Make Purchase Order</a>
+          <a class="dropdown-item text-center" href="makepurchaseorder.php">Create Purchase Order</a>
           <a class="dropdown-item text-center" href="viewPurchaseOrders.php">View Purchase Orders</a>
         </div>
       </li>

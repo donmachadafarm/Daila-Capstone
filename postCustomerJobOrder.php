@@ -34,11 +34,12 @@
       $type = "Made to Order";
       $status = "Pending for approval";
       $datetoday = date("Y-m-d");
+      $user = $_SESSION['userid'];
       $total = 0;
 
       // main table insert
-      mysqli_query($conn,$query="INSERT INTO JobOrder (customerID,orderDate,dueDate,totalPrice,type,status)
-                  VALUES ('{$custid}','{$datetoday}','{$duedate}',0,'$type','$status')");
+      mysqli_query($conn,$query="INSERT INTO JobOrder (customerID,orderDate,dueDate,totalPrice,type,status,createdBy)
+                  VALUES ('{$custid}','{$datetoday}','{$duedate}',0,'$type','$status','$user')");
 
       $query = "SELECT * FROM JobOrder ORDER BY orderID DESC LIMIT 1";
 

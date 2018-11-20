@@ -15,10 +15,11 @@
 
       $name=$_POST['name'];
       $address=$_POST['address'];
+      $contact = $_POST['contact'];
       $duration=$_POST['duration'];
 
     if(!isset($message)){
-      $query="insert into Supplier (name,address,duration) values ('{$name}','{$address}','{$duration}')";
+      $query="insert into Supplier (name,address,duration) values ('{$name}','{$contact}','{$address}','{$duration}')";
         if (mysqli_query($conn,$query)) {
 
           echo "<script>
@@ -57,6 +58,9 @@
                         <p class="form-control-static">
                             <label>Name:</label></br>
                               <input type="text" name="name" class="form-control" required>
+                            </br>
+                            <label>Contact:</label></br>
+                              <input type="text" name="contact" class="form-control" required>
                             </br>
                             <label>Address:</label>
                               <textarea class="form-control" rows="3" name="address"></textarea>
