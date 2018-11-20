@@ -62,21 +62,21 @@
                 <tbody>
 
                 <?php
-                $result = mysqli_query($conn,'SELECT Machine.machineID,
-                                                     Machine.name,
-                                                     Machine.status,
-                                                     Machine.timesUsed,
-                                                     Machine.acquiredDate,
-                                                     ProcessType.name AS procname
-                                                FROM Machine
-                                                INNER JOIN ProcessType ON ProcessType.processTypeID = Machine.processTypeID');
+                $result = mysqli_query($conn,'SELECT machine.machineID,
+                                                     machine.name,
+                                                     machine.status,
+                                                     machine.hoursWorked,
+                                                     machine.acquiredDate,
+                                                     processtype.name AS procname
+                                                FROM machine
+                                                INNER JOIN processtype ON machine.processTypeID = processtype.processTypeID');
 
 
                 while($row = mysqli_fetch_array($result)){
                     $id = $row['machineID'];
                     $name = $row['name'];
                     $status = $row['status'];
-                    $hoursWorked = $row['timesUsed'];
+                    $hoursWorked = $row['hoursWorked'];
                     $acquiredDate = $row['acquiredDate'];
                     $proctype = $row['procname'];
 

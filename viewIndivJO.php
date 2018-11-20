@@ -43,7 +43,7 @@
       <div class="row">
           <div class="col-lg-12">
               <h1 class="page-header"><br><br>
-                   Purchase Order requested to <?php echo $name; ?>
+                   Job Order requested to <?php echo $name; ?>
               </h1>
           </div>
       </div>
