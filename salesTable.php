@@ -22,7 +22,7 @@ if (!isset($_SESSION['userType'])){
     <div class="row">
         <div class="col-lg-12">
             <h1 class="text-center"><br><br>
-                Made-To-Stock Job Order Report
+                Product Sales Table
             </h1>
             <h6 class="text-center">
                 Enter a Date Range
@@ -32,7 +32,6 @@ if (!isset($_SESSION['userType'])){
                 <input type="date" id="endPicker" name="endDate"><br>
                 <input type="submit" name="search">
             </form>
-            <h5 class="text-center">*Click on the ID number for more details*</h5>
         </div>
     </div>
     <div class="row">
@@ -40,10 +39,10 @@ if (!isset($_SESSION['userType'])){
             <table class="table table-bordered table-hover" id="dataTables-example">
                 <thead>
                 <tr>
-                    <th>Job Order ID</th>
-                    <th>Customer</th>
+                    <th>Product Name</th>
+                    <th>Times Ordered</th>
+                    <th>Price Per Unit</th>
                     <th>Total Price</th>
-                    <th>Order Date</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -51,15 +50,19 @@ if (!isset($_SESSION['userType'])){
                 if (isset($_POST['search'])){
                     $startDate = $_POST['startDate'];
                     $endDate = $_POST['endDate'];
-                    $result = mysqli_query($conn, "SELECT joborder.orderID AS JOID,
-                                                        customer.name AS cName,
-                                                        joborder.orderDate AS orderDate,
-                                                        joborder.totalPrice AS totalPrice
-                                                    FROM joborder
-                                                    JOIN customer on joborder.customerID=customer.customerID
-                                                    WHERE joborder.orderDate BETWEEN '$startDate' AND '$endDate'
-                                                    AND joborder.type = 'Made to Stock'");
+                    $result = mysqli_query($conn, "SELECT product.name as name, COUNT(*) as 'times ordered', product.productPrice AS 'unitPrice', SUM(productsales.subTotal) as 'total sales' 
+                                                FROM productsales
+                                                JOIN product on productsales.productID=product.productID
+                                                JOIN sales on productsales.salesID=sales.salesID
+                                                WHERE sales.saleDate BETWEEN '$startDate' AND '$endDate'
+                                                GROUP BY product.name
+                                                ORDER BY `times ordered`  DESC");
                     $count=mysqli_num_rows($result);
+
+                    $result2 = mysqli_query($conn, "SELECT SUM(subTotal) as subTotal 
+                                                FROM productsales
+                                                JOIN sales on productsales.salesID=sales.salesID
+                                                WHERE sales.saleDate BETWEEN '$startDate' AND '$endDate'");
 
                     if ($count == "0"){
                         echo '<h2 class="text-center">No transactions within the specified range</h2>';
@@ -72,31 +75,33 @@ if (!isset($_SESSION['userType'])){
                         echo $endDate;
                         echo '</h2><br>';
 
+                        while($row = mysqli_fetch_array($result2)){
+                            $totalSale = $row['subTotal'];
+                        }
+
                         while ($row = mysqli_fetch_array($result)) {
 
-                            $id = $row['JOID'];
-                            $name = $row['cName'];
-                            $totalPrice = $row['totalPrice'];
-                            $date = $row['orderDate'];
+                            $name = $row['name'];
+                            $times = $row['times ordered'];
+                            $unitPrice = $row['unitPrice'];
+                            $totalPrice = $row['total sales'];
 
                             echo '<tr>';
-
-                            echo '<td class="text-center">';
-                            echo '<a href="detailsJO.php?id='.$id.'">';
-                            echo $id;
-                            echo '</a>';
-                            echo '</td>';
 
                             echo '<td class="text-center">';
                             echo $name;
                             echo '</td>';
 
                             echo '<td class="text-center">';
-                            echo $totalPrice;
+                            echo $times;
                             echo '</td>';
 
                             echo '<td class="text-center">';
-                            echo $date;
+                            echo $unitPrice;
+                            echo '</td>';
+
+                            echo '<td class="text-center">';
+                            echo $totalPrice;
                             echo '</td>';
 
                             echo '</tr>';
@@ -106,45 +111,50 @@ if (!isset($_SESSION['userType'])){
                 }
 
                 else{
-                    $result = mysqli_query($conn, "SELECT joborder.orderID AS JOID,
-                                                        customer.name AS cName,
-                                                        joborder.orderDate AS orderDate,
-                                                        joborder.totalPrice AS totalPrice
-                                                    FROM joborder
-                                                    JOIN customer on joborder.customerID=customer.customerID
-                                                    WHERE joborder.type = 'Made to Stock'");
+                    $result = mysqli_query($conn, "SELECT product.name as name, COUNT(*) as 'times ordered', product.productPrice AS 'unitPrice', SUM(productsales.subTotal) as 'total sales'
+                                                FROM productsales
+                                                JOIN product on productsales.productID=product.productID
+                                                JOIN sales on productsales.salesID=sales.salesID
+                                                GROUP BY product.name
+                                                ORDER BY `times ordered`  DESC");
                     $count=mysqli_num_rows($result);
+
+                    $result2 = mysqli_query($conn, "SELECT SUM(subTotal) as subTotal
+                                                FROM productsales
+                                                JOIN sales on productsales.salesID=sales.salesID");
 
                     if ($count == "0"){
                         echo '<h2 class="text-center">There are no transactions yet</h2>';
                     }
                     else {
 
+                        while($row = mysqli_fetch_array($result2)){
+                            $totalSale = $row['subTotal'];
+                        }
+
                         while ($row = mysqli_fetch_array($result)) {
 
-                            $id = $row['JOID'];
-                            $name = $row['cName'];
-                            $totalPrice = $row['totalPrice'];
-                            $date = $row['orderDate'];
+                            $name = $row['name'];
+                            $times = $row['times ordered'];
+                            $unitPrice = $row['unitPrice'];
+                            $totalPrice = $row['total sales'];
 
                             echo '<tr>';
-
-                            echo '<td class="text-center">';
-                            echo '<a href="detailsJO.php?id='.$id.'">';
-                            echo $id;
-                            echo '</a>';
-                            echo '</td>';
 
                             echo '<td class="text-center">';
                             echo $name;
                             echo '</td>';
 
                             echo '<td class="text-center">';
-                            echo $totalPrice;
+                            echo $times;
                             echo '</td>';
 
                             echo '<td class="text-center">';
-                            echo $date;
+                            echo $unitPrice;
+                            echo '</td>';
+
+                            echo '<td class="text-center">';
+                            echo $totalPrice;
                             echo '</td>';
 
                             echo '</tr>';
@@ -156,6 +166,15 @@ if (!isset($_SESSION['userType'])){
                 ?>
                 </tbody>
             </table>
+
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h4 class="text-right">Total Sales: <?php echo $totalSale ?></h4>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>

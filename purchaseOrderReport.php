@@ -28,8 +28,8 @@ if (!isset($_SESSION['userType'])){
                 Enter a Date Range
             </h6>
             <form method="post" class="text-center">
-                <input type="date" name="startDate">
-                <input type="date" name="endDate"><br>
+                <input type="date" id="txtDateMax" name="startDate">
+                <input type="date" id="endPicker" name="endDate"><br>
                 <input type="submit" name="search">
             </form>
         </div>
@@ -40,12 +40,10 @@ if (!isset($_SESSION['userType'])){
                 <thead>
                 <tr>
                     <th>Purchase Order ID</th>
-                    <th>Material Name</th>
-                    <th>Total Ordered</th>
-                    <th>Unit</th>
-                    <th>Total Price</th>
-                    <th>Supplier</th>
+                    <th>Materials Ordered</th>
                     <th>Order Date</th>
+                    <th>Due Date</th>
+                    <th>Total Price</th>
                     <th>Status</th>
                 </tr>
                 </thead>
@@ -55,20 +53,20 @@ if (!isset($_SESSION['userType'])){
                     $startDate = $_POST['startDate'];
                     $endDate = $_POST['endDate'];
                     $result = mysqli_query($conn, "SELECT purchaseorder.purchaseOrderID AS POID,
-                                                        rawmaterial.name AS RMname,
-                                                        poitem.quantity AS amount,
-                                                        poitem.unitOfMeasurement AS UoM,
-                                                        poitem.subTotal AS totalPrice,
-                                                        supplier.name AS supplierName,
                                                         purchaseorder.orderDate AS orderDate,
-                                                        poitem.status 
+                                                        purchaseorder.deadline AS dueDate,
+                                                        purchaseorder.totalPrice AS total,
+                                                        purchaseorder.status
                                                     FROM purchaseorder
-                                                    JOIN poitem on purchaseorder.purchaseOrderID=poitem.purchaseOrderID
-                                                    JOIN supplier on purchaseorder.supplierID=supplier.supplierID
-                                                    JOIN rawmaterial on poitem.rawMaterialID=rawmaterial.rawMaterialID
-                                                    WHERE purchaseorder.orderDate BETWEEN '$startDate' AND '$endDate' 
+                                                    WHERE purchaseorder.orderDate BETWEEN '$startDate' AND '$endDate'
+                                                    AND purchaseorder.status!='removed'
                                                     ORDER BY purchaseorder.purchaseOrderID DESC");
                     $count=mysqli_num_rows($result);
+
+                    $result2 = mysqli_query($conn, "SELECT SUM(purchaseorder.totalPrice) AS sum
+                                                    FROM purchaseorder
+                                                    WHERE purchaseorder.orderDate BETWEEN '$startDate' AND '$endDate'
+                                                    AND purchaseorder.status!='removed'");
 
                     if ($count == "0"){
                         echo '<h2 class="text-center">No transactions within the specified range</h2>';
@@ -81,15 +79,16 @@ if (!isset($_SESSION['userType'])){
                         echo $endDate;
                         echo '</h2>';
 
+                        while ($row = mysqli_fetch_array($result2)){
+                            $sum = $row['sum'];
+                        }
+
                         while ($row = mysqli_fetch_array($result)) {
 
                             $id = $row['POID'];
-                            $name = $row['RMname'];
-                            $totalOrder = $row['amount'];
-                            $unit = $row['UoM'];
-                            $totalPrice = $row['totalPrice'];
-                            $supplier = $row['supplierName'];
                             $date = $row['orderDate'];
+                            $ddate = $row['dueDate'];
+                            $total = $row['total'];
                             $stat = $row['status'];
 
                             echo '<tr>';
@@ -98,27 +97,20 @@ if (!isset($_SESSION['userType'])){
                             echo '</td>';
 
                             echo '<td class="text-center">';
-                            echo $name;
-                            echo '</td>';
-
-                            echo '<td class="text-center">';
-                            echo $totalOrder;
-                            echo '</td>';
-
-                            echo '<td class="text-center">';
-                            echo $unit;
-                            echo '</td>';
-
-                            echo '<td class="text-center">';
-                            echo $totalPrice;
-                            echo '</td>';
-
-                            echo '<td class="text-center">';
-                            echo $supplier;
+                            echo '<a href="detailsJO.php?id='.$id.'">';
+                            echo 'View Items</a>';
                             echo '</td>';
 
                             echo '<td class="text-center">';
                             echo $date;
+                            echo '</td>';
+
+                            echo '<td class="text-center">';
+                            echo $ddate;
+                            echo '</td>';
+
+                            echo '<td class="text-center">';
+                            echo $total;
                             echo '</td>';
 
                             echo '<td class="text-center">';
@@ -131,28 +123,28 @@ if (!isset($_SESSION['userType'])){
                 }
                 else{
                     $result = mysqli_query($conn, "SELECT purchaseorder.purchaseOrderID AS POID,
-                                                        rawmaterial.name AS RMname,
-                                                        poitem.quantity AS amount,
-                                                        poitem.unitOfMeasurement AS UoM,
-                                                        poitem.subTotal AS totalPrice,
-                                                        supplier.name AS supplierName,
                                                         purchaseorder.orderDate AS orderDate,
-                                                        poitem.status 
+                                                        purchaseorder.deadline AS dueDate,
+                                                        purchaseorder.totalPrice AS total,
+                                                        purchaseorder.status 
                                                     FROM purchaseorder
-                                                    JOIN poitem on purchaseorder.purchaseOrderID=poitem.purchaseOrderID
-                                                    JOIN supplier on purchaseorder.supplierID=supplier.supplierID
-                                                    JOIN rawmaterial on poitem.rawMaterialID=rawmaterial.rawMaterialID 
+                                                    WHERE purchaseorder.status!='removed'
                                                     ORDER BY purchaseorder.purchaseOrderID DESC");
+
+                    $result2 = mysqli_query($conn, "SELECT SUM(purchaseorder.totalPrice) AS sum
+                                                    FROM purchaseorder
+                                                    WHERE purchaseorder.status!='removed'");
+
+                    while ($row = mysqli_fetch_array($result2)){
+                        $sum = $row['sum'];
+                    }
 
                     while ($row = mysqli_fetch_array($result)) {
 
                         $id = $row['POID'];
-                        $name = $row['RMname'];
-                        $totalOrder = $row['amount'];
-                        $unit = $row['UoM'];
-                        $totalPrice = $row['totalPrice'];
-                        $supplier = $row['supplierName'];
                         $date = $row['orderDate'];
+                        $ddate = $row['dueDate'];
+                        $total = $row['total'];
                         $stat = $row['status'];
 
                         echo '<tr>';
@@ -161,27 +153,20 @@ if (!isset($_SESSION['userType'])){
                         echo '</td>';
 
                         echo '<td class="text-center">';
-                        echo $name;
-                        echo '</td>';
-
-                        echo '<td class="text-center">';
-                        echo $totalOrder;
-                        echo '</td>';
-
-                        echo '<td class="text-center">';
-                        echo $unit;
-                        echo '</td>';
-
-                        echo '<td class="text-center">';
-                        echo $totalPrice;
-                        echo '</td>';
-
-                        echo '<td class="text-center">';
-                        echo $supplier;
+                        echo '<a href="detailsPO.php?id='.$id.'">';
+                        echo 'View Items</a>';
                         echo '</td>';
 
                         echo '<td class="text-center">';
                         echo $date;
+                        echo '</td>';
+
+                        echo '<td class="text-center">';
+                        echo $ddate;
+                        echo '</td>';
+
+                        echo '<td class="text-center">';
+                        echo $total;
                         echo '</td>';
 
                         echo '<td class="text-center">';
@@ -194,6 +179,22 @@ if (!isset($_SESSION['userType'])){
                 ?>
                 </tbody>
             </table>
+
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h4 class="text-right">Total Expense: <?php echo $sum ?></h4>
+                    </div>
+                </div>
+            </div>
+
+
         </div>
     </div>
 </div>
+
+<script>
+    document.getElementById('txtDateMax').onchange = function () {
+        document.getElementById('endPicker').setAttribute('min',  this.value);
+    };
+</script>

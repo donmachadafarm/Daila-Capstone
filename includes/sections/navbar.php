@@ -67,6 +67,10 @@
             <h6 class="dropdown-header text-center"><b> Purchase Order Report </b></h6>
             <a class="dropdown-item text-center" href="purchaseOrderReport.php">Purchase Order Report</a>
             <div class="dropdown-divider"></div>
+            <h6 class="dropdown-header text-center"><b> Sales Report </b></h6>
+            <a class="dropdown-item text-center" href="salesReport.php">Product Sales Chart</a>
+            <a class="dropdown-item text-center" href="salesTable.php">Sales Table</a>
+
         </div>
       </li>
     </ul>

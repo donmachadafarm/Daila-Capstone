@@ -28,10 +28,11 @@ if (!isset($_SESSION['userType'])){
                 Enter a Date Range
             </h6>
             <form method="post" class="text-center">
-                <input type="date" name="startDate">
-                <input type="date" name="endDate"><br>
+                <input type="date" id="txtDateMax" name="startDate">
+                <input type="date" id="endPicker" name="endDate"><br>
                 <input type="submit" name="search">
             </form>
+            <h5 class="text-center">*Click on the ID number for more details*</h5>
         </div>
     </div>
     <div class="row">
@@ -41,8 +42,8 @@ if (!isset($_SESSION['userType'])){
                 <tr>
                     <th>Job Order ID</th>
                     <th>Customer</th>
-                    <th>Order Date</th>
                     <th>Total Price</th>
+                    <th>Order Date</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -79,21 +80,26 @@ if (!isset($_SESSION['userType'])){
                             $date = $row['orderDate'];
 
                             echo '<tr>';
-                            echo '<td class="text-center">';
-                            echo $id;
-                            echo '</td>';
 
-                            echo '<td class="text-center">';
-                            echo $name;
-                            echo '</td>';
+                                echo '<td class="text-center">';
+                                    echo '<a href="detailsJO.php?id='.$id.'">';
+                                        echo $id;
+                                    echo '</a>';
+                                echo '</td>';
 
-                            echo '<td class="text-center">';
-                            echo $totalPrice;
-                            echo '</td>';
+                                echo '<td class="text-center">';
+                                    echo $name;
+                                echo '</td>';
 
-                            echo '<td class="text-center">';
-                            echo $date;
-                            echo '</td>';
+                                echo '<td class="text-center">';
+                                    echo $totalPrice;
+                                echo '</td>';
+
+                                echo '<td class="text-center">';
+                                    echo $date;
+                                echo '</td>';
+
+                            echo '</tr>';
 
                         }
                     }
@@ -110,7 +116,7 @@ if (!isset($_SESSION['userType'])){
                     $count=mysqli_num_rows($result);
 
                     if ($count == "0"){
-                        echo '<h2 class="text-center">No transactions within the specified range</h2>';
+                        echo '<h2 class="text-center">There are no transactions yet</h2>';
                     }
                     else {
 
@@ -122,21 +128,26 @@ if (!isset($_SESSION['userType'])){
                             $date = $row['orderDate'];
 
                             echo '<tr>';
-                            echo '<td class="text-center">';
-                            echo $id;
-                            echo '</td>';
 
-                            echo '<td class="text-center">';
-                            echo $name;
-                            echo '</td>';
+                                echo '<td class="text-center">';
+                                    echo '<a href="detailsJO.php?id='.$id.'">';
+                                        echo $id;
+                                    echo '</a>';
+                                echo '</td>';
 
-                            echo '<td class="text-center">';
-                            echo $totalPrice;
-                            echo '</td>';
+                                echo '<td class="text-center">';
+                                    echo $name;
+                                echo '</td>';
 
-                            echo '<td class="text-center">';
-                            echo $date;
-                            echo '</td>';
+                                echo '<td class="text-center">';
+                                    echo $totalPrice;
+                                echo '</td>';
+
+                                echo '<td class="text-center">';
+                                    echo $date;
+                                echo '</td>';
+
+                            echo '</tr>';
 
                         }
                     }
@@ -148,3 +159,9 @@ if (!isset($_SESSION['userType'])){
         </div>
     </div>
 </div>
+
+<script>
+    document.getElementById('txtDateMax').onchange = function () {
+        document.getElementById('endPicker').setAttribute('min',  this.value);
+    };
+</script>
