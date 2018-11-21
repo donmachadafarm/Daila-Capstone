@@ -27,17 +27,24 @@
                             <tr>
                                 <th>Ingredient Name</th>
                                 <th>Quantity</th>
+                                <th>Unit of Measurement</th>
                             </tr>
                         </thead>
                         <tbody>
 
                         <?php
-                            $result = mysqli_query($conn,'SELECT * FROM Ingredient');
+                            $result = mysqli_query($conn,'SELECT Ingredient.name AS name,
+                                                                 Ingredient.quantity AS quantity,
+                                                                 RawMaterial.unitOfMeasurement AS uom
+                                                                 FROM Ingredient
+                                                                 JOIN RMIngredient ON RMIngredient.ingredientID = Ingredient.ingredientID
+                                                                 JOIN RawMaterial ON RMIngredient.rawMaterialID = RawMaterial.rawMaterialID');
 
 
                             while($row = mysqli_fetch_array($result)){
                               $name = $row['name'];
                               $qty = $row['quantity'];
+                              $uom = $row['uom'];
 
                                   echo '<tr>';
                                     echo '<td>';
@@ -45,6 +52,9 @@
                                     echo '</td>';
                                     echo '<td>';
                                       echo $qty;
+                                    echo '</td>';
+                                    echo '<td>';
+                                      echo $uom;
                                     echo '</td>';
                                   echo '</tr>';
 

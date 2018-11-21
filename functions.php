@@ -258,7 +258,13 @@ function reduce_inventory_rawmats_production($conn,$orderid){
 }
 
 function start_production($conn,$orderid){
-  $query = "SELECT * FROM Receipt WHERE orderID = $orderid";
+  $query = "SELECT Receipt.orderID,
+              	   Receipt.productID,
+                   Receipt.quantity,
+                   JobOrder.dueDate
+              FROM Receipt
+              JOIN JobOrder ON Receipt.orderID = JobOrder.orderID
+              WHERE JobOrder.orderID = $orderid";
 
   $sqld = mysqli_query($conn,$query);
 
@@ -268,9 +274,10 @@ function start_production($conn,$orderid){
     $orderid = $row['orderID']; // $row[0]
     $produid = $row['productID']; // $row[1]
     $prodqty = $row['quantity']; // $row[2]
-    $datenow = date('Y-m-d'); // $row[3]
+    $datenow = date('Y-m-d H:i:s'); // $row[3]
+    $jodue = $row[3];
 
-    // $row[1] -> product id
+    // $row[1] -> product id // cont is an array ng processes for one product
     $cont = get_productprocess($conn,$row[1]);
     // checker for counter ng mga may used machines sa production
     $checker = 0;
@@ -295,22 +302,24 @@ function start_production($conn,$orderid){
           // compute time to finish(product process table time need * product quantity in receipt)
           $qry2 = "SELECT timeNeed FROM ProductProcess WHERE productID = $produid AND processTypeID = $cont[$j]";
 
-          $sql2 = mysqli_query($conn,$qry2);
+            $sql2 = mysqli_query($conn,$qry2);
 
-          $row2 = mysqli_fetch_array($sql2);
+            $row2 = mysqli_fetch_array($sql2);
 
           $timeneed = $row2['timeNeed'];
 
           $totaltimeneed = $timeneed * $prodqty;
 
           $machidd = get_machine($conn,$cont[$j]);
+          $queuedmach = $machidd[array_rand($machidd)];
+
 
           // insert into productionProcess table all deets product id process type id estimate time to finish per process
-          $qry3 = "INSERT INTO ProductionProcess(orderID,productID,processTypeID,machineID,machineQueue,timeEstimate)
-                                          VALUES($orderid,$produid,$cont[$j],$machidd[0],1,$totaltimeneed)";
+          $qry3 = "INSERT INTO ProductionProcess(orderID,productID,processTypeID,machineID,machineQueue,processSequence,timeEstimate)
+                                          VALUES($orderid,$produid,$cont[$j],$queuedmach,1,$j+1,$totaltimeneed)";
 
           // update machine unavailable using machid
-          $qry4 = "UPDATE Machine SET status = 'Used' WHERE machineID = $machidd[0]";
+          $qry4 = "UPDATE Machine SET status = 'Used' WHERE machineID = $queuedmach";
 
           $sql3 = mysqli_query($conn,$qry3);
 
@@ -319,20 +328,21 @@ function start_production($conn,$orderid){
         }
       }
     }else{
+      // ELSE PAG MAY DAPAT NAKA QUEUE NA PROCESS KADA MACHINE USED
       // insert into production table  orderid, productid, status, quantity from order, 0 , 0 , 0, start time, 0
       $qry1 = "INSERT INTO Production (orderID,productID,status,quantity,totalGoods,totalYield,totalLost,startDate,endDate)
                                VALUES ('{$orderid}','{$produid}','Started','{$prodqty}',0,0,0,'','')";
 
       // run insert (if success continue insert per productprocess)
       if($sql = mysqli_query($conn,$qry1)){
-        // iterate thru all process
+        // iterate thru all process $cont -> array nag hold ng process list ng kada product
         for ($j=0; $j < count($cont); $j++) {
           // compute time to finish(product process table time need * product quantity in receipt)
           $qry2 = "SELECT timeNeed FROM ProductProcess WHERE productID = $produid AND processTypeID = $cont[$j]";
 
-          $sql2 = mysqli_query($conn,$qry2);
+              $sql2 = mysqli_query($conn,$qry2);
 
-          $row2 = mysqli_fetch_array($sql2);
+              $row2 = mysqli_fetch_array($sql2);
 
           $timeneed = $row2['timeNeed'];
 
@@ -345,21 +355,60 @@ function start_production($conn,$orderid){
           // get a random machine for queue
           $queuedmach = $machidd[array_rand($machidd)];
 
+          // <-----( MAJOR MISSED PART QUEUE BASED ON DEADLINE )----->
           //
-          $qry3 = "SELECT ";
+          //
+          // get due dates ng mga may same process id at machine ids
+          // $sql = mysqli_query($conn,"SELECT JobOrder.dueDate
+          //                             FROM JobOrder
+          //                             JOIN ProductionProcess ON JobOrder.orderID = ProductionProcess.orderID
+          //                             WHERE ProductionProcess.processTypeID = $cont[$j] AND ProductionProcess.machineID = $queuedmach");
+          // // store sa array
+          // $deadlines = array();
+          // while ($row = mysqli_fetch_array($sql)) {
+          //   array_push($deadlines,$row[0]);
+          // }
+          // sortsort
+          // function date_sort($a, $b) {
+          //     return strtotime($a) - strtotime($b);
+          // }
+          // usort($arr, "date_sort");
+          //
+          // // finding the closest date sa array ng deadlines
+          // echo find_closest_today($arr,'2018-11-23');
+          //
+          // $qr = "UPDATE ProductionProcess SET machineQueue = machineQueue + 1 WHERE machineQueue >= $newqueue ORDER BY machineQueue DESC;";
+          //
+          //       mysqli_query($conn,$qr);
+          //
+          //
+          //     <-----( END OF MISSED FEATURE )----->
+
+          $newqueue = get_curr_queue($conn,$cont[$j],$queuedmach)+1;
 
           // insert into productionProcess table all deets product id process type id estimate time to finish per process
-          $qry4 = "INSERT INTO ProductionProcess(orderID,productID,processTypeID,machineID,machineQueue,timeEstimate)
-                                          VALUES($orderid,$produid,$cont[$j],'$queuedmach','',$totaltimeneed)";
+          $qry4 = "INSERT INTO ProductionProcess(orderID,productID,processTypeID,machineID,machineQueue,processSequence,timeEstimate)
+                                                VALUES($orderid,$produid,$cont[$j],'$queuedmach','$newqueue',$j+1,$totaltimeneed)";
 
-          $sql4 = mysqli_query($conn,$qry4);
-
+                mysqli_query($conn,$qry4);
         }
       }
     }
 
   }
 
+}
+
+// get current queue
+function get_curr_queue($conn,$proc,$mach){
+  $sql = mysqli_query($conn,"SELECT machineQueue
+                              From ProductionProcess
+                              WHERE ProductionProcess.processTypeID = $proc AND ProductionProcess.machineID = $mach
+                              ORDER BY machineQueue DESC LIMIT 1");
+
+    $row = mysqli_fetch_array($sql);
+
+    return $row[0];
 }
 
 // first param array ng dates for deadline second param is for the actual deadline
@@ -377,6 +426,22 @@ function find_closest_today($array, $date)
     $closest = key($interval);
 
     return $array[$closest];
+}
+
+function get_process_sequence($conn,$prodid){
+  $query = "SELECT processTypeID FROM ProductProcess WHERE productID = $prodid ORDER BY processSequence";
+
+  $sql = mysqli_query($conn,$query);
+
+  $seq = array();
+
+  for ($i=0; $i < mysqli_num_rows($sql); $i++) {
+    $row = mysqli_fetch_array($sql);
+
+    $seq[$i] = $row['processTypeID'];
+  }
+  return $seq;
+
 }
 
 // gets machine ids regardless kung may naka used na sa kanila for queueing

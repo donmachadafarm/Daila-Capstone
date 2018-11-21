@@ -43,7 +43,9 @@
       $user = $_SESSION['userid'];
 
       // insert purchase order
-      mysqli_query($conn,"INSERT into PurchaseOrder (supplierID,totalPrice,orderDate,status,deadline,createdBy) values ('{$supid}','0','{$today}','Pending','{$deadline}'),'{$user}'");
+      $query = "INSERT into PurchaseOrder (supplierID,totalPrice,orderDate,status,deadline,createdBy) values ('{$supid}','0','{$today}','Pending','{$deadline}','{$user}')";
+
+      mysqli_query($conn,$query);
 
       // select recently added PO
       $query="SELECT * FROM PurchaseOrder ORDER BY purchaseOrderID DESC LIMIT 1";
@@ -96,12 +98,13 @@
         // // finally update the total price for all raw materials
         $query = "UPDATE PurchaseOrder SET totalPrice = $total WHERE purchaseOrderID = $poid";
 
-        mysqli_query($conn,$query);
+        if(mysqli_query($conn,$query)){
+          echo "<script>
+            alert('Purchase Order Posted!');
+            window.location.replace('viewPurchaseOrders.php');
+                </script>";
+        }
 
-        echo "<script>
-          alert('Purchase Order Posted!');
-          window.location.replace('viewPurchaseOrders.php');
-              </script>";
       }else {
         echo "<script>
           alert('Purchase Order failed to post');

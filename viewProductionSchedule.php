@@ -34,13 +34,12 @@
             <table class="table table-borderless table-hover" id="dataTables-example">
                 <thead>
                 <tr>
-                    <th class="text-center">Machine</th>
-                    <th class="text-center">Job Order</th>
-                    <th class="text-center">ProductID</th>
-                    <th class="text-center">Early Start</th>
-                    <th class="text-center">Late Start</th>
-                    <th class="text-center">Early End</th>
-                    <th class="text-center">Late End</th>
+                    <th class="text-center">Machine ID</th>
+                    <th class="text-center">Order ID</th>
+                    <th class="text-center">Product ID</th>
+                    <th class="text-center">Estimated Time</th>
+                    <th class="text-center">Start Time</th>
+                    <th class="text-center">End Time</th>
                     <th class="text-center">Action</th>
                 </tr>
                 </thead>
@@ -72,10 +71,6 @@
 
                           echo '<td class="text-center">';
                             //echo $latestart;
-                          echo'</td>';
-
-                          echo '<td class="text-center">';
-                            //echo $earlyend;
                           echo'</td>';
 
                           echo '<td class="text-center">';

@@ -34,7 +34,7 @@
     }
 
     // subtract ingredients per product based on Quantity
-    reduce_inventory_rawmats_production($conn,$id);
+    // reduce_inventory_rawmats_production($conn,$id);
 
     // start production
     start_production($conn,$id);

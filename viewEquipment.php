@@ -135,10 +135,10 @@
                                           <input type="number" name="cost" class="form-control" required>
                                         </br>
                                         <label>Date finished maintenance:</label></br>
-                                          <input type="date" name="datefinish" class="form-control" required>
+                                          <input type="date" name="datefinish" id="txtDateMax" class="form-control" required>
                                         </br>
                                         <label>Remarks:</label></br>
-                                          <textarea name="remarks" rows="4" class="form-control" required></textarea>
+                                          <textarea name="remarks" rows="4" class="form-control"></textarea>
                                         </br>
                                         <div class="modal-footer">
                                             <button type="submit" name="finish" class="btn btn-primary">YES</button>

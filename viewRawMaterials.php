@@ -29,8 +29,9 @@
                                 <th>Supplied RawMaterial</th>
                                 <th>Matching Ingredient</th>
                                 <th>Price per Unit</th>
-                                <th>Unit of Measurement</th>
+                                <th>UOM</th>
                                 <th>Type</th>
+                                <th>Delivery Days</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -41,6 +42,7 @@
                                                                  RawMaterialType.name AS typename,
                                                                  RawMaterial.pricePerUnit AS price,
                                                                  Supplier.name AS suppName,
+                                                                 Supplier.duration AS days,
                                                                  Ingredient.name AS ingname
                                                           FROM RawMaterial
                                                           INNER JOIN RawMaterialType ON RawMaterial.rawMaterialTypeID=RawMaterialType.rawMaterialTypeID
@@ -55,6 +57,7 @@
                               $price = $row['price'];
                               $uom = $row['uom'];
                               $supp = $row['suppName'];
+                              $days = $row['days'];
                               $type = $row['typename'];
 
                                   echo '<tr>';
@@ -75,6 +78,9 @@
                                     echo '</td>';
                                     echo '<td>';
                                       echo $type;
+                                    echo'</td>';
+                                    echo '<td>';
+                                      echo $days;
                                     echo'</td>';
                                   echo '</tr>';
 
