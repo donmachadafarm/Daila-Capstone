@@ -274,7 +274,7 @@ function start_production($conn,$orderid){
     $orderid = $row['orderID']; // $row[0]
     $produid = $row['productID']; // $row[1]
     $prodqty = $row['quantity']; // $row[2]
-    $datenow = date('Y-m-d H:i:s'); // $row[3]
+    $datenow = date('Y-m-d H:i:s');
     $jodue = $row[3];
 
     // $row[1] -> product id // cont is an array ng processes for one product
@@ -310,13 +310,20 @@ function start_production($conn,$orderid){
 
           $totaltimeneed = $timeneed * $prodqty;
 
+          // array of machines for the specific process
           $machidd = get_machine($conn,$cont[$j]);
+
           $queuedmach = $machidd[array_rand($machidd)];
 
+          if ($j+1 == 1) {
+            $stat = 'Ongoing';
+          }else {
+            $stat = 'Wait';
+          }
 
           // insert into productionProcess table all deets product id process type id estimate time to finish per process
-          $qry3 = "INSERT INTO ProductionProcess(orderID,productID,processTypeID,machineID,machineQueue,processSequence,timeEstimate)
-                                          VALUES($orderid,$produid,$cont[$j],$queuedmach,1,$j+1,$totaltimeneed)";
+          $qry3 = "INSERT INTO ProductionProcess(orderID,productID,processTypeID,machineID,machineQueue,processSequence,timeEstimate,status)
+                                          VALUES($orderid,$produid,$cont[$j],$queuedmach,1,$j+1,$totaltimeneed,'$stat')";
 
           // update machine unavailable using machid
           $qry4 = "UPDATE Machine SET status = 'Used' WHERE machineID = $queuedmach";
@@ -355,46 +362,103 @@ function start_production($conn,$orderid){
           // get a random machine for queue
           $queuedmach = $machidd[array_rand($machidd)];
 
-          // <-----( MAJOR MISSED PART QUEUE BASED ON DEADLINE )----->
-          //
-          //
-          // get due dates ng mga may same process id at machine ids
+
+          // insert into productionProcess table all deets product id process type id estimate time to finish per process
+          $qry4 = "INSERT INTO ProductionProcess(orderID,productID,processTypeID,machineID,machineQueue,processSequence,timeEstimate,status)
+                                                VALUES($orderid,$produid,$cont[$j],'$queuedmach','',$j+1,$totaltimeneed,'')";
+
+                mysqli_query($conn,$qry4);
+
+          $newqueue = get_curr_queue($conn,$cont[$j],$queuedmach)+1;
+
+          if ($j+1 == 1 && $newqueue == 1) {
+            $stat = 'Ongoing';
+          }else {
+            $stat = 'Wait';
+          }
+
+          $qry4 = "UPDATE ProductionProcess SET machineQueue = $newqueue,status = '$stat' WHERE orderID = $orderid AND productID = $produid";
+
+                mysqli_query($conn,$qry4);
+
           // $sql = mysqli_query($conn,"SELECT JobOrder.dueDate
           //                             FROM JobOrder
           //                             JOIN ProductionProcess ON JobOrder.orderID = ProductionProcess.orderID
           //                             WHERE ProductionProcess.processTypeID = $cont[$j] AND ProductionProcess.machineID = $queuedmach");
+          //
           // // store sa array
           // $deadlines = array();
           // while ($row = mysqli_fetch_array($sql)) {
           //   array_push($deadlines,$row[0]);
-          // }
-          // sortsort
-          // function date_sort($a, $b) {
-          //     return strtotime($a) - strtotime($b);
-          // }
-          // usort($arr, "date_sort");
+          //  }
+          //
+          // // sortsort
+          //  function date_sort($a, $b) {
+          //      return strtotime($a) - strtotime($b);
+          //  }
+          //  usort($deadlines, "date_sort");
           //
           // // finding the closest date sa array ng deadlines
-          // echo find_closest_today($arr,'2018-11-23');
+          //  echo find_closest_today($deadlines,date('Y-m-d'));
           //
-          // $qr = "UPDATE ProductionProcess SET machineQueue = machineQueue + 1 WHERE machineQueue >= $newqueue ORDER BY machineQueue DESC;";
+          //  $qr = "UPDATE ProductionProcess SET machineQueue = machineQueue + 1 WHERE machineQueue >= $newqueue ORDER BY machineQueue DESC";
           //
-          //       mysqli_query($conn,$qr);
-          //
-          //
-          //     <-----( END OF MISSED FEATURE )----->
+          //      mysqli_query($conn,$qr);
 
-          $newqueue = get_curr_queue($conn,$cont[$j],$queuedmach)+1;
-
-          // insert into productionProcess table all deets product id process type id estimate time to finish per process
-          $qry4 = "INSERT INTO ProductionProcess(orderID,productID,processTypeID,machineID,machineQueue,processSequence,timeEstimate)
-                                                VALUES($orderid,$produid,$cont[$j],'$queuedmach','$newqueue',$j+1,$totaltimeneed)";
-
-                mysqli_query($conn,$qry4);
         }
       }
     }
 
+  }
+
+}
+
+function check_for_out($conn,$orderid){
+  $query = "SELECT count(*) FROM Production WHERE orderID = $orderid";
+
+  $sql = mysqli_query($conn,$query);
+
+  $row = mysqli_fetch_array($sql);
+
+  $count = $row[0];
+
+  $query = "SELECT count(*) FROM Production WHERE status = 'Finished' AND orderID = $orderid";
+
+  $sql = mysqli_query($conn,$query);
+
+  $row = mysqli_fetch_array($sql);
+
+  $cont = $row[0];
+
+  if ($count == $cont) {
+    return true;
+  }
+  else {
+    return false;
+  }
+
+}
+
+// checks if there are no more ongoing statuses in orderid
+function check_complete_proc($conn,$orderid,$prodid){
+  $s = "SELECT count(*) FROM ProductionProcess WHERE orderID = $orderid AND productID = $prodid";
+
+  $q = mysqli_query($conn,$s);
+
+  // count ng lahat ng rows sa isang order id at prodid
+
+  $row1 = mysqli_fetch_array($q);
+
+  $query = "SELECT count(status) FROM ProductionProcess WHERE (status = 'Done' OR status = 'Finish') AND orderID = $orderid AND productID = $prodid";
+
+  $sql = mysqli_query($conn,$query);
+
+  $row2 = mysqli_fetch_array($sql);
+
+  if ($row2[0] == $row1[0]) {
+    return true;
+  }else {
+    return false;
   }
 
 }
@@ -457,6 +521,7 @@ function get_machine_for_queue($conn,$proc){
 
       $arrmach[$i] = $row['machineID'];
     }
+
     return $arrmach;
 }
 
@@ -473,6 +538,7 @@ function get_machine($conn,$proc){
 
       $arrmach[$i] = $row['machineID'];
     }
+
     return $arrmach;
 }
 

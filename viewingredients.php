@@ -33,7 +33,8 @@
                         <tbody>
 
                         <?php
-                            $result = mysqli_query($conn,'SELECT Ingredient.name AS name,
+                            $result = mysqli_query($conn,'SELECT DISTINCT(Ingredient.ingredientID),
+                                                                 Ingredient.name AS name,
                                                                  Ingredient.quantity AS quantity,
                                                                  RawMaterial.unitOfMeasurement AS uom
                                                                  FROM Ingredient

@@ -135,7 +135,7 @@
                <hr class="style1">
                <div class="col-lg-4">
                      <div class="col">
-                       <label><strong>Deadline to DAILA:</strong></label></br>
+                       <label><strong>Deadline:</strong></label></br>
                          <input type="date" name="deadline" id="txtDate" class="form-control" required>
                        </br>
                      </div>

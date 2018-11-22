@@ -43,24 +43,52 @@ include 'includes/sections/header.php';
 // }
 // echo $checker;
 
+
+// get due dates ng mga may same process id at machine ids
 $sql = mysqli_query($conn,"SELECT JobOrder.dueDate
                             FROM JobOrder
                             JOIN ProductionProcess ON JobOrder.orderID = ProductionProcess.orderID
                             WHERE ProductionProcess.processTypeID = 1 AND ProductionProcess.machineID = 4");
-
+// store sa array
 $deadlines = array();
 while ($row = mysqli_fetch_array($sql)) {
   array_push($deadlines,$row[0]);
 }
 
 // print_p($deadlines);
+// dummy data
 $arr = array('2018-11-21', '2018-11-25', '2018-12-01', '2018-11-22', '2018-11-24');
+
+// sortsort
 function date_sort($a, $b) {
     return strtotime($a) - strtotime($b);
 }
 usort($arr, "date_sort");
 // print_p($arr);
-echo find_closest_today($arr,'2018-11-23');
+// finding the closest date sa array ng deadlines
+// echo find_closest_today($arr,date('Y-m-d'));
+// lumabas 2018-11-22
+// next gagawin mo dito is lahat ng mga may deadline na starting sa returned deadline sa taas imomove mo ung queue nila
+
+
+// get the cuurent queue muna nung nag result ng query from the closest deadline tapos from there don kana mag increment
+$sql = mysqli_query($conn,"SELECT machineQueue
+                            From ProductionProcess
+                            WHERE ProductionProcess.processTypeID = 1 AND ProductionProcess.machineID = 4
+                            ORDER BY machineQueue DESC LIMIT 1");
+
+  $row = mysqli_fetch_array($sql);
+
+  $curqueue = $row[0];
+
+// if (check_complete_proc($conn,151,10)) {
+//   echo "false";
+// }else {
+//   echo "true";
+// }
+echo check_for_out($conn,154);
+
+
 //
 // $sql = mysqli_query($conn,"");
 
@@ -69,4 +97,6 @@ echo find_closest_today($arr,'2018-11-23');
 // }else {
 //   echo "<";
 // }
+
+// echo get_curr_queue($conn,1,4)+1;
 ?>

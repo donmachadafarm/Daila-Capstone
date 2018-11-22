@@ -161,12 +161,12 @@
                         echo $uom;
                       echo "</td>";
 
-                      echo "<td>";
-                        echo $ppu;
+                      echo "<td class='text-right'>";
+                        echo number_format($ppu,2);
                       echo "</td>";
 
-                      echo "<td>";
-                        echo $sub;
+                      echo "<td class='text-right'>";
+                        echo number_format($sub,2);
                       echo "</td>";
 
                       echo "<td>";
@@ -177,7 +177,7 @@
                       if ($status != 'Delivered') {
                         echo '<a href="#update'.$rmid.'" data-target="#update'.$rmid.'" data-toggle="modal"><button type="button" class="btn btn-success btn-sm">Update Status</button></a>';
                       }else {
-                        echo '<button type="button" class="btn btn-sm btn-secondary" disabled>Recieved</button>';
+                        echo '<button type="button" class="btn btn-sm btn-secondary" disabled>Received</button>';
                       }
                       echo "</td>";
 

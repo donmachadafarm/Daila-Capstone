@@ -11,7 +11,79 @@
 
 <?php
 
-  if(isset($_POST['finish'])){
+  if(isset($_POST['add'])){
+    $pid = $_POST['prodid'];
+    $yield = $_POST['yield'];
+    $good = $_POST['good'];
+    $loss = $_POST['loss'];
+    $ordid = $_POST['orderID'];
+    $datef = date('Y-m-d H:i:s');
+
+    // add qty to product inventory using ['good']
+    $query = "UPDATE Product SET quantity = quantity + $good WHERE productID = $pid";
+
+    mysqli_query($conn,$query);
+    // update production info total good, total yield, total loss, end date, status = finished
+    $query1 = "UPDATE Production SET status = 'Finished', totalYield = $yield, totalGoods = $good, totalLost = $loss, endDate = '$datef' WHERE productID = $pid AND orderID = $ordid";
+
+    mysqli_query($conn,$query1);
+    // machines used = available and timesused++
+    // check first if bakante na lahat ng machines wala ng queue
+    $query2 = "SELECT machineID FROM ProductionProcess WHERE productID = $pid";
+
+      $sql = mysqli_query($conn,$query2);
+
+      while ($row = mysqli_fetch_array($sql)) {
+        $query3 = "UPDATE Machine SET status = 'Available', timesUsed = timesUsed + 1 WHERE machineID = $row[0]";
+
+        mysqli_query($conn,$query3);
+      }
+
+
+    $query = "UPDATE ProductionProcess SET status = 'Added' WHERE orderID = $ordid AND productID = $pid";
+
+    mysqli_query($conn,$query);
+
+      echo "<script>
+        alert('Products are added to inventory!');
+            </script>";
+        // window.location.replace('viewProductionSchedule.php');
+
+
+
+
+  }
+
+  if(isset($_POST['check'])){
+    $ordid = $_POST['order_id'];
+    $macid = $_POST['mach_id'];
+    $proid = $_POST['prod_id'];
+    $stats = $_POST['status'];
+
+    $query = "UPDATE ProductionProcess SET status = 'Done' WHERE orderID = $ordid AND machineID = $macid AND productID = $proid AND status = 'Ongoing'";
+
+    mysqli_query($conn,$query);
+
+    $sql = mysqli_query($conn,"SELECT machineID FROM ProductionProcess WHERE orderID = $ordid AND productID = $proid AND status = 'Wait' ORDER BY processSequence LIMIT 1");
+
+    $row = mysqli_fetch_array($sql);
+
+    if(isset($row)){
+        $query = "UPDATE ProductionProcess SET status = 'Ongoing' WHERE orderID = $ordid AND machineID = $row[0] AND productID = $proid AND status = 'Wait'";
+
+        mysqli_query($conn,$query);
+    }else {
+        $sql = mysqli_query($conn,"SELECT machineID FROM ProductionProcess WHERE orderID = $ordid AND productID = $proid AND status = 'Done' ORDER BY processSequence DESC LIMIT 1");
+
+        $row = mysqli_fetch_array($sql);
+
+        mysqli_query($conn,"UPDATE ProductionProcess SET status = 'Finish' WHERE orderID = $ordid AND machineID = $row[0] AND productID = $proid AND status = 'Done'");
+
+
+    }
+  }
+
+  if (isset($_POST['out'])) {
 
   }
 
@@ -34,6 +106,7 @@
             <table class="table table-borderless table-hover" id="dataTables-example">
                 <thead>
                 <tr>
+                    <th class="text-center">Due Date</th>
                     <th class="text-center">Machine ID</th>
                     <th class="text-center">Order ID</th>
                     <th class="text-center">Product ID</th>
@@ -46,56 +119,72 @@
                 <tbody>
 
                 <?php
-                if($result = mysqli_query($conn,'')){
+                if($result = mysqli_query($conn,'SELECT ProductionProcess.machineID, JobOrder.dueDate, ProductionProcess.orderID,
+                                                        ProductionProcess.productID, ProductionProcess.timeEstimate, ProductionProcess.status
+                                                    FROM `ProductionProcess`
+                                                    JOIN JobOrder ON ProductionProcess.orderID = JobOrder.orderID
+                                                    WHERE ProductionProcess.status = "Ongoing" OR ProductionProcess.status = "Finish"
+                                                    ORDER BY JobOrder.dueDate ASC')){
 
 
                     while($row = mysqli_fetch_array($result)){
-
+                        $id = $row['productID'];
 
                         echo '<tr>';
                           echo '<td class="text-center">';
-                              //echo $machid;
+                              echo $row['dueDate'];
                           echo '</td>';
 
                           echo '<td class="text-center">';
-                              //echo $joid;
+                              echo $row['machineID'];
                           echo '</td>';
 
                           echo '<td class="text-center">';
-                            //echo $prodid;
+                              echo $row['orderID'];
+                          echo '</td>';
+
+                          echo '<td class="text-center">';
+                              echo $row['productID'];
                           echo'</td>';
 
                           echo '<td class="text-center">';
-                            //echo $earlystart;
+                              echo seconds_datetime($row['timeEstimate']);
                           echo'</td>';
 
                           echo '<td class="text-center">';
-                            //echo $latestart;
+                              echo "starttime";
                           echo'</td>';
 
                           echo '<td class="text-center">';
-                            //echo $lateend;
+                              echo "endtime";
                           echo'</td>';
 
                           echo '<td class="text-center">';
-                            echo '<a href="viewIndivJO.php?id='.$id.'"><button type="button" class="btn btn-primary btn-sm"><i class="fas fa-eye"></i></button></a>  ';
-                            echo '<a href="#remove'.$id.'" data-target="#remove'.$id.'" data-toggle="modal"><button type="button" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button></a>';
-                            if (check_for_inventory_match($conn,$id)>0) {
+                            echo '<a href="#delay'.$id.'" data-target="#delay'.$id.'" data-toggle="modal"><button type="button" class="btn btn-warning btn-sm">Delay</button></a>';
+                            if (!check_complete_proc($conn,$row['orderID'],$row['productID'])) {
+                              // finish button na mag sabi tapos na process
                               echo '<a href="#check'.$id.'" data-target="#check'.$id.'" data-toggle="modal">
-                                <button type="button" class="btn btn-secondary btn-sm">
-                                  <i class="fas fa-exclamation-circle"></i>
+                                <button type="button" class="btn btn-success btn-sm">
+                                  Finish
                                 </button></a>  ';
                             } else {
-                              echo '<a href="#approve'.$id.'" data-target="#approve'.$id.'" data-toggle="modal">
+                              // finish button for final add ng product
+                              echo '<a href="#finish'.$id.'" data-target="#finish'.$id.'" data-toggle="modal">
                                 <button type="button" class="btn btn-success btn-sm">
-                                  <i class="fas fa-check-circle"></i>
+                                  Finish
+                                </button></a>  ';
+                            }
+                            if (check_for_out($conn,$row['orderID'])) {
+                              echo '<a href="#out'.$id.'" data-target="#out'.$id.'" data-toggle="modal">
+                                <button type="button" class="btn btn-secondary btn-sm">
+                                  Out
                                 </button></a>  ';
                             }
                           echo '</td>';
 
                         echo '</tr>';
                     ?>
-                    <div id="approve<?php echo $id; ?>" class="modal fade" role="dialog">
+                    <div id="delay<?php echo $id; ?>" class="modal fade" role="dialog">
                         <div class="modal-dialog">
                             <form method="post">
                                 <div class="modal-content">
@@ -125,29 +214,7 @@
                         </div>
                     </div>
 
-                    <div id="check<?php echo $id; ?>" class="modal fade" role="dialog">
-                        <div class="modal-dialog">
-                                <div class="modal-content">
-
-                                    <div class="modal-header">
-                                        <h4>Notice</h4>
-                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                    </div>
-
-                                    <div class="modal-body">
-                                      <h5 class="text-center">Lacking ingredients on the following products:</h5>
-                                        <?php print_p(get_need_inventory($conn,$id)); ?>
-
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-default btn-outline-secondary" data-dismiss="modal">Close</button>
-                                    </div>
-
-                                </div>
-                        </div>
-                    </div>
-
-                    <div id="remove<?php echo $id; ?>" class="modal fade" role="dialog">
+                    <div id="out<?php echo $id; ?>" class="modal fade" role="dialog">
                         <div class="modal-dialog">
                             <form method="post">
                                 <div class="modal-content">
@@ -158,21 +225,95 @@
                                     </div>
 
                                     <div class="modal-body">
-                                        <input type="hidden" name="jo_id" value="<?php echo $id; ?>">
+                                        <input type="hidden" name="prodid" value="<?php echo $id; ?>">
+                                        <input type="hidden" name="orderid" value="<?php echo $_POST['orderID']; ?>">
                                         <div class="text-center">
                                           <p>
-                                            <h6>Remove Job Order?</h6>
+                                            <h6>Create invoice for Order?</h6>
                                             <br>
-                                            <h6>Note: This action will remove the job order from the list!</h6>
+                                            <h6>Note: This action will make an invoice for the order specified!</h6><br>
+
                                           </p>
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="submit" name="remove" class="btn btn-primary">Continue</button>
+                                            <button type="submit" name="out" class="btn btn-primary">Continue</button>
                                             <button type="button" class="btn btn-default btn-outline-secondary" data-dismiss="modal">Close</button>
                                         </div>
                                     </div>
                             </form>
                             </div>
+                        </div>
+                    </div>
+
+                    <div id="finish<?php echo $id; ?>" class="modal fade" role="dialog">
+                        <div class="modal-dialog">
+                            <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
+                                <!-- Modal content-->
+                                <div class="modal-content">
+
+                                    <div class="modal-header">
+                                        <h4>Notice</h4>
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    </div>
+
+                                    <div class="modal-body">
+                                        <input type="hidden" name="prodid" value="<?php echo $row['productID']; ?>">
+                                        <input type="hidden" name="orderID" value="<?php echo $row['orderID']; ?>">
+
+                                        <div>
+                                          <p>
+                                            <h5>Finished production for <strong><?php echo $id; ?>?</strong></h5>
+                                            <br>
+                                          </p>
+                                        </div>
+                                        <label>Total Yield:</label></br>
+                                          <input type="number" name="yield" class="form-control" required>
+                                        </br>
+                                        <label>Total Good:</label></br>
+                                          <input type="number" name="good" class="form-control" required>
+                                        </br>
+                                        <label>Total Loss:</label></br>
+                                          <input type="number" name="loss" class="form-control" required>
+                                        </br>
+                                        <div class="modal-footer">
+                                            <button type="submit" name="add" class="btn btn-primary">Confirm</button>
+                                            <button type="button" class="btn btn-default btn-outline-secondary" data-dismiss="modal">Cancel</button>
+                                        </div>
+                                    </div>
+                            </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="check<?php echo $id; ?>" class="modal fade" role="dialog">
+                        <div class="modal-dialog">
+                          <form method="post">
+                              <div class="modal-content">
+
+                                  <div class="modal-header">
+                                      <h4>Notice</h4>
+                                      <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                  </div>
+
+                                  <div class="modal-body">
+                                      <input type="hidden" name="order_id" value="<?php echo $row['orderID']; ?>">
+                                      <input type="hidden" name="mach_id" value="<?php echo $row['machineID']; ?>">
+                                      <input type="hidden" name="prod_id" value="<?php echo $row['productID']; ?>">
+                                      <input type="hidden" name="status" value="<?php echo $row['status']; ?>">
+                                      <div class="text-center">
+                                        <p>
+                                          <h6>Finished?</h6>
+                                          <br>
+                                          <h6>Note: This action will continue to the next product process!</h6><br>
+
+                                        </p>
+                                      </div>
+                                      <div class="modal-footer">
+                                          <button type="submit" name="check" class="btn btn-primary">Continue</button>
+                                          <button type="button" class="btn btn-default btn-outline-secondary" data-dismiss="modal">Close</button>
+                                      </div>
+                                  </div>
+                          </form>
                         </div>
                     </div>
                   <?php

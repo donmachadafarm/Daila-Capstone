@@ -75,8 +75,8 @@
                               echo $name;
                           echo '</td>';
 
-                          echo '<td class="text-center">';
-                            echo $price;
+                          echo '<td class="text-right">';
+                            echo number_format($price,2);
                           echo '</td>';
 
                           echo '<td class="text-center">';
