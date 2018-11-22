@@ -96,7 +96,7 @@ if (isset($_POST['update'])) {
         <div class="col-lg-12">
             <table class="table table-borderless" id="dataTables-example">
                 <tr>
-                    <td>Total Cost for PO: <b><?php echo $pricez; ?></b></td>
+                    <td>Total Cost for PO: <b><?php echo number_format($pricez, 2); ?></b></td>
                     <td>Current status of PO: <?php echo $status; ?></td>
                     <td>Purchase Order date posted: <?php echo $date; ?></td>
                     <td>Deadline for supplier: <?php echo $deadline; ?></td>
@@ -161,11 +161,11 @@ if (isset($_POST['update'])) {
                 echo "</td>";
 
                 echo "<td>";
-                echo $ppu;
+                echo number_format($ppu, 2);
                 echo "</td>";
 
                 echo "<td>";
-                echo $sub;
+                echo number_format($sub, 2);
                 echo "</td>";
 
                 echo "<td>";

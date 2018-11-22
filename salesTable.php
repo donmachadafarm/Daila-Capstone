@@ -40,9 +40,9 @@ if (!isset($_SESSION['userType'])){
                 <thead>
                 <tr>
                     <th>Product Name</th>
-                    <th>Times Ordered</th>
+                    <th>Units Sold</th>
                     <th>Price Per Unit</th>
-                    <th>Total Price</th>
+                    <th>Gross Sales</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -50,13 +50,13 @@ if (!isset($_SESSION['userType'])){
                 if (isset($_POST['search'])){
                     $startDate = $_POST['startDate'];
                     $endDate = $_POST['endDate'];
-                    $result = mysqli_query($conn, "SELECT product.name as name, COUNT(*) as 'times ordered', product.productPrice AS 'unitPrice', SUM(productsales.subTotal) as 'total sales' 
+                    $result = mysqli_query($conn, "SELECT product.name as name, SUM(productsales.quantity) as 'products sold', product.productPrice AS 'unitPrice', SUM(productsales.subTotal) as 'total sales' 
                                                 FROM productsales
                                                 JOIN product on productsales.productID=product.productID
                                                 JOIN sales on productsales.salesID=sales.salesID
                                                 WHERE sales.saleDate BETWEEN '$startDate' AND '$endDate'
                                                 GROUP BY product.name
-                                                ORDER BY `times ordered`  DESC");
+                                                ORDER BY `total sales`  DESC");
                     $count=mysqli_num_rows($result);
 
                     $result2 = mysqli_query($conn, "SELECT SUM(subTotal) as subTotal 
@@ -82,7 +82,7 @@ if (!isset($_SESSION['userType'])){
                         while ($row = mysqli_fetch_array($result)) {
 
                             $name = $row['name'];
-                            $times = $row['times ordered'];
+                            $times = $row['products sold'];
                             $unitPrice = $row['unitPrice'];
                             $totalPrice = $row['total sales'];
 
@@ -97,11 +97,11 @@ if (!isset($_SESSION['userType'])){
                             echo '</td>';
 
                             echo '<td class="text-center">';
-                            echo $unitPrice;
+                            echo number_format($unitPrice, 2);
                             echo '</td>';
 
                             echo '<td class="text-center">';
-                            echo $totalPrice;
+                            echo number_format($totalPrice, 2);
                             echo '</td>';
 
                             echo '</tr>';
@@ -111,12 +111,12 @@ if (!isset($_SESSION['userType'])){
                 }
 
                 else{
-                    $result = mysqli_query($conn, "SELECT product.name as name, COUNT(*) as 'times ordered', product.productPrice AS 'unitPrice', SUM(productsales.subTotal) as 'total sales'
+                    $result = mysqli_query($conn, "SELECT product.name as name, SUM(productsales.quantity) as 'products sold', product.productPrice AS 'unitPrice', SUM(productsales.subTotal) as 'total sales'
                                                 FROM productsales
                                                 JOIN product on productsales.productID=product.productID
                                                 JOIN sales on productsales.salesID=sales.salesID
                                                 GROUP BY product.name
-                                                ORDER BY `times ordered`  DESC");
+                                                ORDER BY `total sales`  DESC");
                     $count=mysqli_num_rows($result);
 
                     $result2 = mysqli_query($conn, "SELECT SUM(subTotal) as subTotal
@@ -135,7 +135,7 @@ if (!isset($_SESSION['userType'])){
                         while ($row = mysqli_fetch_array($result)) {
 
                             $name = $row['name'];
-                            $times = $row['times ordered'];
+                            $times = $row['products sold'];
                             $unitPrice = $row['unitPrice'];
                             $totalPrice = $row['total sales'];
 
@@ -150,11 +150,11 @@ if (!isset($_SESSION['userType'])){
                             echo '</td>';
 
                             echo '<td class="text-center">';
-                            echo $unitPrice;
+                            echo number_format($unitPrice, 2);
                             echo '</td>';
 
                             echo '<td class="text-center">';
-                            echo $totalPrice;
+                            echo number_format($totalPrice, 2);
                             echo '</td>';
 
                             echo '</tr>';
@@ -170,7 +170,7 @@ if (!isset($_SESSION['userType'])){
             <div class="container">
                 <div class="row">
                     <div class="col-lg-12">
-                        <h4 class="text-right">Total Sales: <?php echo $totalSale ?></h4>
+                        <h4 class="text-right">Total Sales: <?php echo number_format($totalSale, 2) ?></h4>
                     </div>
                 </div>
             </div>

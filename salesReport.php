@@ -117,12 +117,12 @@ else{
         ])
 
         var options = {
-            title: 'Total Orders Per Item',
+            title: 'Units Sold',
             pieHole: 0
         };
 
         var options2 = {
-            title: 'Total Sales Per Item (Pesos)',
+            title: 'Gross Sales',
             pieHole: 0
         };
 

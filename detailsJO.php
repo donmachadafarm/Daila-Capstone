@@ -73,7 +73,7 @@ if (!isset($_SESSION['userType'])){
                 </div>
 
                 <div class="col text-center">
-                    <h5>Total Order Price: <?php echo $TOTAL ?></h5>
+                    <h5>Total Order Price: <?php echo number_format($TOTAL, 2) ?></h5>
                 </div>
             </div>
         </div>
@@ -128,11 +128,11 @@ if (!isset($_SESSION['userType'])){
                             echo '</td>';
 
                             echo '<td class="text-center">';
-                                echo $price;
+                                echo number_format($price, 2);
                             echo '</td>';
 
                             echo '<td class="text-center">';
-                                echo $total;
+                                echo number_format($total, 2);
                             echo '</td>';
 
                         echo '</tr>';

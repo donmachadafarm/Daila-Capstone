@@ -22,7 +22,7 @@ if (!isset($_SESSION['userType'])){
     <div class="row">
         <div class="col-lg-12">
             <h1 class="text-center"><br><br>
-                Per Item Purchase Order Report
+                Purchase Order Report
             </h1>
             <h6 class="text-center">
                 Enter a Date Range
@@ -110,7 +110,7 @@ if (!isset($_SESSION['userType'])){
                             echo '</td>';
 
                             echo '<td class="text-center">';
-                            echo $total;
+                            echo number_format($total, 2);
                             echo '</td>';
 
                             echo '<td class="text-center">';
@@ -166,7 +166,7 @@ if (!isset($_SESSION['userType'])){
                         echo '</td>';
 
                         echo '<td class="text-center">';
-                        echo $total;
+                        echo number_format($total, 2);
                         echo '</td>';
 
                         echo '<td class="text-center">';
@@ -183,7 +183,7 @@ if (!isset($_SESSION['userType'])){
             <div class="container">
                 <div class="row">
                     <div class="col-lg-12">
-                        <h4 class="text-right">Total Expense: <?php echo $sum ?></h4>
+                        <h4 class="text-right">Total Expense: <?php echo number_format($sum, 2) ?></h4>
                     </div>
                 </div>
             </div>

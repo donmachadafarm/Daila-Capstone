@@ -61,6 +61,11 @@ if (!isset($_SESSION['userType'])){
                                                     AND joborder.type = 'Made to Stock'");
                     $count=mysqli_num_rows($result);
 
+                    $result2 = mysqli_query($conn, "SELECT SUM(joborder.totalPrice) AS sum
+                                                    FROM joborder
+                                                    WHERE joborder.orderDate BETWEEN '$startDate' AND '$endDate'
+                                                    AND joborder.type = 'Made to Stock'");
+
                     if ($count == "0"){
                         echo '<h2 class="text-center">No transactions within the specified range</h2>';
                     }
@@ -71,6 +76,10 @@ if (!isset($_SESSION['userType'])){
                         echo ' and ';
                         echo $endDate;
                         echo '</h2><br>';
+
+                        while ($row = mysqli_fetch_array($result2)) {
+                            $sum = $row['sum'];
+                        }
 
                         while ($row = mysqli_fetch_array($result)) {
 
@@ -92,7 +101,7 @@ if (!isset($_SESSION['userType'])){
                             echo '</td>';
 
                             echo '<td class="text-center">';
-                            echo $totalPrice;
+                            echo number_format($totalPrice, 2);
                             echo '</td>';
 
                             echo '<td class="text-center">';
@@ -115,10 +124,18 @@ if (!isset($_SESSION['userType'])){
                                                     WHERE joborder.type = 'Made to Stock'");
                     $count=mysqli_num_rows($result);
 
+                    $result2 = mysqli_query($conn, "SELECT SUM(joborder.totalPrice) AS sum
+                                                    FROM joborder
+                                                    WHERE joborder.type = 'Made to Stock'");
+
                     if ($count == "0"){
                         echo '<h2 class="text-center">There are no transactions yet</h2>';
                     }
                     else {
+
+                        while ($row = mysqli_fetch_array($result2)) {
+                            $sum = $row['sum'];
+                        }
 
                         while ($row = mysqli_fetch_array($result)) {
 
@@ -140,7 +157,7 @@ if (!isset($_SESSION['userType'])){
                             echo '</td>';
 
                             echo '<td class="text-center">';
-                            echo $totalPrice;
+                            echo number_format($totalPrice, 2);
                             echo '</td>';
 
                             echo '<td class="text-center">';
@@ -156,6 +173,15 @@ if (!isset($_SESSION['userType'])){
                 ?>
                 </tbody>
             </table>
+
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h4 class="text-right">Total Revenue: <?php echo number_format($sum, 2) ?></h4>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
