@@ -414,7 +414,7 @@ function start_production($conn,$orderid){
 }
 
 function check_for_out($conn,$orderid){
-  $query = "SELECT count(*) FROM Production WHERE orderID = $orderid";
+  $query = "SELECT count(*) FROM ProductionProcess WHERE orderID = $orderid";
 
   $sql = mysqli_query($conn,$query);
 
@@ -422,7 +422,7 @@ function check_for_out($conn,$orderid){
 
   $count = $row[0];
 
-  $query = "SELECT count(*) FROM Production WHERE status = 'Finished' AND orderID = $orderid";
+  $query = "SELECT count(*) FROM ProductionProcess WHERE status = 'Added' AND orderID = $orderid";
 
   $sql = mysqli_query($conn,$query);
 

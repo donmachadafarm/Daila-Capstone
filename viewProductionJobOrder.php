@@ -25,6 +25,66 @@
 
   }
 
+  if (isset($_POST['out'])) {
+    $orderid = $_POST['orderid'];
+    $date = date('Y-m-d');
+
+    $query = "INSERT INTO Sales (orderID,saleDate,totalPrice) VALUES ($orderid,'$date',0)";
+
+      mysqli_query($conn,$query);
+
+    $query = "SELECT * FROM Sales ORDER BY salesID DESC LIMIT 1";
+
+      $sql = mysqli_query($conn,$query);
+
+      $row = mysqli_fetch_array($sql);
+
+    $salesid = $row['salesID'];
+
+    $query = "SELECT * FROM Receipt  WHERE orderID = $orderid";
+
+    $sql = mysqli_query($conn,$query);
+
+    $arrprod = array();
+    $arrqty = array();
+    while ($row = mysqli_fetch_array($sql)) {
+      $prod = $row['productID'];
+      $qty = $row['quantity'];
+      array_push($arrprod,$prod);
+      array_push($arrqty,$qty);
+    }
+
+    $count = count($arrprod);
+    $total = 0;
+
+    for ($i=0; $i < $count; $i++) {
+      $sql = mysqli_query($conn,"SELECT * FROM Product WHERE productID = $arrprod[$i]");
+
+      $row = mysqli_fetch_array($sql);
+
+      $subtotal = $arrqty[$i] * $row['productPrice'];
+
+      $query1 = "INSERT INTO ProductSales(productID,salesID,quantity,subTotal) VALUES('{$arrprod[$i]}','{$salesid}','{$arrqty[$i]}','{$subtotal}')";
+
+        $sql = mysqli_query($conn,$query1);
+
+        $total += $subtotal;
+
+      $query2 = "UPDATE Product SET quantity = quantity - '{$arrqty[$i]}' WHERE productID = '{$arrprod[$i]}'";
+
+        mysqli_query($conn,$query2);
+
+
+      }
+      $query3 = "UPDATE Sales SET totalPrice = $total WHERE salesID = $salesid";
+
+        mysqli_query($conn,$query3);
+
+      $query4 = "UPDATE JobOrder SET status = 'Finished' WHERE orderID = $orderid";
+
+        mysqli_query($conn,$query4);
+    }
+
 
 
 
@@ -34,7 +94,7 @@
     <div class="row">
         <div class="col-lg-12">
             <h1 class="page-header"><br><br>
-                Job Orders in Production
+                Made to Order - Invoice out
             </h1>
         </div>
     </div>
@@ -44,8 +104,6 @@
                 <thead>
                 <tr>
                     <th class="text-center">Job Order ID</th>
-                    <th class="text-center">Job Order Type</th>
-                    <th class="text-center">Status</th>
                     <th class="text-center">Due Date</th>
                     <th class="text-center">Action</th>
                 </tr>
@@ -55,17 +113,15 @@
                 <?php
                 if($result = mysqli_query($conn,'SELECT JobOrder.orderID AS ID,
                                                         JobOrder.dueDate AS duedate,
-                                                        JobOrder.type AS type,
                                                         JobOrder.status AS status
                                                 FROM JobOrder
-                                                WHERE JobOrder.status = "Incomplete" OR JobOrder.status = "Complete"')){
+                                                WHERE JobOrder.status = "For Out" AND JobOrder.type = "Made to Stock"')){
 
 
                     while($row = mysqli_fetch_array($result)){
                         $id = $row['ID'];
                         $status = $row['status'];
                         $duedate = $row['duedate'];
-                        $type = $row['type'];
 
                         echo '<tr>';
                           echo '<td class="text-center">';
@@ -73,31 +129,14 @@
                           echo '</td>';
 
                           echo '<td class="text-center">';
-                              echo $type;
-                          echo '</td>';
-
-                          echo '<td class="text-center">';
-                            echo $status;
-                          echo'</td>';
-
-                          echo '<td class="text-center">';
                             echo $duedate;
                           echo'</td>';
 
                           echo '<td class="text-center">';
-                          if ($status == 'Incomplete') {
-                            echo '<a href="viewIndivProdJO.php?id='.$id.'"><button type="button" class="btn btn-primary btn-sm">Details</button></a>  ';
-                          }else if($status == 'Complete' && $type == 'Made to Order') {
-                            echo '<a href="#out'.$id.'" data-target="#out'.$id.'" data-toggle="modal">
-                              <button type="button" class="btn btn-secondary btn-sm">
-                                Out
-                              </button></a>  ';
-                          }else if($status == 'Complete' && $type == 'Made to Stock'){
-                            echo '<a href="#remove'.$id.'" data-target="#remove'.$id.'" data-toggle="modal">
-                              <button type="button" class="btn btn-secondary btn-sm">
-                                Remove
-                              </button></a>  ';
-                          }
+                              echo '<a href="#out'.$id.'" data-target="#out'.$id.'" data-toggle="modal">
+                                <button type="button" class="btn btn-secondary btn-sm">
+                                  Out
+                                </button></a>  ';
                           echo '</td>';
 
                         echo '</tr>';
@@ -105,56 +144,77 @@
                           ?>
 
                           <!-- modal -->
-                          <div id="out<?php echo $id; ?>" class="modal fade" role="dialog">
-                              <div class="modal-dialog">
-                                      <div class="modal-content">
 
-                                          <div class="modal-header">
-                                              <h4>Notice</h4>
-                                              <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                          </div>
+              <div id="out<?php echo $id; ?>" class="modal fade" role="dialog">
+                  <div class="modal-dialog">
+                    <form method="post">
+                          <div class="modal-content">
 
-                                          <div class="modal-body">
-                                            <h5 class="text-center">Lacking ingredients on the following products:</h5>
-                                              <?php print_p(get_need_inventory($conn,$id)); ?>
-
-                                          </div>
-                                          <div class="modal-footer">
-                                              <button type="button" class="btn btn-default btn-outline-secondary" data-dismiss="modal">Close</button>
-                                          </div>
-
-                                      </div>
+                              <div class="modal-header">
+                                  <h4>Notice</h4>
+                                  <button type="button" class="close" data-dismiss="modal">&times;</button>
                               </div>
-                          </div>
 
-                          <div id="remove<?php echo $id; ?>" class="modal fade" role="dialog">
-                              <div class="modal-dialog">
-                                  <form method="post">
-                                      <div class="modal-content">
+                              <div class="modal-body">
+                                <input type="hidden" name="orderid" value="<?php echo $id; ?>">
+                                <h6>Create invoice for Order?</h6>
+                                  <br>
+                                  <h6>Note: This action will make an invoice for the order specified!</h6><br>
 
-                                          <div class="modal-header">
-                                              <h4>Notice</h4>
-                                              <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                          </div>
+                                    <div class="row">
+                                      <div class="col text-center">
+                                        Name
+                                      </div>
+                                      <div class="col text-center">
+                                        Quantity
+                                      </div>
+                                      <div class="col text-center">
+                                        Subtotal
+                                      </div>
+                                    </div>
+                                      <?php
+                                      $query1 = "SELECT Product.name,Receipt.quantity,Receipt.subTotal
+                                                  FROM Receipt
+                                                  JOIN Product ON Product.productID = Receipt.productID
+                                                  WHERE Receipt.orderID = $id";
 
-                                          <div class="modal-body">
-                                              <input type="hidden" name="jo_id" value="<?php echo $id; ?>">
-                                              <div class="text-center">
-                                                <p>
-                                                  <h6>Remove Job Order?</h6>
-                                                  <br>
-                                                  <h6>Note: This action will remove the job order from the list!</h6>
-                                                </p>
-                                              </div>
-                                              <div class="modal-footer">
-                                                  <button type="submit" name="remove" class="btn btn-primary">Continue</button>
-                                                  <button type="button" class="btn btn-default btn-outline-secondary" data-dismiss="modal">Close</button>
-                                              </div>
-                                          </div>
-                                  </form>
+                                      $sqld = mysqli_query($conn,$query1);
+
+                                      $total = 0;
+                                      while ($row = mysqli_fetch_array($sqld)) {
+                                        echo '<div class="row">';
+                                          echo '<div class="col text-center">';
+                                              echo $row[0];
+                                          echo '</div>';
+
+                                          echo '<div class="col text-center">';
+                                              echo $row[1];
+                                          echo '</div>';
+
+                                          echo '<div class="col text-center">';
+                                              echo $row[2];
+                                          echo '</div>';
+                                        echo '</div>';
+
+                                        $total += $row[2];
+                                      }
+
+                                       ?>
+
+                                    <?php echo "Total: " . $total; ?>
+                                  </div>
+                                  <div class="modal-footer">
+
+                                      <button type="submit" name="out" class="btn btn-primary">Continue</button>
+                                      <button type="button" class="btn btn-default btn-outline-secondary" data-dismiss="modal">Close</button>
                                   </div>
                               </div>
-                          </div>
+                      </form>
+                      </div>
+                  </div>
+              </div>
+
+
                 <?php
                       }
                     }

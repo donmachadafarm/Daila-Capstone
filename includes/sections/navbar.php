@@ -32,7 +32,7 @@
           <h6 class="dropdown-header text-center"><b> Job Orders </b></h6>
           <!-- Add More Links if needed for every functionality -->
           <!-- <a class="dropdown-item" href="mockJO.php">Compute Delivery Date</a> -->
-          <!-- <a class="dropdown-item" href="viewProductionJobOrder.php">Approved Job Orders</a> -->
+          <a class="dropdown-item" href="viewProductionJobOrder.php">Production Out</a>
           <a class="dropdown-item" href="viewProductionSchedule.php">Production Schedule</a>
 
           <div class="dropdown-divider"></div>

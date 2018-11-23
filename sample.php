@@ -86,8 +86,28 @@ $sql = mysqli_query($conn,"SELECT machineQueue
 // }else {
 //   echo "true";
 // }
-echo check_for_out($conn,154);
-
+echo check_for_out($conn,159);
+// $query = "SELECT * FROM JobOrder WHERE orderID = 159";
+//
+// $sql = mysqli_query($conn,$query);
+//
+// $row = mysqli_fetch_array($sql);
+//
+// if (check_for_out($conn,159)) {
+//   if($row['type'] == 'Made to Order'){
+//     $query = "UPDATE JobOrder SET status = 'For Out' WHERE orderID = 159";
+//
+//     mysqli_query($conn,$query);
+//   }else {
+//     $query = "UPDATE ProductionProcess SET status = 'Added' WHERE orderID = 159 AND productID = 3";
+//
+//     mysqli_query($conn,$query);
+//   }
+// }else {
+//   $query = "UPDATE ProductionProcess SET status = 'Added' WHERE orderID = 159 AND productID = 3";
+//
+//   mysqli_query($conn,$query);
+// }
 
 //
 // $sql = mysqli_query($conn,"");

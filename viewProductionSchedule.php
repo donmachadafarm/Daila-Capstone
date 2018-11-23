@@ -39,10 +39,47 @@
         mysqli_query($conn,$query3);
       }
 
+      $query = "UPDATE ProductionProcess SET status = 'Added' WHERE orderID = $ordid AND productID = $pid";
 
-    $query = "UPDATE ProductionProcess SET status = 'Added' WHERE orderID = $ordid AND productID = $pid";
+      mysqli_query($conn,$query);
 
-    mysqli_query($conn,$query);
+
+    // reorder the queue for the waiting machines
+    $query = "SELECT * FROM ProductionProcess WHERE processSequence = 1 AND status = 'Wait' AND productID = $pid ORDER BY machineQueue DESC LIMIT 1";
+
+    $sql = mysqli_query($conn,$query);
+
+    $row = mysqli_fetch_array($sql);
+
+    $nextorder = $row['orderID'];
+    if(mysqli_num_rows($sql)>0){
+      $query = "UPDATE ProductionProcess SET machineQueue = machineQueue - 1 WHERE productID = $pid";
+
+        mysqli_query($conn,$query);
+
+
+      $query = "UPDATE ProductionProcess SET status = 'Ongoing' WHERE orderID = $nextorder AND productID = $pid AND processSequence = 1";
+
+        mysqli_query($conn,$query);
+    }
+
+    $query = "SELECT * FROM JobOrder WHERE orderID = $ordid";
+
+    $sql = mysqli_query($conn,$query);
+
+    $row = mysqli_fetch_array($sql);
+
+    if (check_for_out($conn,$ordid)) {
+      if($row['type'] == 'Made to Order'){
+        $query = "UPDATE JobOrder SET status = 'For Out' WHERE orderID = $ordid";
+
+        mysqli_query($conn,$query);
+      }else {
+        $query = "UPDATE JobOrder SET status = 'Finished' WHERE orderID = $ordid";
+
+        mysqli_query($conn,$query);
+      }
+    }
 
       echo "<script>
         alert('Products are added to inventory!');
@@ -60,14 +97,18 @@
     $proid = $_POST['prod_id'];
     $stats = $_POST['status'];
 
+
+    // update the production process for that row ng specific order machine id at productid  "Ongoing" - > "Done"
     $query = "UPDATE ProductionProcess SET status = 'Done' WHERE orderID = $ordid AND machineID = $macid AND productID = $proid AND status = 'Ongoing'";
 
     mysqli_query($conn,$query);
 
+    // GETS THE NEXT MACHINE FOR THE SEQUENCE
     $sql = mysqli_query($conn,"SELECT machineID FROM ProductionProcess WHERE orderID = $ordid AND productID = $proid AND status = 'Wait' ORDER BY processSequence LIMIT 1");
 
     $row = mysqli_fetch_array($sql);
 
+    // CHECKS IF THERE IS STILL SOME MACHINE IN QUEUE FOR THE PRODUCTION PROCESS
     if(isset($row)){
         $query = "UPDATE ProductionProcess SET status = 'Ongoing' WHERE orderID = $ordid AND machineID = $row[0] AND productID = $proid AND status = 'Wait'";
 
@@ -79,13 +120,9 @@
 
         mysqli_query($conn,"UPDATE ProductionProcess SET status = 'Finish' WHERE orderID = $ordid AND machineID = $row[0] AND productID = $proid AND status = 'Done'");
 
-
     }
   }
 
-  if (isset($_POST['out'])) {
-
-  }
 
   if(isset($_POST['delayed'])){
 
@@ -161,25 +198,19 @@
 
                           echo '<td class="text-center">';
                             echo '<a href="#delay'.$id.'" data-target="#delay'.$id.'" data-toggle="modal"><button type="button" class="btn btn-warning btn-sm">Delay</button></a>';
-                            if (!check_complete_proc($conn,$row['orderID'],$row['productID'])) {
-                              // finish button na mag sabi tapos na process
-                              echo '<a href="#check'.$id.'" data-target="#check'.$id.'" data-toggle="modal">
-                                <button type="button" class="btn btn-success btn-sm">
-                                  Finish
-                                </button></a>  ';
-                            } else {
-                              // finish button for final add ng product
-                              echo '<a href="#finish'.$id.'" data-target="#finish'.$id.'" data-toggle="modal">
-                                <button type="button" class="btn btn-success btn-sm">
-                                  Finish
-                                </button></a>  ';
-                            }
-                            if (check_for_out($conn,$row['orderID'])) {
-                              echo '<a href="#out'.$id.'" data-target="#out'.$id.'" data-toggle="modal">
-                                <button type="button" class="btn btn-secondary btn-sm">
-                                  Out
-                                </button></a>  ';
-                            }
+                              if (!check_complete_proc($conn,$row['orderID'],$row['productID'])) {
+                                // finish button na mag sabi tapos na process
+                                echo '<a href="#check'.$id.'" data-target="#check'.$id.'" data-toggle="modal">
+                                  <button type="button" class="btn btn-success btn-sm">
+                                    Finish
+                                  </button></a>  ';
+                              } else {
+                                // finish button for final add ng product
+                                echo '<a href="#finish'.$id.'" data-target="#finish'.$id.'" data-toggle="modal">
+                                  <button type="button" class="btn btn-success btn-sm">
+                                    Finish
+                                  </button></a>  ';
+                              }
                           echo '</td>';
 
                         echo '</tr>';
@@ -195,89 +226,21 @@
                                     </div>
 
                                     <div class="modal-body">
-                                        <input type="hidden" name="jo_id" value="<?php echo $id; ?>">
+                                        <input type="hidden" name="prodid" value="<?php echo $id; ?>">
+                                        <input type="hidden" name="ordeid" value="<?php echo $row['orderID']; ?>">
+                                        <input type="hidden" name="machid" value="<?php echo $row['machineID']; ?>">
+
                                         <div class="text-center">
                                           <p>
-                                            <h6>Approve Order?</h6>
+                                            <h6>Delayed?</h6>
                                             <br>
                                             <h6>Note: This action will put the Job Order in production!</h6><br>
-
+                                            <input type="time" name="time">
                                           </p>
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="submit" name="approve" class="btn btn-primary">Continue</button>
+                                            <button type="submit" name="delayed" class="btn btn-primary">Continue</button>
                                             <button type="button" class="btn btn-default btn-outline-secondary" data-dismiss="modal">Close</button>
-                                        </div>
-                                    </div>
-                            </form>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="out<?php echo $id; ?>" class="modal fade" role="dialog">
-                        <div class="modal-dialog">
-                            <form method="post">
-                                <div class="modal-content">
-
-                                    <div class="modal-header">
-                                        <h4>Notice</h4>
-                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                    </div>
-
-                                    <div class="modal-body">
-                                        <input type="hidden" name="prodid" value="<?php echo $id; ?>">
-                                        <input type="hidden" name="orderid" value="<?php echo $_POST['orderID']; ?>">
-                                        <div class="text-center">
-                                          <p>
-                                            <h6>Create invoice for Order?</h6>
-                                            <br>
-                                            <h6>Note: This action will make an invoice for the order specified!</h6><br>
-
-                                          </p>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="submit" name="out" class="btn btn-primary">Continue</button>
-                                            <button type="button" class="btn btn-default btn-outline-secondary" data-dismiss="modal">Close</button>
-                                        </div>
-                                    </div>
-                            </form>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="finish<?php echo $id; ?>" class="modal fade" role="dialog">
-                        <div class="modal-dialog">
-                            <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
-                                <!-- Modal content-->
-                                <div class="modal-content">
-
-                                    <div class="modal-header">
-                                        <h4>Notice</h4>
-                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                    </div>
-
-                                    <div class="modal-body">
-                                        <input type="hidden" name="prodid" value="<?php echo $row['productID']; ?>">
-                                        <input type="hidden" name="orderID" value="<?php echo $row['orderID']; ?>">
-
-                                        <div>
-                                          <p>
-                                            <h5>Finished production for <strong><?php echo $id; ?>?</strong></h5>
-                                            <br>
-                                          </p>
-                                        </div>
-                                        <label>Total Yield:</label></br>
-                                          <input type="number" name="yield" class="form-control" required>
-                                        </br>
-                                        <label>Total Good:</label></br>
-                                          <input type="number" name="good" class="form-control" required>
-                                        </br>
-                                        <label>Total Loss:</label></br>
-                                          <input type="number" name="loss" class="form-control" required>
-                                        </br>
-                                        <div class="modal-footer">
-                                            <button type="submit" name="add" class="btn btn-primary">Confirm</button>
-                                            <button type="button" class="btn btn-default btn-outline-secondary" data-dismiss="modal">Cancel</button>
                                         </div>
                                     </div>
                             </form>
@@ -316,6 +279,56 @@
                           </form>
                         </div>
                     </div>
+                  </div>
+
+                  <div id="finish<?php echo $id; ?>" class="modal fade" role="dialog">
+                      <div class="modal-dialog">
+                          <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
+                              <!-- Modal content-->
+                              <div class="modal-content">
+
+                                  <div class="modal-header">
+                                      <h4>Notice</h4>
+                                      <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                  </div>
+
+                                  <div class="modal-body">
+                                      <input type="hidden" name="prodid" value="<?php echo $row['productID']; ?>">
+                                      <input type="hidden" name="orderID" value="<?php echo $row['orderID']; ?>">
+
+                                      <?php
+                                        $oi = $row['orderID'];
+                                        $query = "SELECT Product.name,Receipt.quantity FROM Receipt JOIN Product ON Product.productID = Receipt.productID WHERE Product.productID = $id AND Receipt.orderID = $oi";
+
+                                        $sql = mysqli_query($conn,$query);
+
+                                        $row = mysqli_fetch_array($sql);
+                                       ?>
+                                      <div>
+                                        <p>
+                                          <h5>Finished production for <strong><?php echo $row['name']; ?>?</strong></h5>
+                                          <br>
+                                          <h5>Order needs: <?php echo round($row['quantity']+($row['quantity']*0.01)); ?></h5>
+                                        </p>
+                                      </div>
+                                      <label>Total Yield:</label></br>
+                                        <input type="number" name="yield" class="form-control" required>
+                                      </br>
+                                      <label>Total Good:</label></br>
+                                        <input type="number" name="good" class="form-control" required>
+                                      </br>
+                                      <label>Total Loss:</label></br>
+                                        <input type="number" name="loss" class="form-control" required>
+                                      </br>
+                                      <div class="modal-footer">
+                                          <button type="submit" name="add" class="btn btn-primary">Confirm</button>
+                                          <button type="button" class="btn btn-default btn-outline-secondary" data-dismiss="modal">Cancel</button>
+                                      </div>
+                                  </div>
+                          </form>
+                          </div>
+                      </div>
+                  </div>
                   <?php
                 }
                   }
@@ -327,7 +340,7 @@
 
 
 
-        </div>
+
     </div>
 </div>
 

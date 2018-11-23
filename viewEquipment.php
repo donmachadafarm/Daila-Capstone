@@ -65,7 +65,7 @@
                 $result = mysqli_query($conn,'SELECT machine.machineID,
                                                      machine.name,
                                                      machine.status,
-                                                     machine.hoursWorked,
+                                                     machine.timesUsed,
                                                      machine.acquiredDate,
                                                      processtype.name AS procname
                                                 FROM machine
@@ -76,7 +76,7 @@
                     $id = $row['machineID'];
                     $name = $row['name'];
                     $status = $row['status'];
-                    $hoursWorked = $row['hoursWorked'];
+                    $timesused = $row['timesUsed'];
                     $acquiredDate = $row['acquiredDate'];
                     $proctype = $row['procname'];
 
@@ -96,7 +96,7 @@
                       echo'</td>';
 
                       echo '<td class="text-center">';
-                        echo $hoursWorked;
+                        echo $timesused;
                       echo'</td>';
 
                       echo '<td class="text-center">';
