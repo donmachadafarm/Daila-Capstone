@@ -32,6 +32,44 @@
               <div class="panel panel-default">
 
                   <div class="panel-body"><br>
+                  <?php
+                      if (isset($_GET['id'])) {
+                        $id = $_GET['id'];
+
+                        $inv = get_need_inventory($conn,$id);
+                          $count = count($inv);
+
+                          for ($i=0; $i < $count; $i++) {
+                            $ing = $inv[$i]['ingredientid'];
+                            $nid = $inv[$i]['needquantityforPO'];
+                            $pro = $inv[$i]['productid'];
+
+                            $sql = mysqli_query($conn,"SELECT * FROM Product WHERE productID = $pro");
+
+                            $row = mysqli_fetch_array($sql);
+
+                            $name = $row['name'];
+
+                            $sql1 = mysqli_query($conn,"SELECT * FROM Ingredient WHERE ingredientID = $ing");
+
+                            $rowe = mysqli_fetch_array($sql1);
+
+                            $ingname = $rowe['name'];
+
+                            echo "<div class='row'>";
+                              echo "<div class='col'>";
+                                echo "$name";
+                              echo "</div>";
+                              echo "<div class='col'>";
+                                echo "$ingname";
+                              echo "</div>";
+                              echo "<div class='col'>";
+                                echo "$nid";
+                              echo "</div>";
+                            echo "</div>";
+                          }
+                      }
+                       ?>
                     <form action="postPurchaseOrder.php" method="GET">
                      <div class="form-group">
                         <p class="form-control-static">

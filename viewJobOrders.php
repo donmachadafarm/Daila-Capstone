@@ -171,8 +171,52 @@
 
                                     <div class="modal-body">
                                       <h5 class="text-center">Lacking ingredients on the following products:</h5>
-                                        <?php print_p(get_need_inventory($conn,$id)); ?>
+                                            <div class="row">
+                                              <div class="col">
+                                                Product
+                                              </div>
+                                              <div class="col">
+                                                Ingredient
+                                              </div>
+                                              <div class="col">
+                                                Need Ingredients to fulfill
+                                              </div>
+                                            </div>
+                                        <?php $inv = get_need_inventory($conn,$id);
+                                          $count = count($inv);
 
+                                          for ($i=0; $i < $count; $i++) {
+                                            $ing = $inv[$i]['ingredientid'];
+                                            $nid = $inv[$i]['needquantityforPO'];
+                                            $pro = $inv[$i]['productid'];
+
+                                            $sql = mysqli_query($conn,"SELECT * FROM Product WHERE productID = $pro");
+
+                                            $row = mysqli_fetch_array($sql);
+
+                                            $name = $row['name'];
+
+                                            $sql1 = mysqli_query($conn,"SELECT * FROM Ingredient WHERE ingredientID = $ing");
+
+                                            $rowe = mysqli_fetch_array($sql1);
+
+                                            $ingname = $rowe['name'];
+
+                                            echo "<div class='row'>";
+                                              echo "<div class='col'>";
+                                                echo "$name";
+                                              echo "</div>";
+                                              echo "<div class='col'>";
+                                                echo "$ingname";
+                                              echo "</div>";
+                                              echo "<div class='col'>";
+                                                echo "$nid";
+                                              echo "</div>";
+                                            echo "</div>";
+                                          }
+
+                                        ?>
+                                        <a href="makePurchaseOrder.php?id=<?php echo $id; ?>" class="btn btn-secondary">Proceed to order</a>
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-default btn-outline-secondary" data-dismiss="modal">Close</button>
