@@ -147,7 +147,8 @@
                                             <h6>Approve Order?</h6>
                                             <br>
                                             <h6>Note: This action will put the Job Order in production!</h6><br>
-
+                                            <input type="number" name="" value="" placeholder="OR number" class="form-control"><br>
+                                            <input type="number" name="" value="" placeholder="Amount" class="form-control">
                                           </p>
                                         </div>
                                         <div class="modal-footer">

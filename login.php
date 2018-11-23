@@ -60,7 +60,19 @@ if (isset($_POST['submit'])){
            $_SESSION['userid']=$row["userID"];
            echo "<script>window.location.replace('index.php');</script>";
 
-    } else {
+    } else if ($row["userType"]==102) {
+            $_SESSION['userType']=102;
+            $_SESSION['userid']=$row["userID"];
+             echo "<script>window.location.replace('index.php');</script>";
+    }else if ($row["userType"]==103) {
+            $_SESSION['userType']=103;
+             $_SESSION['userid']=$row["userID"];
+             echo "<script>window.location.replace('index.php');</script>";
+    }else if ($row["userType"]==104) {
+            $_SESSION['userType']=104;
+             $_SESSION['userid']=$row["userID"];
+             echo "<script>window.location.replace('index.php');</script>";
+    }else{
      $message.='<div id="note" class="text-center"><br /><br /><p>Incorrect username or password. Please try again.</p></div>';
     if (isset($_SESSION['badlogin']))
       $_SESSION['badlogin']++;

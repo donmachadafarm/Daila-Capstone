@@ -6,6 +6,7 @@
   </button>
   <div class="collapse navbar-collapse" id="navbarText">
     <ul class="navbar-nav mr-auto">
+      <?php if($_SESSION['userType']!=103): ?>
       <li class="nav-item dropdown">
         <a class="nav-link" href="#" id="navbardrop" data-toggle="dropdown">
           Inventory Management
@@ -24,17 +25,21 @@
           <a class="dropdown-item text-center" href="viewPurchaseOrders.php">View Purchase Orders</a>
         </div>
       </li>
+      <?php endif; ?>
       <li class="nav-item dropdown">
         <a class="nav-link" href="#" id="navbardrop" data-toggle="dropdown">
           Production Management
         </a>
         <div class="dropdown-menu">
+          <?php if($_SESSION['userType']!=103): ?>
           <h6 class="dropdown-header text-center"><b> Job Orders </b></h6>
           <!-- Add More Links if needed for every functionality -->
-          <!-- <a class="dropdown-item" href="mockJO.php">Compute Delivery Date</a> -->
           <a class="dropdown-item" href="viewProductionJobOrder.php">Production Out</a>
+          <?php endif; ?>
+          <?php if($_SESSION['userType']==103): ?>
           <a class="dropdown-item" href="viewProductionSchedule.php">Production Schedule</a>
-
+          <?php endif; ?>
+          <?php if($_SESSION['userType']!=103): ?>
           <div class="dropdown-divider"></div>
           <h6 class="dropdown-header text-center"><b> Products </b></h6>
           <a class="dropdown-item text-center" href="addproduct.php">Add Product</a>
@@ -43,7 +48,10 @@
           <a class="dropdown-item text-center" href="viewJobOrders.php">Pending Job Orders</a>
           <a class="dropdown-item text-center" href="salesInvoice.php">Generate Invoice</a>
         </div>
+          <?php endif; ?>
       </li>
+
+      <?php if($_SESSION['userType'] != 102 && $_SESSION['userType']!=103): ?>
       <li class="nav-item dropdown">
         <a class="nav-link" href="#" id="navbardrop" data-toggle="dropdown">
           Equipment Monitoring
@@ -54,7 +62,9 @@
           <a class="dropdown-item text-center" href="viewEquipment.php">Machine Monitoring</a>
         </div>
       </li>
+      <?php endif;?>
 
+      <?php if($_SESSION['userType']==104): ?>
       <li class="nav-item dropdown">
         <a class="nav-link" href="#" id="navbardrop" data-toggle="dropdown">Reports</a>
         <div class="dropdown-menu">
@@ -70,9 +80,9 @@
             <h6 class="dropdown-header text-center"><b> Sales Report </b></h6>
             <a class="dropdown-item text-center" href="salesReport.php">Product Sales Chart</a>
             <a class="dropdown-item text-center" href="salesTable.php">Sales Table</a>
-
         </div>
       </li>
+      <?php endif; ?>
     </ul>
 
     <ul class="navbar-nav">
@@ -81,8 +91,10 @@
             <?php echo $_SESSION['username']; ?>
           </a>
           <div class="dropdown-menu dropdown-menu-right">
+            <?php if ($_SESSION['userType'] == 104): ?>
             <a class="dropdown-item" href="addCustomer.php">Add Customer</a>
             <a class="dropdown-item" href="addSupplier.php">Add Supplier</a>
+          <?php endif; ?>
             <div class="dropdown-divider"></div>
             <a class="nav-item nav-link text-center" href="logout.php"><i class="fas fa-power-off"></i> Logout</a>
           </div>
