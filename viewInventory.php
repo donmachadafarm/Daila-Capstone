@@ -11,68 +11,6 @@
 
 <!-- put all the contents here  -->
 
-<div class="container">
-      <div class="row">
-          <div class="col-lg-12">
-              <h1 class="page-header"><br><br>
-                  View Inventory
-              </h1>
-          </div>
-      </div>
-      <div class="row">
-          <div class="col-lg-12">
-                    <table class="table table-bordered table-hover" id="dataTables-example">
-                        <thead>
-                            <tr>
-                                <th>Product Name</th>
-                                <th>Quantity</th>
-                                <th>Type</th>
-                                <th>Price</th>
-                                <th class="text-center">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-
-                        <?php
-                            $result = mysqli_query($conn,'SELECT product.name AS productname,
-                                                                 product.quantity AS quantity,
-                                                                 productType.name AS producttypename,
-                                                                 product.productPrice,
-                                                                 product.productID AS ID
-                                                          FROM product
-                                                          INNER JOIN productType ON product.productTypeID=productType.productTypeID');
-                            while($row = mysqli_fetch_array($result)){
-                              $id = $row['ID'];
-                              $prodName = $row['productname'];
-                              $prodType = $row['producttypename'];
-                              $quantity = $row['quantity'];
-                              $price = $row['productPrice'];
-                                  echo '<tr>';
-                                    echo '<td><a href="viewIndivProduct.php?id='.$id.'">';
-                                      echo $prodName;
-                                    echo '</a></td>';
-                                    echo '<td>';
-                                      echo $quantity;
-                                    echo '</td>';
-                                    echo '<td>';
-                                      echo $prodType;
-                                    echo'</td>';
-                                    echo '<td>';
-                                      echo $price;
-                                    echo'</td>';
-                                    echo '<td class="text-center">';
-                                      echo '<a href="makeJobOrder.php?ids='.$id.'&name='.$prodName.'"><button type="button" class="btn btn-primary btn-sm">Restock</button></a> ';
-                                    echo '</td>';
-                                  echo '</tr>';
-                            }
-                            echo '<br /><br />';
-                            ?>
-                            </tbody></table>
-
-          </div>
-      </div>
-</div>
-<br><br><br>
 
 <div class="container">
       <div class="row">
@@ -98,15 +36,16 @@
                         <tbody>
 
                         <?php
-                            $result = mysqli_query($conn,'SELECT product.name AS productname,
-                                                                product.quantity AS quantity,
-                                                                productType.name AS producttypename,
-                                                                product.productPrice,
-                                                                product.productID AS ID,
+                            $result = mysqli_query($conn,'SELECT product.name AS productname, 
+                                                                product.quantity AS quantity, 
+                                                                productType.name AS producttypename, 
+                                                                product.productPrice, 
+                                                                product.productID AS ID, 
                                                                 ROUND(AVG(productsales.quantity)) AS average
-                                                                FROM product
-                                                                JOIN productType ON product.productTypeID=productType.productTypeID
-                                                                JOIN productsales ON product.productID=productsales.productID
+                                                                FROM product 
+                                                                JOIN productType ON product.productTypeID=productType.productTypeID 
+                                                                JOIN productsales ON product.productID=productsales.productID 
+                                                                
                                                                 GROUP BY product.name ');
 
 
