@@ -180,42 +180,51 @@
                                                 Ingredient
                                               </div>
                                               <div class="col">
-                                                Need Ingredients to fulfill
+                                                Needed Ingredients
                                               </div>
                                             </div>
                                         <?php $inv = get_need_inventory($conn,$id);
                                           $count = count($inv);
+                                          $count2 = getArrCount($inv,1);
+                                          print_p($inv);
+                                          print_p($count);
+                                          print_p($count2);
 
                                           for ($i=0; $i < $count; $i++) {
-                                            $ing = $inv[$i]['ingredientid'];
-                                            $nid = $inv[$i]['needquantityforPO'];
-                                            $pro = $inv[$i]['productid'];
+                                            for ($j = 0; $j < $count2; $j++){
+                                              $ing = $inv[$i][$j]['ingredientid'];
+                                              $nid = $inv[$i][$j]['needquantityforPO'];
+                                              $pro = $inv[$i][$j]['productid'];
 
-                                            $sql = mysqli_query($conn,"SELECT * FROM Product WHERE productID = $pro");
+                                              // print_p($ing);
+                                              // print_p($nid);
+                                              print_p($pro);
 
-                                            $row = mysqli_fetch_array($sql);
-
-                                            $name = $row['name'];
-
-                                            $sql1 = mysqli_query($conn,"SELECT * FROM Ingredient WHERE ingredientID = $ing");
-
-                                            $rowe = mysqli_fetch_array($sql1);
-
-                                            $ingname = $rowe['name'];
-
-                                            echo "<div class='row'>";
-                                              echo "<div class='col'>";
-                                                echo "$name";
-                                              echo "</div>";
-                                              echo "<div class='col'>";
-                                                echo "$ingname";
-                                              echo "</div>";
-                                              echo "<div class='col'>";
-                                                echo "$nid";
-                                              echo "</div>";
-                                            echo "</div>";
+                                              // $sql = mysqli_query($conn,"SELECT * FROM Product WHERE productID = $pro");
+                                              //
+                                              // $row = mysqli_fetch_array($sql);
+                                              //
+                                              // $name = $row['name'];
+                                              //
+                                              // $sql1 = mysqli_query($conn,"SELECT * FROM Ingredient WHERE ingredientID = $ing");
+                                              //
+                                              // $rowe = mysqli_fetch_array($sql1);
+                                              //
+                                              // $ingname = $rowe['name'];
+                                              //
+                                              // echo "<div class='row'>";
+                                              //   echo "<div class='col'>";
+                                              //     echo "$name";
+                                              //   echo "</div>";
+                                              //   echo "<div class='col'>";
+                                              //     echo "$ingname";
+                                              //   echo "</div>";
+                                              //   echo "<div class='col'>";
+                                              //     echo "$nid";
+                                              //   echo "</div>";
+                                              // echo "</div>";
                                           }
-
+                                        }
                                         ?>
                                         <a href="makePurchaseOrder.php?id=<?php echo $id; ?>" class="btn btn-secondary">Proceed to order</a>
                                     </div>

@@ -4,7 +4,7 @@
 
 <?php
   // checks if logged in ung user else pupunta sa logout.php to end session
-  if (!isset($_SESSION['userType']) || $_SESSION['userType']=103){
+  if (!isset($_SESSION['userType'])){
       echo "<script>window.location='logout.php'</script>";
   }
 ?>

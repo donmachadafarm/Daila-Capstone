@@ -31,15 +31,15 @@
           Production Management
         </a>
         <div class="dropdown-menu">
-          <?php if($_SESSION['userType']!=103): ?>
+          <?php if($_SESSION['userType']!=103 || $_SESSION['userType']==104): ?>
           <h6 class="dropdown-header text-center"><b> Job Orders </b></h6>
           <!-- Add More Links if needed for every functionality -->
           <a class="dropdown-item" href="viewProductionJobOrder.php">Production Out</a>
           <?php endif; ?>
-          <?php if($_SESSION['userType']==103): ?>
+          <?php if($_SESSION['userType']==103 || $_SESSION['userType']==104): ?>
           <a class="dropdown-item" href="viewProductionSchedule.php">Production Schedule</a>
           <?php endif; ?>
-          <?php if($_SESSION['userType']!=103): ?>
+          <?php if($_SESSION['userType']!=103  || $_SESSION['userType']==104): ?>
           <div class="dropdown-divider"></div>
           <h6 class="dropdown-header text-center"><b> Products </b></h6>
           <a class="dropdown-item text-center" href="addproduct.php">Add Product</a>

@@ -139,11 +139,6 @@
                          <input type="date" name="deadline" id="txtDate" class="form-control" required>
                        </br>
                      </div>
-                     <div class="col">
-                       <label><strong>Received by user:</strong></label>
-                         <input type="text" readonly class="form-control-plaintext" name="userid" value="<?php echo $_SESSION['username']; ?>">
-                       </br>
-                     </div>
                </div>
                <div class="col-lg-12">
                  <div align="center">

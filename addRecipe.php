@@ -41,7 +41,7 @@
 
         $proid = $row['productID'];
 
-      $count = count($_POST['ingredient']);
+      $count = count(array_unique($_POST['ingredient']));
 
       $ingid=$_POST['ingredient'];
       $qty=$_POST['quantity'];

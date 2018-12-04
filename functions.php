@@ -173,6 +173,18 @@ function seconds_datetime($seconds){
   return gmdate("H:i:s",$seconds);
 }
 
+// count recursive
+function getArrCount ($arr, $depth) {
+      if (!is_array($arr) || !$depth) return 0;
+
+     $res=count($arr);
+
+      foreach ($arr as $in_ar)
+         $res+=getArrCount($in_ar, $depth-1);
+
+      return $res;
+  }
+
 // returns an array(productid,ingredientid,needquantity)
 function get_need_inventory($conn,$orderid){
   $query = "SELECT receipt.productID,
@@ -183,7 +195,9 @@ function get_need_inventory($conn,$orderid){
   $sql = mysqli_query($conn,$query);
   $needstock = array();
   // iterates thru all products in the receipt per joborder
-    while($row = mysqli_fetch_array($sql)){
+    for($j=0;$j<mysqli_num_rows($sql);$j++){
+
+    $row = mysqli_fetch_array($sql);
 
     $id = $row['productID'];
     $recipeqty = $row['quantity'];
@@ -194,14 +208,14 @@ function get_need_inventory($conn,$orderid){
                       Recipe.quantity AS IndivNeedINGQTY,
                       Recipe.quantity*$recipeqty AS NeededIngredientQuantity
                 FROM `Recipe`
-                INNER JOIN Ingredient ON Ingredient.ingredientID = Recipe.ingredientID
+                JOIN Ingredient ON Ingredient.ingredientID = Recipe.ingredientID
                 WHERE Recipe.productID = $id";
 
       $sql1 = mysqli_query($conn,$query1);
 
-
-      $counter = 0;
-      while ($rowed = mysqli_fetch_array($sql1)) {
+      for ($i=0; $i < mysqli_num_rows($sql1); $i++) {
+        $rowed = mysqli_fetch_array($sql1);
+        // print_p($rowed);
         $prodakid = $rowed['ProductID'];
         $ingredid = $rowed['Ingredientid'];
         $oriingid = $rowed['IndivNeedINGQTY'];
@@ -210,12 +224,12 @@ function get_need_inventory($conn,$orderid){
 
         if ($currinvq < $ingquant) {
           $diff = $ingquant - $currinvq;
-          $needstock[$counter]['productid'] = $prodakid;
-          $needstock[$counter]['ingredientid'] = $ingredid;
-          $needstock[$counter]['needquantityforPO'] = $diff;
+          $needstock[$j][$i]['productid'] = $prodakid;
+          $needstock[$j][$i]['ingredientid'] = $ingredid;
+          $needstock[$j][$i]['needquantityforPO'] = $diff;
         }
-        $counter++;
       }
+
     }
     return $needstock;
 }

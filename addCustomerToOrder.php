@@ -11,19 +11,25 @@
 
 <?php
   // Query
-  if (isset($_POST['submit'])){
 
-      $name=$_POST['name'];
-      $email=$_POST['email'];
-      $address=$_POST['address'];
-      $contact=$_POST['number'];
+  if (isset($_POST['continue'])) {
+    $name=$_POST['name'];
+    $email=$_POST['email'];
+    $address=$_POST['address'];
+    $contact=$_POST['number'];
 
     if(!isset($message)){
-      $query="insert into Customer (name,email,address,contactNum) values ('{$name}','{$email}','{$address}','{$contact}')";
+      $query="INSERT INTO Customer (name,email,address,contactNum) VALUES ('{$name}','{$email}','{$address}','{$contact}')";
         if (mysqli_query($conn,$query)) {
 
+          $q = "SELECT * FROM Customer ORDER BY customerID DESC LIMIT 1";
+
+          $sql = mysqli_query($conn,$q);
+
+          $row = mysqli_fetch_array($sql);
+          $c = $row['customerID'];
           echo "<script>
-            alert('Customer $name is created');
+            window.location.replace('postCustomerJobOrder.php?customer=$c');
           </script>";
         }else {
           echo "<script> alert('Failed to Add account!');
@@ -33,7 +39,7 @@
       echo "<script> alert('$message');
             </script>";
     }
-  }/*End of main Submit conditional*/
+  }
 ?>
 
 <!-- put all the contents here  -->
@@ -69,7 +75,7 @@
                               <input type="number" name="number" class="form-control" required>
                             </br>
                         </p>
-                    <input type="submit" name="submit" value="Add Customer" class="btn btn-success"/> <br>
+                    <input type="submit" name="continue" value="Add and order" class="btn btn-success"/>
                     </div>
                     </form>
                   </div>

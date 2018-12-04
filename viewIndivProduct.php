@@ -53,7 +53,7 @@
           </div>
       </div>
       <hr class="style1">
-      
+
       <div class="row">
         <div class="col-lg-12">
           <h3>List of Recipe</h3>
@@ -91,6 +91,58 @@
                       echo "</td>";
                       echo "<td>";
                         echo $uom;
+                      echo "</td>";
+                    echo "</tr>";
+                }
+                 ?>
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+<br><br>
+
+      <div class="row">
+        <div class="col-lg-12">
+          <h3>List of Process to make per piece</h3>
+          <table class="table table-bordered table-hover" id="dataTables-example">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Time to make per piece</th>
+                <th>Sequence</th>
+              </tr>
+            </thead>
+            <tbody>
+
+                <?php
+                $query = "SELECT productProcess.processTypeID AS ptid,
+                                 productProcess.processSequence AS ptsq,
+                                 productProcess.timeNeed AS time,
+                                 processType.name AS name
+                          FROM productProcess
+                          JOIN processType ON processType.processTypeID=productProcess.processTypeID
+                          WHERE productProcess.productID = $id
+                          ORDER BY ptsq ASC";
+
+                $sql = mysqli_query($conn,$query);
+
+                while ($row = mysqli_fetch_array($sql)) {
+                    $name = $row['name'];
+                    $procseq = $row['ptsq'];
+                    $proctid = $row['ptid'];
+                    $time = $row['time'];
+
+                    echo "<tr>";
+                      echo "<td>";
+                        echo $name;
+                      echo "</td>";
+                      echo "<td>";
+                        echo seconds_datetime($time);
+                      echo "</td>";
+                      echo "<td>";
+                        echo $procseq;
                       echo "</td>";
                     echo "</tr>";
                 }
