@@ -87,7 +87,7 @@ $sql = mysqli_query($conn,"SELECT machineQueue
 //   echo "true";
 // }
 // print_p(get_need_inventory($conn,171));
-print_p(check_for_inventory_match($conn,171));
+print_p(check_for_inventory_match($conn,174));
 // echo check_for_out($conn,159);
 // $query = "SELECT * FROM JobOrder WHERE orderID = 159";
 //
