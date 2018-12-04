@@ -115,7 +115,7 @@
                                                         JobOrder.dueDate AS duedate,
                                                         JobOrder.status AS status
                                                 FROM JobOrder
-                                                WHERE JobOrder.status = "For Out" AND JobOrder.type = "Made to Stock"')){
+                                                WHERE JobOrder.status = "For Out" AND JobOrder.type = "Made to Order"')){
 
 
                     while($row = mysqli_fetch_array($result)){

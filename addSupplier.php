@@ -19,7 +19,7 @@
       $duration=$_POST['duration'];
 
     if(!isset($message)){
-      $query="insert into Supplier (name,address,duration) values ('{$name}','{$contact}','{$address}','{$duration}')";
+      $query="insert into Supplier (name,contactNum,address,duration) values ('{$name}','{$contact}','{$address}','{$duration}')";
         if (mysqli_query($conn,$query)) {
 
           echo "<script>

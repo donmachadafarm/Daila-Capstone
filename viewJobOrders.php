@@ -34,7 +34,7 @@
     }
 
     // subtract ingredients per product based on Quantity
-    // reduce_inventory_rawmats_production($conn,$id);
+    reduce_inventory_rawmats_production($conn,$id);
 
     // start production
     start_production($conn,$id);
@@ -187,8 +187,8 @@
                                           $count = count($inv);
                                           $count2 = getArrCount($inv,1);
                                           print_p($inv);
-                                          print_p($count);
-                                          print_p($count2);
+                                          // print_p($count);
+                                          // print_p($count2);
 
                                           for ($i=0; $i < $count; $i++) {
                                             for ($j = 0; $j < $count2; $j++){
@@ -198,7 +198,7 @@
 
                                               // print_p($ing);
                                               // print_p($nid);
-                                              print_p($pro);
+                                              // print_p($pro);
 
                                               // $sql = mysqli_query($conn,"SELECT * FROM Product WHERE productID = $pro");
                                               //

@@ -112,18 +112,21 @@ function array_merge_numeric_values()
 function check_for_inventory_match($conn,$orderid){
   $invgreat = 0;
 
+  // select all from receipt with orderid
   $query = "SELECT receipt.productID,
                    receipt.quantity
             FROM receipt
             WHERE orderID = $orderid";
 
   $sql = mysqli_query($conn,$query);
-
+    // iterates all in products from order
     while($row = mysqli_fetch_array($sql)){
 
+    // assign productid and qty of product
     $id = $row['productID'];
     $recipeqty = $row['quantity'];
 
+    //
     $query1 = "SELECT Recipe.productID AS ProductID,
                       Recipe.ingredientID AS Ingredientid,
                       Ingredient.quantity AS CurrentInventoryQuantity,
@@ -135,7 +138,6 @@ function check_for_inventory_match($conn,$orderid){
 
       $sql1 = mysqli_query($conn,$query1);
 
-      $needstock = array();
       while ($rowed = mysqli_fetch_array($sql1)) {
         $prodakid = $rowed['ProductID'];
         $ingredid = $rowed['Ingredientid'];

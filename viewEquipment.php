@@ -55,7 +55,7 @@
                     <th>Name</th>
                     <th>Process Connected</th>
                     <th>Status</th>
-                    <th>Hours Woked</th>
+                    <th>Times used</th>
                     <th>Action</th>
                 </tr>
                 </thead>
