@@ -6,7 +6,7 @@
   </button>
   <div class="collapse navbar-collapse" id="navbarText">
     <ul class="navbar-nav mr-auto">
-      <?php if($_SESSION['userType']!=103): ?>
+      <?php if($_SESSION['userType']!=103 && $_SESSION['userType']!=100): ?>
       <li class="nav-item dropdown">
         <a class="nav-link" href="#" id="navbardrop" data-toggle="dropdown">
           Inventory Management
@@ -29,10 +29,12 @@
           <div class="dropdown-divider"></div>
           <h6 class="dropdown-header text-center"><b> Products </b></h6>
           <a class="dropdown-item text-center" href="addproduct.php">Add Product</a>
+
           <a class="dropdown-item text-center" href="viewInventory.php">View Products</a>
         </div>
       </li>
       <?php endif; ?>
+      <?php if($_SESSION['userType']!=100): ?>
       <li class="nav-item dropdown">
         <a class="nav-link" href="#" id="navbardrop" data-toggle="dropdown">
           Production Management
@@ -54,7 +56,7 @@
         </div>
           <?php endif; ?>
       </li>
-
+      <?php endif; ?>
       <?php if($_SESSION['userType'] == 103 || $_SESSION['userType']==104): ?>
       <li class="nav-item dropdown">
         <a class="nav-link" href="#" id="navbardrop" data-toggle="dropdown">
