@@ -206,7 +206,7 @@
                           // echo'</td>';
 
                           echo '<td class="text-center">';
-                            echo '<a href="#delay'.$id.'" data-target="#delay'.$id.'" data-toggle="modal"><button type="button" class="btn btn-warning btn-sm">Delay</button></a>';
+                            // echo '<a href="#delay'.$id.'" data-target="#delay'.$id.'" data-toggle="modal"><button type="button" class="btn btn-warning btn-sm">Delay</button></a>';
                               if (!check_complete_proc($conn,$row['orderID'],$row['productID'])) {
                                 // finish button na mag sabi tapos na process
                                 echo '<a href="#check'.$id.'" data-target="#check'.$id.'" data-toggle="modal">
