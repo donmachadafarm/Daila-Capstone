@@ -157,19 +157,19 @@
 
                               <div class="modal-body">
                                 <input type="hidden" name="orderid" value="<?php echo $id; ?>">
-                                <h6>Create invoice for Order?</h6>
+                                <h3>Create invoice for Order?</h3>
                                   <br>
                                   <h6>Note: This action will make an invoice for the order specified!</h6><br>
 
                                     <div class="row">
                                       <div class="col text-center">
-                                        Name
+                                        <b>Name</b>
                                       </div>
                                       <div class="col text-center">
-                                        Quantity
+                                        <b>Quantity</b>
                                       </div>
                                       <div class="col text-center">
-                                        Subtotal
+                                        <b>Subtotal</b>
                                       </div>
                                     </div>
                                       <?php
@@ -192,7 +192,7 @@
                                           echo '</div>';
 
                                           echo '<div class="col text-center">';
-                                              echo $row[2];
+                                              echo number_format($row[2],2);
                                           echo '</div>';
                                         echo '</div>';
 
@@ -201,7 +201,7 @@
 
                                        ?>
 
-                                    <?php echo "Total: " . $total; ?>
+                                    <?php echo "<br><p class='pull-right'>Total: " . number_format($total,2); ?>
                                   </div>
                                   <div class="modal-footer">
 
