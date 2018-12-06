@@ -187,54 +187,55 @@ function getArrCount ($arr, $depth) {
       return $res;
   }
 
-// returns an array(productid,ingredientid,needquantity)
+  // returns an array(productid,ingredientid,needquantity)
 function get_need_inventory($conn,$orderid){
   $query = "SELECT receipt.productID,
                    receipt.quantity
             FROM Receipt
             WHERE `orderID` = $orderid";
-
   $sql = mysqli_query($conn,$query);
   $needstock = array();
   // iterates thru all products in the receipt per joborder
-    for($j=0;$j<mysqli_num_rows($sql);$j++){
+    // while($row = mysqli_fetch_array($sql)){
+    for ($j=0; $j < mysqli_num_rows($sql); $j++) {
+      $row = mysqli_fetch_array($sql);
 
-    $row = mysqli_fetch_array($sql);
+      $id = $row['productID'];
+      $recipeqty = $row['quantity'];
+      $query1 = "SELECT Recipe.productID AS ProductID,
+                        Recipe.ingredientID AS Ingredientid,
+                        Ingredient.quantity AS CurrentInventoryQuantity,
+                        Recipe.quantity AS IndivNeedINGQTY,
+                        Recipe.quantity*$recipeqty AS NeededIngredientQuantity
+                  FROM `Recipe`
+                  INNER JOIN Ingredient ON Ingredient.ingredientID = Recipe.ingredientID
+                  WHERE Recipe.productID = $id";
+        $sql1 = mysqli_query($conn,$query1);
 
-    $id = $row['productID'];
-    $recipeqty = $row['quantity'];
+        for ($i=0; $i < mysqli_num_rows($sql1); $i++) {
+          $rowed = mysqli_fetch_array($sql1);
+          // print_p($rowed);
+          $prodakid = $rowed['ProductID'];
+          $ingredid = $rowed['Ingredientid'];
+          $oriingid = $rowed['IndivNeedINGQTY'];
+          $ingquant = $rowed['NeededIngredientQuantity'];
+          $currinvq = $rowed['CurrentInventoryQuantity'];
 
-    $query1 = "SELECT Recipe.productID AS ProductID,
-                      Recipe.ingredientID AS Ingredientid,
-                      Ingredient.quantity AS CurrentInventoryQuantity,
-                      Recipe.quantity AS IndivNeedINGQTY,
-                      Recipe.quantity*$recipeqty AS NeededIngredientQuantity
-                FROM `Recipe`
-                JOIN Ingredient ON Ingredient.ingredientID = Recipe.ingredientID
-                WHERE Recipe.productID = $id";
-
-      $sql1 = mysqli_query($conn,$query1);
-
-      for ($i=0; $i < mysqli_num_rows($sql1); $i++) {
-        $rowed = mysqli_fetch_array($sql1);
-        // print_p($rowed);
-        $prodakid = $rowed['ProductID'];
-        $ingredid = $rowed['Ingredientid'];
-        $oriingid = $rowed['IndivNeedINGQTY'];
-        $ingquant = $rowed['NeededIngredientQuantity'];
-        $currinvq = $rowed['CurrentInventoryQuantity'];
-
-        if ($currinvq < $ingquant) {
-          $diff = $ingquant - $currinvq;
-          $needstock[$j][$i]['productid'] = $prodakid;
-          $needstock[$j][$i]['ingredientid'] = $ingredid;
-          $needstock[$j][$i]['needquantityforPO'] = $diff;
+          if ($currinvq < $ingquant) {
+            // echo $ingquant."<br />";
+            $diff = $ingquant - $currinvq;
+            $needstock[$j][$i]['productid'] = $prodakid;
+            $needstock[$j][$i]['ingredientid'] = $ingredid;
+            $needstock[$j][$i]['needquantityforPO'] = $diff;
+          }
         }
-      }
 
     }
+
+    // }
     return $needstock;
 }
+
 
 // check first if ingredients need are enuf then use This
 // function reduces the ingredients table using ingredientid per product * qty in order
