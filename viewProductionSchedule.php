@@ -144,22 +144,27 @@
                 <thead>
                 <tr>
                     <th class="text-center">Due Date</th>
-                    <th class="text-center">Machine ID</th>
+                    <th class="text-center">Machine</th>
+                    <th class="text-center">Process</th>
                     <th class="text-center">Order ID</th>
-                    <th class="text-center">Product ID</th>
+                    <th class="text-center">Product</th>
                     <th class="text-center">Estimated Time</th>
-                    <th class="text-center">Start Time</th>
-                    <th class="text-center">End Time</th>
+                    <!-- <th class="text-center">Start Time</th> -->
+                    <!-- <th class="text-center">End Time</th> -->
                     <th class="text-center">Action</th>
                 </tr>
                 </thead>
                 <tbody>
 
                 <?php
-                if($result = mysqli_query($conn,'SELECT ProductionProcess.machineID, JobOrder.dueDate, ProductionProcess.orderID,
-                                                        ProductionProcess.productID, ProductionProcess.timeEstimate, ProductionProcess.status
+                if($result = mysqli_query($conn,'SELECT ProductionProcess.machineID, Machine.name AS name, JobOrder.dueDate, ProductionProcess.orderID,
+                                                        ProductionProcess.productID, Product.name AS pname, ProcessType.name as ptname,
+                                                        ProductionProcess.timeEstimate, ProductionProcess.status
                                                     FROM `ProductionProcess`
                                                     JOIN JobOrder ON ProductionProcess.orderID = JobOrder.orderID
+                                                    JOIN Machine ON Machine.machineID = ProductionProcess.machineID
+                                                    JOIN Product ON ProductionProcess.productID = Product.productID
+                                                    JOIN ProcessType ON ProcessType.processTypeID = ProductionProcess.processTypeID
                                                     WHERE ProductionProcess.status = "Ongoing" OR ProductionProcess.status = "Finish"
                                                     ORDER BY JobOrder.dueDate ASC')){
 
@@ -173,7 +178,11 @@
                           echo '</td>';
 
                           echo '<td class="text-center">';
-                              echo $row['machineID'];
+                              echo $row['name'];
+                          echo '</td>';
+
+                          echo '<td class="text-center">';
+                              echo $row['ptname'];
                           echo '</td>';
 
                           echo '<td class="text-center">';
@@ -181,28 +190,28 @@
                           echo '</td>';
 
                           echo '<td class="text-center">';
-                              echo $row['productID'];
+                              echo $row['pname'];
                           echo'</td>';
 
                           echo '<td class="text-center">';
                               echo seconds_datetime($row['timeEstimate']);
                           echo'</td>';
-
-                          echo '<td class="text-center">';
-                              echo "starttime";
-                          echo'</td>';
-
-                          echo '<td class="text-center">';
-                              echo "endtime";
-                          echo'</td>';
+                          //
+                          // echo '<td class="text-center">';
+                          //     echo "starttime";
+                          // echo'</td>';
+                          //
+                          // echo '<td class="text-center">';
+                          //     echo "endtime";
+                          // echo'</td>';
 
                           echo '<td class="text-center">';
                             echo '<a href="#delay'.$id.'" data-target="#delay'.$id.'" data-toggle="modal"><button type="button" class="btn btn-warning btn-sm">Delay</button></a>';
                               if (!check_complete_proc($conn,$row['orderID'],$row['productID'])) {
                                 // finish button na mag sabi tapos na process
                                 echo '<a href="#check'.$id.'" data-target="#check'.$id.'" data-toggle="modal">
-                                  <button type="button" class="btn btn-success btn-sm">
-                                    Finish
+                                  <button type="button" class="btn btn-primary btn-sm">
+                                    Next
                                   </button></a>  ';
                               } else {
                                 // finish button for final add ng product

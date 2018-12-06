@@ -66,6 +66,10 @@ $(function(){
     $('#txtDateMax').attr('max', maxDate);
 });
 
+function goBack() {
+    window.history.back();
+}
+
 </script>
 
 <?php
