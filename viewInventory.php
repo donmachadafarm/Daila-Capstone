@@ -37,7 +37,7 @@
                         <?php
 
                             $dateNow = date("Y-m-d");
-                            $monthAgo = date("Y-m-d", strtotime("-1 month"));
+                            $monthAgo = date("Y-m-d", strtotime("-1 year"));
 //                            print_p($dateNow);
 //                            print_p($monthAgo);
 
@@ -48,6 +48,7 @@
                                                                 product.productID AS ID
                                                                 FROM product
                                                                 JOIN productType ON product.productTypeID=productType.productTypeID
+                                                                GROUP BY product.name
                                                                 ");
 
                             $result = mysqli_query($conn,"SELECT product.name AS productname, 
@@ -55,22 +56,18 @@
                                                                 productType.name AS producttypename, 
                                                                 product.productPrice, 
                                                                 product.productID AS ID,
+                                                                MAX(supplier.duration) AS maxLead,
                                                                 ROUND(AVG(productsales.quantity)) AS restock
                                                                 FROM productsales
                                                                 JOIN product on productsales.productID=product.productID
                                                                 JOIN productType ON product.productTypeID=productType.productTypeID
                                                                 JOIN sales ON  productsales.salesID=sales.salesID
-                                                                WHERE sales.saleDate BETWEEN '$monthAgo' and '$dateNow'
+                                                                JOIN recipe on product.productID=recipe.productID
+                                                                JOIN rmingredient on recipe.ingredientID=rmingredient.ingredientID
+                                                                JOIN rawmaterial on rmingredient.rawMaterialID=rawmaterial.rawMaterialID
+                                                                JOIN supplier on rawmaterial.supplierID=supplier.supplierID
                                                                 GROUP BY product.name
                                                                 ");
-
-//                            $result2 = mysqli_query($conn, "SELECT product.name,
-//                                                                ROUND(AVG(productsales.quantity)) AS restock
-//                                                                FROM productsales
-//                                                                JOIN product on productsales.productID=product.productID
-//                                                                JOIN sales ON  productsales.salesID=sales.salesID
-//                                                                WHERE sales.saleDate BETWEEN '$monthAgo' and '$dateNow'
-//                                                                GROUP BY product.name");
 
                             while($row = mysqli_fetch_array($allInventory)){
 
@@ -81,18 +78,19 @@
                                 $price = $row['productPrice'];
 
                               while ($row2 = mysqli_fetch_array($result)){
-                                  $id = $row2['ID'];
-                                  $prodName = $row2['productname'];
-                                  $prodType = $row2['producttypename'];
-                                  $quantity = $row2['quantity'];
-                                  $price = $row2['productPrice'];
+                                  $id2 = $row2['ID'];
+                                  $prodName2 = $row2['productname'];
+                                  $prodType2 = $row2['producttypename'];
+                                  $quantity2 = $row2['quantity'];
+                                  $price2 = $row2['productPrice'];
                                   $reorderPoint = $row2['restock'];
+                                  $leadTIme = $row2['maxLead'];
 
-                                  if ($reorderPoint>$quantity){
+                                  if ($reorderPoint*$leadTIme>$quantity2){
                                       echo '<div class="alert alert-warning"><strong>Warning!</strong> Product ';
-                                      echo $prodName;
-                                      echo ' has reached optimal restocking point. Restocking recommended.';
-                                      echo $reorderPoint;
+                                      echo $prodName2;
+                                      echo ' has reached optimal restocking point. Restocking recommended. Recommended level: ';
+                                      echo $reorderPoint*$leadTIme;
                                       echo '</div>';
                                   }
 
