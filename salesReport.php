@@ -107,6 +107,19 @@ if (!isset($_SESSION['userType'])){
                         }
                     }
 
+                    echo '</tbody>';
+                    echo '</table>';
+
+                    echo '<div class="container">';
+                    echo '<div class="row">';
+                    echo '<div class="col-lg-12">';
+                    echo '<h4 class="text-right">Total Revenue: ';
+                    echo number_format($sum, 2);
+                    echo '</h4>';
+                    echo '</div>';
+                    echo '</div>';
+                    echo '</div>';
+
                 }
 
                 else{
@@ -169,20 +182,34 @@ if (!isset($_SESSION['userType'])){
                             echo '</tr>';
 
                         }
+
+                        echo '</tbody>';
+                        echo '</table>';
+
+                        echo '<div class="container">';
+                        echo '<div class="row">';
+                        echo '<div class="col-lg-12">';
+                        echo '<h4 class="text-right">Total Revenue: ';
+                        echo number_format($sum, 2);
+                        echo '</h4>';
+                        echo '</div>';
+                        echo '</div>';
+                        echo '</div>';
+
                     }
 
                 }
 
                 ?>
-                </tbody>
-            </table>
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <h4 class="text-right">Total Sales: <?php echo number_format($totalSale, 2) ?></h4>
-                    </div>
-                </div>
-            </div>
+<!--                </tbody>-->
+<!--            </table>-->
+<!--            <div class="container">-->
+<!--                <div class="row">-->
+<!--                    <div class="col-lg-12">-->
+<!--                        <h4 class="text-right">Total Sales: --><?php //echo number_format($totalSale, 2) ?><!--</h4>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
         </div>
     </div>
 </div>
