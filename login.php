@@ -72,6 +72,10 @@ if (isset($_POST['submit'])){
             $_SESSION['userType']=104;
              $_SESSION['userid']=$row["userID"];
              echo "<script>window.location.replace('index.php');</script>";
+    }else if ($row["userType"]==100) {
+             $_SESSION['userType']=100;
+              $_SESSION['userid']=$row["userID"];
+              echo "<script>window.location.replace('index.php');</script>";
     }else{
      $message.='<div id="note" class="text-center"><br /><br /><p>Incorrect username or password. Please try again.</p></div>';
     if (isset($_SESSION['badlogin']))
