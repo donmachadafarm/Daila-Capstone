@@ -17,7 +17,8 @@ if (isset($_POST['submit'])){
     $date=$_POST['date'];
     $procid=$_POST['process'];
 
-        $query="INSERT into Machine (name,acquiredDate,status,timesUsed,processTypeID) values ('{$name}','{$date}','{$status}','0','{$procid}')";
+        $query="INSERT into Machine (name,acquiredDate,status,hoursWorked,lifetimeWorked,processTypeID)
+                VALUES ('{$name}','{$date}','{$status}','0','0','{$procid}')";
         if (mysqli_query($conn,$query)) {
 
             echo "<script>
@@ -39,10 +40,11 @@ if (isset($_POST['submit'])){
         <div class="row">
             <div class="col-lg-12">
                 <h1 class="page-header"><br><br>
-                    Add Equipment
+                    Add Equipment/Machine
                 </h1>
             </div>
         </div>
+        <hr class="style1">
         <div class="row">
             <div class="col-lg-8">
                 <div class="panel panel-default">

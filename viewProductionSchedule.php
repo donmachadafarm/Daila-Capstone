@@ -15,7 +15,7 @@
     $pid = $_POST['prodid'];
     $yield = $_POST['yield'];
     $good = $_POST['good'];
-    $loss = $_POST['loss'];
+    $loss = $_POST['yield'] - $_POST['good'];
     $ordid = $_POST['orderID'];
     $datef = date('Y-m-d H:i:s');
 
@@ -326,9 +326,9 @@
                                       <label>Total Good:</label></br>
                                         <input type="number" name="good" class="form-control" required>
                                       </br>
-                                      <label>Total Loss:</label></br>
+                                      <!-- <label>Total Loss:</label></br>
                                         <input type="number" name="loss" class="form-control" required>
-                                      </br>
+                                      </br> -->
                                       <div class="modal-footer">
                                           <button type="submit" name="add" class="btn btn-primary">Confirm</button>
                                           <button type="button" class="btn btn-default btn-outline-secondary" data-dismiss="modal">Cancel</button>

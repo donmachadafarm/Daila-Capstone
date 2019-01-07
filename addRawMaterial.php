@@ -17,12 +17,11 @@
       $supplier=$_POST['supplier'];
       $priceperunit=$_POST['priceperunit'];
       $unitofmeasurement=$_POST['unitofmeasurement'];
-      $rawmattype=$_POST['rawmattype'];
       $ing=$_POST['ingr'];
 
     if(!isset($message)){
       $query="INSERT INTO RawMaterial (name,supplierID,pricePerUnit,unitOfMeasurement,rawMaterialTypeID)
-                VALUES ('{$name}','{$supplier}','{$priceperunit}','{$unitofmeasurement}','{$rawmattype}')";
+                VALUES ('{$name}','{$supplier}','{$priceperunit}','{$unitofmeasurement}')";
 
         if (mysqli_query($conn,$query)) {
           //get the latest inserted raw material
@@ -86,7 +85,7 @@
                                 $result = mysqli_query($conn, 'SELECT * FROM Supplier');
 
                                 while($row = mysqli_fetch_array($result)){
-                                  echo "<label><option value=\"{$row['supplierID']}\">{$row['name']}</option></label>
+                                  echo "<label><option value=\"{$row['supplierID']}\">{$row['company']}</option></label>
                                   <br>";
                                 }
                                ?>
@@ -97,17 +96,6 @@
                             <label>Unit of Measurement:</label></br>
                               <select name="unitofmeasurement" class="form-control item_name" required><option value="Liter">Liter</option><option value="Kilogram">Kilogram</option></select>
                             </br>
-                            <label>RawMaterial Type:</label></br>
-                              <select class="form-control" name="rawmattype">
-                              <?php
-                                $result = mysqli_query($conn, 'SELECT * FROM RawMaterialType');
-
-                                while($row = mysqli_fetch_array($result)){
-                                  echo "<label><option value=\"{$row['rawMaterialTypeID']}\">{$row['name']}</option></label>
-                                  </br>";
-                                }
-                               ?>
-                             </select><br>
                              <label>Corresponding Ingredient:</label></br>
                               <select class="form-control" name="ingr">
                               <?php

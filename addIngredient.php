@@ -15,7 +15,6 @@
       $name=$_POST['name'];
       // $rm=$_POST['rawmat'];
 
-    if(!isset($message)){
       $query="INSERT into Ingredient (quantity,name) values ('0','{$name}')";
         if (mysqli_query($conn,$query)) {
 
@@ -48,10 +47,6 @@
           echo "<script> alert('Failed!');
               </script>";
         }
-    }else{
-      echo "<script> alert('$message');
-            </script>";
-    }
   }/*End of main Submit conditional*/
 ?>
 

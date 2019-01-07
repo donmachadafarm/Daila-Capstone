@@ -52,11 +52,11 @@
             <table class="table table-bordered table-hover" id="dataTables-example">
                 <thead>
                 <tr>
-                    <th>Name</th>
-                    <th>Process Connected</th>
-                    <th>Status</th>
-                    <th>Times used</th>
-                    <th>Action</th>
+                    <th class="text-center">Name</th>
+                    <th class="text-center">Process Connected</th>
+                    <th class="text-center">Status</th>
+                    <th class="text-center">Hours Worked</th>
+                    <th class="text-center">Action</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -65,7 +65,8 @@
                 $result = mysqli_query($conn,'SELECT machine.machineID,
                                                      machine.name,
                                                      machine.status,
-                                                     machine.timesUsed,
+                                                     machine.hoursWorked,
+                                                     machine.lifetimeWorked,
                                                      machine.acquiredDate,
                                                      processtype.name AS procname
                                                 FROM machine
@@ -76,12 +77,12 @@
                     $id = $row['machineID'];
                     $name = $row['name'];
                     $status = $row['status'];
-                    $timesused = $row['timesUsed'];
+                    $timesused = $row['hoursWorked'];
                     $acquiredDate = $row['acquiredDate'];
                     $proctype = $row['procname'];
 
                     echo '<tr>';
-                      echo '<td class="text-center">';
+                      echo '<td>';
                         echo '<a href="viewEquipmentHistory.php?id='.$id.'">';
                           echo $name;
                         echo '</a>';

@@ -39,13 +39,11 @@
                         <?php
                             $result = mysqli_query($conn,'SELECT RawMaterial.name AS name,
                                                                  RawMaterial.unitOfMeasurement AS uom,
-                                                                 RawMaterialType.name AS typename,
                                                                  RawMaterial.pricePerUnit AS price,
-                                                                 Supplier.name AS suppName,
+                                                                 Supplier.company AS suppName,
                                                                  Supplier.duration AS days,
                                                                  Ingredient.name AS ingname
                                                           FROM RawMaterial
-                                                          INNER JOIN RawMaterialType ON RawMaterial.rawMaterialTypeID=RawMaterialType.rawMaterialTypeID
                                                           INNER JOIN Supplier ON Supplier.supplierID=Rawmaterial.supplierID
                                                           INNER JOIN RMIngredient ON RawMaterial.rawMaterialID=RMIngredient.rawMaterialID
                                                           INNER JOIN Ingredient ON Ingredient.ingredientID=RMIngredient.ingredientID');
@@ -58,7 +56,6 @@
                               $uom = $row['uom'];
                               $supp = $row['suppName'];
                               $days = $row['days'];
-                              $type = $row['typename'];
 
                                   echo '<tr>';
                                     echo '<td>';
@@ -76,9 +73,6 @@
                                     echo '<td>';
                                       echo $uom;
                                     echo '</td>';
-                                    echo '<td>';
-                                      echo $type;
-                                    echo'</td>';
                                     echo '<td>';
                                       echo $days;
                                     echo'</td>';

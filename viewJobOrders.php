@@ -186,6 +186,7 @@
                                             <?php
                                               $inv = get_need_inventory($conn,$id);
                                               $count = count($inv);
+
                                               for ($i=0; $i < $count; $i++) {
                                                 for ($j=0; $j < count($inv[$i]); $j++) {
                                                   $ing = $inv[$i][$j]['ingredientid'];
@@ -206,7 +207,7 @@
                                                       echo "$ingname";
                                                     echo "</div>";
                                                     echo "<div class='col'>";
-                                                      echo "$nid";
+                                                      echo $nid;
                                                     echo "</div>";
                                                   echo "</div>";
                                                 }
