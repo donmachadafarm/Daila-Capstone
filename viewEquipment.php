@@ -27,9 +27,11 @@
     $finishid = $_POST['finish_repair_id'];
     $cost = $_POST['cost'];
     $date = $_POST['datefinish'];
-    $remarks = $_POST['remarks'];
+    $problem = $_POST['problem'];
+    $solution = $_POST['solution'];
 
-    $query = "INSERT INTO MaintenanceTransaction (machineID,maintenanceCost,maintenanceDate,remarks) VALUES ('{$finishid}','{$cost}','{$date}','{$remarks}')";
+    $query = "INSERT INTO MaintenanceTransaction (machineID,maintenanceCost,maintenanceDate,problemIdentified,solution)
+                VALUES ('{$finishid}','{$cost}','{$date}','{$problem}','{$solution}')";
 
     $sql = mysqli_query($conn,$query);
 
@@ -138,8 +140,11 @@
                                         <label>Date finished maintenance:</label></br>
                                           <input type="date" name="datefinish" id="txtDateMax" class="form-control" required>
                                         </br>
-                                        <label>Remarks:</label></br>
-                                          <textarea name="remarks" rows="4" class="form-control"></textarea>
+                                        <label>Problem Identified(N/A if none):</label></br>
+                                          <textarea name="problem" rows="2" class="form-control"></textarea>
+                                        </br>
+                                        <label>Solution(N/A if none):</label></br>
+                                          <textarea name="solution" rows="2" class="form-control"></textarea>
                                         </br>
                                         <div class="modal-footer">
                                             <button type="submit" name="finish" class="btn btn-primary">YES</button>
