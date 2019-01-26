@@ -106,12 +106,10 @@
                         <tr>
                          <th>Enter Ingredient</th>
                          <th>Enter Quantity</th>
-                         <th>Select Unit of Measurement</th>
-                        </tr>
+                         </tr>
                         <tr>
                           <td><select name="ingredient[]" class="form-control item_unit" required><option value="">Select Ingredient</option><?php echo fill_unit_select_box($conn); ?></select></td>
                           <td><input type="number" name="quantity[]" class="form-control item_name" step="0.01" required /></td>
-                          <td><select name="uom[]" class="form-control item_name" required><option value="Liter">Liter</option><option value="Kilogram">Kilogram</option></select></td>
                           <td><button type="button" name="add" class="btn btn-success btn-sm add">+</button></td>
                         </tr>
                        </table>
@@ -135,7 +133,6 @@
       html += '<tr>';
       html += '<td><select name="ingredient[]" class="form-control item_unit"><option value="">Select Ingredient</option><?php echo fill_unit_select_box($conn); ?></select></td>';
       html += '<td><input type="number" name="quantity[]" class="form-control item_name" step="0.01" required /></td>';
-      html += '<td><select name="uom[]" class="form-control item_name" required><option value="Liter">Liter</option><option value="Kilogram">Kilogram</option></select></td>';
       html += '<td><button type="button" name="remove" class="btn btn-danger btn-sm remove">x</button></td></tr>';
       $('#item_table').append(html);
      });

@@ -20,8 +20,9 @@
       $ing=$_POST['ingr'];
 
     if(!isset($message)){
-      $query="INSERT INTO RawMaterial (name,supplierID,pricePerUnit,unitOfMeasurement,rawMaterialTypeID)
+      $query="INSERT INTO RawMaterial (name,supplierID,pricePerUnit,unitOfMeasurement)
                 VALUES ('{$name}','{$supplier}','{$priceperunit}','{$unitofmeasurement}')";
+
 
         if (mysqli_query($conn,$query)) {
           //get the latest inserted raw material
@@ -64,7 +65,7 @@
       <div class="row">
           <div class="col-lg-12">
               <h1 class="page-header"><br><br>
-                  Add RawMaterial
+                  Add Raw Material
               </h1>
           </div>
       </div>
@@ -108,7 +109,7 @@
                                ?>
                              </select><small class="form-text text-muted">Not in the list of Ingredients? <a href="addIngredient.php">Click here</a></small><br>
                         </p>
-                    <input type="submit" name="submit" value="Add RawMaterial" class="btn btn-success"/></div>
+                    <input type="submit" name="submit" value="Add Raw Material" class="btn btn-success"/></div>
                     </form>
                   </div>
               </div>

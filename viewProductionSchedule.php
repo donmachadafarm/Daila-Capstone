@@ -326,6 +326,7 @@
                                       <label>Total Good:</label></br>
                                         <input type="number" name="good" class="form-control" required>
                                       </br>
+                                      <small>items less than 100 will not have 1% extra</small>
                                       <!-- <label>Total Loss:</label></br>
                                         <input type="number" name="loss" class="form-control" required>
                                       </br> -->

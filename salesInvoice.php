@@ -25,7 +25,7 @@
     $sql = mysqli_query($conn,$query);
 
     while($row = mysqli_fetch_array($sql)){
-      $output .= '<option value="'.$row["customerID"].'">'.$row["name"].'</option>';
+      $output .= '<option value="'.$row["customerID"].'">'.$row["company"].'</option>';
     }
 
     return $output;

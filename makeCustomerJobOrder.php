@@ -41,7 +41,7 @@
                                 $result = mysqli_query($conn, 'SELECT * FROM Customer WHERE customerID <> "1"');
 
                                 while($row = mysqli_fetch_array($result)){
-                                  echo "<label><option value=\"{$row['customerID']}\">{$row['name']}</option></label>
+                                  echo "<label><option value=\"{$row['customerID']}\">{$row['company']}</option></label>
                                   <br>";
                                 }
                                ?>

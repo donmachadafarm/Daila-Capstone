@@ -140,10 +140,10 @@
                                         <label>Date finished maintenance:</label></br>
                                           <input type="date" name="datefinish" id="txtDateMax" class="form-control" required>
                                         </br>
-                                        <label>Problem Identified(N/A if none):</label></br>
+                                        <label>Problem Identified ("n/a" if none):</label></br>
                                           <textarea name="problem" rows="2" class="form-control"></textarea>
                                         </br>
-                                        <label>Solution(N/A if none):</label></br>
+                                        <label>Solution ("n/a" if none):</label></br>
                                           <textarea name="solution" rows="2" class="form-control"></textarea>
                                         </br>
                                         <div class="modal-footer">

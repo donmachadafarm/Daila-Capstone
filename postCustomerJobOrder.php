@@ -22,6 +22,7 @@
 
     return $output;
   }
+  $custid = $_GET['customer'];
 
   // Main submit conditional
   if (isset($_POST['submit'])){
@@ -99,7 +100,14 @@
       <div class="row">
           <div class="col-lg-12">
               <h1 class="page-header"><br><br>
-                  Job Order Form
+                  <?php
+                    $qry = "SELECT * FROM Customer WHERE CustomerID = $custid";
+
+                    $sql = mysqli_query($conn,$qry);
+                    $row = mysqli_fetch_array($sql);
+
+                   ?>
+                  Job Order Form - <?php echo $row['company']; ?>
               </h1>
 
               <hr class="style1">

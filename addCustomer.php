@@ -18,11 +18,11 @@
       $lname=$_POST['lastname'];
       $email=$_POST['email'];
       $address=$_POST['address'];
-      $landline=$_POST['landline'];
-      $mobile=$_POST['mobile'];
+      $contact=$_POST['contact'];
+      $position=$_POST['position'];
 
-      $query="INSERT INTO Customer (company,firstName,lastName,email,address,landline,mobileNumber)
-              VALUES ('{$company}','{$fname}','{$lname}','{$email}','{$address}','{$landline}','{$mobile}')";
+      $query="INSERT INTO Customer (company,firstName,lastName,email,address,contactNum,position)
+              VALUES ('{$company}','{$fname}','{$lname}','{$email}','{$address}','{$contact}','{$position}')";
 
 
         if (mysqli_query($conn,$query)) {
@@ -60,9 +60,15 @@
                   <div class="panel-body">
                     <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
 
-                      <div class="form-group">
-                        <label for="company">Company</label>
-                        <input type="text" class="form-control" id="company" name="company">
+                      <div class="form-row">
+                        <div class="form-group col-md-6">
+                          <label for="company">Company</label>
+                          <input type="text" class="form-control" id="company" name="company">
+                        </div>
+                        <div class="form-group col-md-6">
+                          <label for="position">Position</label>
+                          <input type="text" class="form-control" id="position" name="position">
+                        </div>
                       </div>
                       <div class="form-row">
                         <div class="form-group col-md-6">
@@ -82,17 +88,11 @@
                         <label for="inputAddress">Address</label>
                         <textarea name="address" rows="3" class="form-control" ></textarea>
                       </div>
-                      <div class="form-row">
-                        <div class="form-group col-md-6">
-                          <label for="landline">Landline</label>
-                          <input type="text" class="form-control" id="landline" name="landline" >
-                        </div>
-                        <div class="form-group col-md-6">
-                          <label for="mobile">Mobile Number</label>
-                          <input type="text" class="form-control" id="mobile" name="mobile">
-                        </div>
+                      <div class="form-group">
+                          <label for="contact">Contact Number</label>
+                          <input type="text" class="form-control" id="contact" name="contact" >
                       </div>
-
+                      <br>
                       <input type="submit" name="submit" value="Add Customer" class="btn btn-success"/> <br>
 
                     </form>

@@ -15,7 +15,7 @@
   $id = $_GET['id'];
 
   $query = "SELECT JobOrder.orderID AS ID,
-                                          Customer.name AS custname,
+                                          Customer.company AS custname,
                                           JobOrder.orderDate AS datereq,
                                           JobOrder.dueDate AS duedate,
                                           JobOrder.totalPrice AS price,

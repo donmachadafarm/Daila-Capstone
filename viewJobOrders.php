@@ -69,7 +69,7 @@
 
                 <?php
                 if($result = mysqli_query($conn,'SELECT JobOrder.orderID AS ID,
-                                                        Customer.name AS custname,
+                                                        Customer.company AS custname,
                                                         JobOrder.orderDate AS datereq,
                                                         JobOrder.dueDate AS duedate,
                                                         JobOrder.type AS type,
@@ -206,8 +206,9 @@
                                                     echo "<div class='col'>";
                                                       echo "$ingname";
                                                     echo "</div>";
-                                                    echo "<div class='col'>";
-                                                      echo $nid;
+                                                    echo "<div class='col text-center'>";
+                                                      echo number_format($nid, 2, '.', ',');
+                                                      // echo $nid;
                                                     echo "</div>";
                                                   echo "</div>";
                                                 }
