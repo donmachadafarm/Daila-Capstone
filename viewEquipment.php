@@ -35,7 +35,7 @@
 
     $sql = mysqli_query($conn,$query);
 
-    $query = "UPDATE Machine SET status = 'Available' WHERE machineID = $finishid";
+    $query = "UPDATE Machine SET status = 'Available', hoursWorked = 0 WHERE machineID = $finishid";
 
     $sql = mysqli_query($conn,$query);
   }

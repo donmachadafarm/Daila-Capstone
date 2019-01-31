@@ -21,20 +21,20 @@
 
     // add qty to product inventory using ['good']
     $query = "UPDATE Product SET quantity = quantity + $good WHERE productID = $pid";
-
     mysqli_query($conn,$query);
+
     // update production info total good, total yield, total loss, end date, status = finished
     $query1 = "UPDATE Production SET status = 'Finished', totalYield = $yield, totalGoods = $good, totalLost = $loss, endDate = '$datef' WHERE productID = $pid AND orderID = $ordid";
-
     mysqli_query($conn,$query1);
-    // machines used = available and timesused++
+
+    // machines used = available and hoursworked and lifetimeworked
     // check first if bakante na lahat ng machines wala ng queue
     $query2 = "SELECT machineID FROM ProductionProcess WHERE productID = $pid";
 
       $sql = mysqli_query($conn,$query2);
 
       while ($row = mysqli_fetch_array($sql)) {
-        $query3 = "UPDATE Machine SET status = 'Available', timesUsed = timesUsed + 1 WHERE machineID = $row[0]";
+        $query3 = "UPDATE Machine SET status = 'Available' WHERE machineID = $row[0]";
 
         mysqli_query($conn,$query3);
       }
@@ -97,11 +97,18 @@
     $proid = $_POST['prod_id'];
     $stats = $_POST['status'];
 
+    $qry = "SELECT timeEstimate as t FROM ProductionProcess WHERE orderID = $ordid AND machineID = $macid AND productID = $proid";
+    $sql = mysqli_query($conn,$qry);
+    $row = mysqli_fetch_array($sql);
+    $time = $row['t'];
 
     // update the production process for that row ng specific order machine id at productid  "Ongoing" - > "Done"
     $query = "UPDATE ProductionProcess SET status = 'Done' WHERE orderID = $ordid AND machineID = $macid AND productID = $proid AND status = 'Ongoing'";
 
     mysqli_query($conn,$query);
+
+    // adds the timesworked
+    mysqli_query($conn,"UPDATE Machine SET hoursWorked = hoursWorked + $t, lifetimeWorked = lifetimeWorked + $t WHERE machineID = $macid");
 
     // GETS THE NEXT MACHINE FOR THE SEQUENCE
     $sql = mysqli_query($conn,"SELECT machineID FROM ProductionProcess WHERE orderID = $ordid AND productID = $proid AND status = 'Wait' ORDER BY processSequence LIMIT 1");
@@ -123,10 +130,6 @@
     }
   }
 
-
-  if(isset($_POST['delayed'])){
-
-  }
 
  ?>
 
@@ -224,7 +227,7 @@
 
                         echo '</tr>';
                     ?>
-                    <div id="delay<?php echo $id; ?>" class="modal fade" role="dialog">
+                    <!-- <div id="delay<?php //echo $id; ?>" class="modal fade" role="dialog">
                         <div class="modal-dialog">
                             <form method="post">
                                 <div class="modal-content">
@@ -235,9 +238,9 @@
                                     </div>
 
                                     <div class="modal-body">
-                                        <input type="hidden" name="prodid" value="<?php echo $id; ?>">
-                                        <input type="hidden" name="ordeid" value="<?php echo $row['orderID']; ?>">
-                                        <input type="hidden" name="machid" value="<?php echo $row['machineID']; ?>">
+                                        <input type="hidden" name="prodid" value="<?php //echo $id; ?>">
+                                        <input type="hidden" name="ordeid" value="<?php //echo $row['orderID']; ?>">
+                                        <input type="hidden" name="machid" value="<?php //echo $row['machineID']; ?>">
 
                                         <div class="text-center">
                                           <p>
@@ -255,7 +258,7 @@
                             </form>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
 
                     <div id="check<?php echo $id; ?>" class="modal fade" role="dialog">
                         <div class="modal-dialog">

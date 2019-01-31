@@ -29,9 +29,8 @@
                                 <th>Supplied RawMaterial</th>
                                 <th>Matching Ingredient</th>
                                 <th>Price per Unit</th>
-                                <th>UOM</th>
-                                <th>Type</th>
-                                <th>Delivery Days</th>
+                                <th>Unit of Measurement</th>
+                                <th class="text-center">Delivery Days</th>
                             </tr>
                         </thead>
                         <tbody>

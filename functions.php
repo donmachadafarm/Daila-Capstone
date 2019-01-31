@@ -286,7 +286,7 @@ function start_production($conn,$orderid){
   $sqld = mysqli_query($conn,$query);
 
   $cont = array();
-  // per product Iteration
+  // per product Iteration on a specific orderid
   while ($row = mysqli_fetch_array($sqld)) {
     $orderid = $row['orderID']; // $row[0]
     $produid = $row['productID']; // $row[1]

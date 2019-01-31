@@ -18,19 +18,22 @@
               <h1 class="page-header"><br><br>
                   Customer List
               </h1>
+              <!-- <hr class="style1"> -->
               <h6>
-                  Click a Customer's name to view transaction history
+                  <!-- Click a Customer's name to view transaction history -->
               </h6>
           </div>
       </div>
       <div class="row">
-          <div class="col-lg-10">
+          <div class="col-lg-12">
                     <table class="table table-bordered table-hover" id="dataTables-example">
                         <thead>
                             <tr>
+                                <th>Company</th>
                                 <th>Name</th>
-                                <th>Email</th>
-                                <th>Address</th>
+                                <!-- <th>Position</th> -->
+                                <!-- <th>Email</th> -->
+                                <!-- <th>Address</th> -->
                                 <th>Contact Number</th>
                             </tr>
                         </thead>
@@ -42,21 +45,31 @@
 
                             while($row = mysqli_fetch_array($result)){
 
-                              $name = $row['name'];
+                              $cusid = $row['customerID'];
+                              $name = $row['company'];
+                              $fname = $row['firstName'];
+                              $lname = $row['lastName'];
                               $email = $row['email'];
                               $address = $row['address'];
                               $contactnum = $row['contactNum'];
+                              $position = $row['position'];
 
                                   echo '<tr>';
                                     echo '<td>';
-                                      echo $name;
+                                      echo '<a href="viewIndivCustomer.php?id='.$cusid.'">'.$name.'</a>';
                                     echo '</td>';
                                     echo '<td>';
-                                      echo $email;
-                                    echo'</td>';
-                                    echo '<td>';
-                                      echo $address;
-                                    echo'</td>';
+                                      echo $fname.' '.$lname;
+                                    echo '</td>';
+                                    // echo '<td>';
+                                    //   echo $position;
+                                    // echo '</td>';
+                                    // echo '<td>';
+                                    //   echo $email;
+                                    // echo'</td>';
+                                    // echo '<td>';
+                                    //   echo $address;
+                                    // echo'</td>';
                                     echo '<td>';
                                       echo $contactnum;
                                     echo'</td>';
