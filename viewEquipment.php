@@ -99,7 +99,7 @@
                       echo'</td>';
 
                       echo '<td class="text-center">';
-                        echo $timesused;
+                        echo seconds_datetime($timesused);
                       echo'</td>';
 
                       echo '<td class="text-center">';

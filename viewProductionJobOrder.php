@@ -125,7 +125,7 @@
 
                         echo '<tr>';
                           echo '<td class="text-center">';
-                            echo '<a href="viewIndivJO.php?id='.$id.'"><button type="button"">'.$id.'-View items</a>  ';
+                            echo '<a href="viewIndivJO.php?id='.$id.'"><button type="button"">Job Order#'.$id.'-View items</a>  ';
                           echo '</td>';
 
                           echo '<td class="text-center">';

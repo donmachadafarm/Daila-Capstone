@@ -41,7 +41,7 @@
               <tr>
                 <td>Date Acquired: <?php echo $date; ?></td>
                 <td>Current Status: <?php echo $status; ?></td>
-                <td>Lifetime times used: <?php echo $totallife; ?></td>
+                <td>Lifetime times used: <?php echo seconds_datetime($totallife); ?></td>
               </tr>
             </table>
           </div>
@@ -54,10 +54,11 @@
           <table class="table table-bordered table-hover" id="dataTables-example">
             <thead>
               <tr>
-                <th>Transaction ID</th>
+                <th>Transaction Count</th>
                 <th>Transaction Cost</th>
                 <th>Transaction Date</th>
-                <th>Remarks</th>
+                <th>Problem Identified</th>
+                <th>Solution</th>
               </tr>
             </thead>
             <tbody>
@@ -67,15 +68,18 @@
 
                   $sql = mysqli_query($conn,$query1);
 
-                while ($row = mysqli_fetch_array($sql)) {
-                  $transid = $row['transactionID'];
+                for ($i=0; $i < mysqli_num_rows($sql); $i++) {
+
+                  $row = mysqli_fetch_array($sql);
+                  $tranc = $i+1;
                   $cost = $row['maintenanceCost'];
                   $date = $row['maintenanceDate'];
-                  $remarks = $row['remarks'];
+                  $probi = $row['problemIdentified'];
+                  $solu = $row['solution'];
 
                     echo "<tr>";
                       echo "<td>";
-                        echo $transid;
+                        echo $tranc;
                       echo "</td>";
 
                       echo "<td>";
@@ -87,9 +91,14 @@
                       echo "</td>";
 
                       echo "<td>";
-                        echo $remarks;
+                        echo $probi;
+                      echo "</td>";
+
+                      echo "<td>";
+                        echo $solu;
                       echo "</td>";
                     echo "</tr>";
+
                 }
                  ?>
 

@@ -19,72 +19,98 @@
     $ordid = $_POST['orderID'];
     $datef = date('Y-m-d H:i:s');
 
-    // add qty to product inventory using ['good']
-    $query = "UPDATE Product SET quantity = quantity + $good WHERE productID = $pid";
-    mysqli_query($conn,$query);
-
-    // update production info total good, total yield, total loss, end date, status = finished
-    $query1 = "UPDATE Production SET status = 'Finished', totalYield = $yield, totalGoods = $good, totalLost = $loss, endDate = '$datef' WHERE productID = $pid AND orderID = $ordid";
-    mysqli_query($conn,$query1);
-
-    // machines used = available and hoursworked and lifetimeworked
-    // check first if bakante na lahat ng machines wala ng queue
-    $query2 = "SELECT machineID FROM ProductionProcess WHERE productID = $pid";
-
-      $sql = mysqli_query($conn,$query2);
-
-      while ($row = mysqli_fetch_array($sql)) {
-        $query3 = "UPDATE Machine SET status = 'Available' WHERE machineID = $row[0]";
-
-        mysqli_query($conn,$query3);
-      }
-
-      $query = "UPDATE ProductionProcess SET status = 'Added' WHERE orderID = $ordid AND productID = $pid";
-
-      mysqli_query($conn,$query);
 
 
-    // reorder the queue for the waiting machines
-    $query = "SELECT * FROM ProductionProcess WHERE processSequence = 1 AND status = 'Wait' AND productID = $pid ORDER BY machineQueue DESC LIMIT 1";
+    /*
+        next lines are for adding into inventory finished status for production
+    */
 
-    $sql = mysqli_query($conn,$query);
-
-    $row = mysqli_fetch_array($sql);
-
-    $nextorder = $row['orderID'];
-    if(mysqli_num_rows($sql)>0){
-      $query = "UPDATE ProductionProcess SET machineQueue = machineQueue - 1 WHERE productID = $pid";
-
+        // add qty to product inventory using ['good']
+        $query = "UPDATE Product SET quantity = quantity + $good WHERE productID = $pid";
         mysqli_query($conn,$query);
 
+        // update production info total good, total yield, total loss, end date, status = finished
+        $query1 = "UPDATE Production SET status = 'Finished', totalYield = $yield, totalGoods = $good, totalLost = $loss, endDate = '$datef' WHERE productID = $pid AND orderID = $ordid";
+        mysqli_query($conn,$query1);
 
-      $query = "UPDATE ProductionProcess SET status = 'Ongoing' WHERE orderID = $nextorder AND productID = $pid AND processSequence = 1";
+        // machines used = available and hoursworked and lifetimeworked
+        // check first if bakante na lahat ng machines wala ng queue
+        $query2 = "SELECT machineID FROM ProductionProcess WHERE productID = $pid";
 
-        mysqli_query($conn,$query);
-    }
+          $sql = mysqli_query($conn,$query2);
 
-    $query = "SELECT * FROM JobOrder WHERE orderID = $ordid";
+          while ($row = mysqli_fetch_array($sql)) {
+            $query3 = "UPDATE Machine SET status = 'Available' WHERE machineID = $row[0]";
 
-    $sql = mysqli_query($conn,$query);
+            mysqli_query($conn,$query3);
+          }
 
-    $row = mysqli_fetch_array($sql);
+          $query = "UPDATE ProductionProcess SET status = 'Added', machineQueue = 0 WHERE orderID = $ordid AND productID = $pid";
 
-    if (check_for_out($conn,$ordid)) {
-      if($row['type'] == 'Made to Order'){
-        $query = "UPDATE JobOrder SET status = 'For Out' WHERE orderID = $ordid";
+          mysqli_query($conn,$query);
 
-        mysqli_query($conn,$query);
-      }else {
-        $query = "UPDATE JobOrder SET status = 'Finished' WHERE orderID = $ordid";
+    /*
+        next lines are for reordering the queue update the sequence
+        and statuses of machines and production
+    */
 
-        mysqli_query($conn,$query);
-      }
-    }
+        // reorder the queue for the waiting machines
+        $query = "SELECT * FROM ProductionProcess WHERE processSequence = 1 AND status = 'Wait' AND orderID = $ordid ORDER BY machineQueue DESC LIMIT 1";
 
-      echo "<script>
-        alert('Products are added to inventory!');
-            </script>";
-        // window.location.replace('viewProductionSchedule.php');
+        $sql = mysqli_query($conn,$query);
+
+        $row = mysqli_fetch_array($sql);
+
+        $nextorder = $row['orderID'];
+        $pid = $row['productID'];
+
+        if(mysqli_num_rows($sql)>0){
+          $query = "UPDATE ProductionProcess SET machineQueue = machineQueue - 1 WHERE productID = $pid";
+
+            mysqli_query($conn,$query);
+
+
+          $query = "UPDATE ProductionProcess SET status = 'Ongoing' WHERE orderID = $nextorder AND productID = $pid AND processSequence = 1";
+
+            mysqli_query($conn,$query);
+
+          $sq = mysqli_query($conn,"SELECT machineID FROM ProductionProcess WHERE productID = $pid AND orderID = $ordid");
+
+          while ($row = mysqli_fetch_array($sq)) {
+
+            $query = "UPDATE Machine SET status = 'Used' WHERE machineID = $row[0]";
+
+          }
+
+        }
+
+    /*
+        next lines are for checking if job order is ready
+        for out (invoice) if all products are done in production and ready for adding
+    */
+
+          $query = "SELECT * FROM JobOrder WHERE orderID = $ordid";
+
+          $sql = mysqli_query($conn,$query);
+
+          $row = mysqli_fetch_array($sql);
+
+          if (check_for_out($conn,$ordid)) {
+            if($row['type'] == 'Made to Order'){
+              $query = "UPDATE JobOrder SET status = 'For Out' WHERE orderID = $ordid";
+
+              mysqli_query($conn,$query);
+            }else {
+              $query = "UPDATE JobOrder SET status = 'Finished' WHERE orderID = $ordid";
+
+              mysqli_query($conn,$query);
+            }
+          }
+
+            echo "<script>
+              alert('Products are added to inventory!');
+                  </script>";
+              // window.location.replace('viewProductionSchedule.php');
 
 
 
@@ -108,7 +134,13 @@
     mysqli_query($conn,$query);
 
     // adds the timesworked
-    mysqli_query($conn,"UPDATE Machine SET hoursWorked = hoursWorked + $t, lifetimeWorked = lifetimeWorked + $t WHERE machineID = $macid");
+    mysqli_query($conn,"UPDATE Machine SET hoursWorked = hoursWorked + $time, lifetimeWorked = lifetimeWorked + $time WHERE machineID = $macid");
+
+
+
+    // DONE UPDATING STATUSES FOR ONE PRODUCT PROCESS
+    // SUGGESTION : REDUCE MACHINE QUEUE AFTER UPDATE
+
 
     // GETS THE NEXT MACHINE FOR THE SEQUENCE
     $sql = mysqli_query($conn,"SELECT machineID FROM ProductionProcess WHERE orderID = $ordid AND productID = $proid AND status = 'Wait' ORDER BY processSequence LIMIT 1");
@@ -199,18 +231,8 @@
                           echo '<td class="text-center">';
                               echo seconds_datetime($row['timeEstimate']);
                           echo'</td>';
-                          //
-                          // echo '<td class="text-center">';
-                          //     echo "starttime";
-                          // echo'</td>';
-                          //
-                          // echo '<td class="text-center">';
-                          //     echo "endtime";
-                          // echo'</td>';
-
                           echo '<td class="text-center">';
-                            // echo '<a href="#delay'.$id.'" data-target="#delay'.$id.'" data-toggle="modal"><button type="button" class="btn btn-warning btn-sm">Delay</button></a>';
-                              if (!check_complete_proc($conn,$row['orderID'],$row['productID'])) {
+                            if (!check_complete_proc($conn,$row['orderID'],$row['productID'])) {
                                 // finish button na mag sabi tapos na process
                                 echo '<a href="#check'.$id.'" data-target="#check'.$id.'" data-toggle="modal">
                                   <button type="button" class="btn btn-primary btn-sm">
@@ -227,38 +249,6 @@
 
                         echo '</tr>';
                     ?>
-                    <!-- <div id="delay<?php //echo $id; ?>" class="modal fade" role="dialog">
-                        <div class="modal-dialog">
-                            <form method="post">
-                                <div class="modal-content">
-
-                                    <div class="modal-header">
-                                        <h4>Notice</h4>
-                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                    </div>
-
-                                    <div class="modal-body">
-                                        <input type="hidden" name="prodid" value="<?php //echo $id; ?>">
-                                        <input type="hidden" name="ordeid" value="<?php //echo $row['orderID']; ?>">
-                                        <input type="hidden" name="machid" value="<?php //echo $row['machineID']; ?>">
-
-                                        <div class="text-center">
-                                          <p>
-                                            <h6>Delayed?</h6>
-                                            <br>
-                                            <h6>Note: This action will put the Job Order in production!</h6><br>
-                                            <input type="time" name="time">
-                                          </p>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="submit" name="delayed" class="btn btn-primary">Continue</button>
-                                            <button type="button" class="btn btn-default btn-outline-secondary" data-dismiss="modal">Close</button>
-                                        </div>
-                                    </div>
-                            </form>
-                            </div>
-                        </div>
-                    </div> -->
 
                     <div id="check<?php echo $id; ?>" class="modal fade" role="dialog">
                         <div class="modal-dialog">
@@ -310,7 +300,9 @@
 
                                       <?php
                                         $oi = $row['orderID'];
-                                        $query = "SELECT Product.name,Receipt.quantity FROM Receipt JOIN Product ON Product.productID = Receipt.productID WHERE Product.productID = $id AND Receipt.orderID = $oi";
+                                        $query = "SELECT Product.name,Receipt.quantity FROM Receipt
+                                                    JOIN Product ON Product.productID = Receipt.productID
+                                                    WHERE Product.productID = $id AND Receipt.orderID = $oi";
 
                                         $sql = mysqli_query($conn,$query);
 

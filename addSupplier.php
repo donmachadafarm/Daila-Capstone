@@ -21,8 +21,6 @@
       $address=$_POST['address'];
       $duration=$_POST['duration'];
 
-      $query="INSERT INTO Supplier (name,contactNum,address,duration) values ('{$name}','{$contact}','{$address}','{$duration}')";
-
       $query = "INSERT INTO `Supplier` (`company`,`firstName`,`lastName`,`landline`, `mobileNumber`, `address`, `duration`)
                   VALUES('$company','$fname','$lname','$landline','$mobile', '$address',$duration)";
 

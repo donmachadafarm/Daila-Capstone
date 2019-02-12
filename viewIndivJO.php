@@ -52,7 +52,7 @@
           <div class="col-lg-12">
             <table class="table table-borderless" id="dataTables-example">
               <tr>
-                <td>Total Cost for JO: <b><?php echo $pricez; ?></b></td>
+                <td>Total Cost for JO: <b><?php echo number_format($pricez); ?></b></td>
                 <td>JO Type: <?php echo $type; ?></td>
                 <td>Purchase Order date posted: <?php echo $date; ?></td>
                 <td>Deadline for supplier: <?php echo $deadline; ?></td>
@@ -115,8 +115,8 @@
                         echo $ppu;
                       echo "</td>";
 
-                      echo "<td>";
-                        echo $sub;
+                      echo "<td class=text-right>";
+                        echo number_format($sub);
                       echo "</td>";
 
                     echo "</tr>";
