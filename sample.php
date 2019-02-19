@@ -134,4 +134,18 @@ $sql = mysqli_query($conn,"SELECT machineQueue
 // }
 
 // echo get_curr_queue($conn,1,4)+1;
+
+$query = "SELECT Recipe.productID AS ProductID,
+                  Recipe.ingredientID AS Ingredientid,
+                  Ingredient.quantity AS CurrentInventoryQuantity,
+                  Recipe.quantity AS IndivNeedINGQTY
+            FROM `Recipe`
+            INNER JOIN Ingredient ON Ingredient.ingredientID = Recipe.ingredientID
+            WHERE Recipe.productID = 1";
+
+$sql = mysqli_query($conn,$query);
+
+while ($row = mysqli_fetch_array($sql)) {
+  print_p($row);
+}
 ?>

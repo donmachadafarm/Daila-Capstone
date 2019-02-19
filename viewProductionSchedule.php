@@ -25,9 +25,6 @@
         next lines are for adding into inventory finished status for production
     */
 
-        // add qty to product inventory using ['good']
-        $query = "UPDATE Product SET quantity = quantity + $good WHERE productID = $pid";
-        mysqli_query($conn,$query);
 
         // update production info total good, total yield, total loss, end date, status = finished
         $query1 = "UPDATE Production SET status = 'Finished', totalYield = $yield, totalGoods = $good, totalLost = $loss, endDate = '$datef' WHERE productID = $pid AND orderID = $ordid";
@@ -40,12 +37,13 @@
           $sql = mysqli_query($conn,$query2);
 
           while ($row = mysqli_fetch_array($sql)) {
-            $query3 = "UPDATE Machine SET status = 'Available' WHERE machineID = $row[0]";
+            $mid = $row['machineID'];
+            $query3 = "UPDATE Machine SET status = 'Available' WHERE machineID = $mid";
 
             mysqli_query($conn,$query3);
           }
 
-          $query = "UPDATE ProductionProcess SET status = 'Added', machineQueue = 0 WHERE orderID = $ordid AND productID = $pid";
+          $query = "UPDATE ProductionProcess SET status = 'Shipping', machineQueue = 0 WHERE orderID = $ordid AND productID = $pid";
 
           mysqli_query($conn,$query);
 
@@ -55,7 +53,8 @@
     */
 
         // reorder the queue for the waiting machines
-        $query = "SELECT * FROM ProductionProcess WHERE processSequence = 1 AND status = 'Wait' AND orderID = $ordid ORDER BY machineQueue DESC LIMIT 1";
+        // this query selects the next product in the same job order
+        $query = "SELECT * FROM ProductionProcess WHERE processSequence = 1 AND status = 'Wait' ORDER BY machineQueue DESC LIMIT 1";
 
         $sql = mysqli_query($conn,$query);
 
@@ -65,21 +64,22 @@
         $pid = $row['productID'];
 
         if(mysqli_num_rows($sql)>0){
-          $query = "UPDATE ProductionProcess SET machineQueue = machineQueue - 1 WHERE productID = $pid";
+          $query = "UPDATE ProductionProcess SET machineQueue = machineQueue - 1 WHERE productID = $pid AND orderID = $nextorder";
 
             mysqli_query($conn,$query);
 
-
+            // query for first process set status = 'ongoing'
           $query = "UPDATE ProductionProcess SET status = 'Ongoing' WHERE orderID = $nextorder AND productID = $pid AND processSequence = 1";
 
             mysqli_query($conn,$query);
 
-          $sq = mysqli_query($conn,"SELECT machineID FROM ProductionProcess WHERE productID = $pid AND orderID = $ordid");
+          $sq = mysqli_query($conn,"SELECT machineID FROM ProductionProcess WHERE productID = $pid AND orderID = $nextorder");
 
           while ($row = mysqli_fetch_array($sq)) {
+            $maid = $row['machineID'];
+            $query = "UPDATE Machine SET status = 'Used' WHERE machineID = $maid";
 
-            $query = "UPDATE Machine SET status = 'Used' WHERE machineID = $row[0]";
-
+            mysqli_query($conn,$query);
           }
 
         }
@@ -96,15 +96,11 @@
           $row = mysqli_fetch_array($sql);
 
           if (check_for_out($conn,$ordid)) {
-            if($row['type'] == 'Made to Order'){
-              $query = "UPDATE JobOrder SET status = 'For Out' WHERE orderID = $ordid";
+
+              $query = "UPDATE JobOrder SET status = 'Shipping' WHERE orderID = $ordid";
 
               mysqli_query($conn,$query);
-            }else {
-              $query = "UPDATE JobOrder SET status = 'Finished' WHERE orderID = $ordid";
 
-              mysqli_query($conn,$query);
-            }
           }
 
             echo "<script>

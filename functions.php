@@ -394,7 +394,7 @@ function start_production($conn,$orderid){
             $stat = 'Wait';
           }
 
-          $qry4 = "UPDATE ProductionProcess SET machineQueue = $newqueue,status = '$stat' WHERE orderID = $orderid AND productID = $produid";
+          $qry4 = "UPDATE ProductionProcess SET machineQueue = $newqueue+1,status = '$stat' WHERE orderID = $orderid AND productID = $produid";
 
                 mysqli_query($conn,$qry4);
 
@@ -439,7 +439,7 @@ function check_for_out($conn,$orderid){
 
   $count = $row[0];
 
-  $query = "SELECT count(*) FROM ProductionProcess WHERE status = 'Added' AND orderID = $orderid";
+  $query = "SELECT count(*) FROM ProductionProcess WHERE status = 'Shipping' AND orderID = $orderid";
 
   $sql = mysqli_query($conn,$query);
 

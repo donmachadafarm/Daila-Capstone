@@ -145,7 +145,7 @@
                                 <div class="modal-content">
 
                                     <div class="modal-header">
-                                        <h4>Notice</h4>
+                                        <h4>Approve Order?</h4>
                                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                                     </div>
 
@@ -153,12 +153,21 @@
                                         <input type="hidden" name="jo_id" value="<?php echo $id; ?>">
                                         <div class="text-center">
                                           <p>
-                                            <h6>Approve Order?</h6>
-                                            <br>
-                                            <h6>Note: This action will put the Job Order in production!</h6><br>
+                                            <?php
+                                              $query = "SELECT * FROM JobOrder WHERE orderID = $id";
+
+                                              $sql = mysqli_query($conn,$query);
+
+                                              $row = mysqli_fetch_array($sql);
+
+                                              $cost = $row['totalPrice']/2;
+                                             ?>
+                                             <h6>Downpayment of <?php echo number_format($cost); ?> is required (50% dp)</h6>
+                                            <small><h6>Note: This action will put the Job Order in production!</h6><br></small>
                                             <input type="number" name="" value="" placeholder="OR number" class="form-control"><br>
-                                            <input type="number" name="" value="" placeholder="Amount" class="form-control">
+                                            <input type="number" name="" value="<?php echo $cost; ?>" placeholder="" class="form-control">
                                           </p>
+
                                         </div>
                                         <div class="modal-footer">
                                             <button type="submit" name="approve" class="btn btn-primary">Continue</button>
@@ -255,7 +264,7 @@
                                             ?>
 
                                         <br><br>
-                                        <a href="makePurchaseOrder.php?id=<?php echo $id; ?>" class="btn btn-secondary">Proceed to order</a>
+                                        <a href="makePurchaseOrder.php?id=<?php echo $id; ?>&lack=1" class="btn btn-secondary">Proceed to order</a>
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-default btn-outline-secondary" data-dismiss="modal">Close</button>

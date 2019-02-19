@@ -50,7 +50,8 @@
           <?php endif; ?>
           <?php if($_SESSION['userType']!=103  || $_SESSION['userType']==104): ?>
           <!--  -->
-          <a class="dropdown-item" href="makeCustomerJobOrder.php">Make Job Order</a>
+          <a class="dropdown-item" href="samplejo.php">Create Mock Job Order</a>
+          <a class="dropdown-item" href="makeCustomerJobOrder.php">Create Job Order</a>
           <a class="dropdown-item" href="viewJobOrders.php">Pending Job Orders</a>
           <a class="dropdown-item" href="salesInvoice.php">Generate Invoice</a>
         </div>

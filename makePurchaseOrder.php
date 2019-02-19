@@ -11,7 +11,16 @@
 
 <?php
 
-  // Query
+// Get date today
+$today = date("Y-m-d");
+
+if (isset($_POST['submit'])){
+
+   // inert PO
+   // $query = "INSERT into PurchaseOrder (supplierID,totalPrice,orderDate,status,deadline,createdBy) values ('1','0','{$today}','Pending','{$today}','{$user}')";
+
+}
+
 
 ?>
 
@@ -27,22 +36,69 @@
               </h1>
           </div>
       </div>
+
       <div class="row">
           <div class="col-lg-8">
               <div class="panel panel-default">
+                <?php
 
+                if (!isset($_GET['lack'])) {
+                  ?>
+
+                  <form action="postPurchaseOrder.php" method="GET">
+                     <div class="form-group">
+                        <p class="form-control-static">
+                              <label>Supplier:</label></br>
+                               <select class="form-control" name="supplier" id="supplier-list">
+                               <?php
+                                 $result = mysqli_query($conn, 'SELECT * FROM Supplier');
+                                 while($row = mysqli_fetch_array($result)){
+                                   echo "<label><option value=\"{$row['supplierID']}\">{$row['company']}</option></label>
+                                   <br>";
+                                 }
+                                ?>
+                              </select><br><small class="form-text text-muted">Not in the list of suppliers? <a href="addSupplier.php">Click here</a></small><br>
+
+                        </p>
+                    <input type="submit" name="submit" value="Select Supplier" class="btn btn-success"/></div>
+                  </form>
+
+                <?php
+                } else{
+
+                ?>
                   <div class="panel-body"><br>
+                      <div class='row'>
+                          <div class='col'>Product:</div>
+                          <div class='col'>Ingredient:</div>
+                          <div class='col'>Amount:</div>
+                          <div class='col'>Supplier:</div>
+                      </div>
+                  </div>
+
+
+                    <!--PO form-->
+
+                  <form action="postPurchaseOrder.php" method="GET">
+                      <div class="form-group">
+                          <p class="form-control-static">
+
+
+
                   <?php
                       if (isset($_GET['id'])) {
                         $id = $_GET['id'];
 
                         $inv = get_need_inventory($conn,$id);
                         $count = count($inv);
+
+                        //
                         for ($i=0; $i < $count; $i++) {
                           for ($j=0; $j < count($inv[$i]); $j++) {
                             $ing = $inv[$i][$j]['ingredientid'];
                             $nid = $inv[$i][$j]['needquantityforPO'];
                             $pro = $inv[$i][$j]['productid'];
+                            $unit = $inv[$i][$j]['uom'];
 
                             $sql = mysqli_query($conn,"SELECT * FROM Product WHERE productID = $pro");
                             $row = mysqli_fetch_array($sql);
@@ -53,41 +109,67 @@
                             echo "<div class='row'>";
                               echo "<div class='col'>";
                                 echo "$name";
+                                echo "<input name = \"rawmat[]\" type = \"hidden\">";
                               echo "</div>";
                               echo "<div class='col'>";
                                 echo "$ingname";
                               echo "</div>";
                               echo "<div class='col'>";
-                                echo "$nid";
+                              echo number_format($nid, 2);
+                              echo " $unit";
+                              echo "</div>";
+
+                              echo "<div class='col'>";
+                                echo "<select class=\"form-control\" name=\"supplier\" id=\"supplier-list\">";
+
+                                      $query = "SELECT supplier.company as supplierName, supplier.supplierID as IDofSupplier
+                                          from ingredient
+                                          join rmingredient on ingredient.ingredientID = rmingredient.ingredientID
+                                          join rawmaterial on rmingredient.rawMaterialID = rawmaterial.rawMaterialID
+                                          join supplier on rawmaterial.supplierID = supplier.supplierID
+                                          WHERE ingredient.name = '$ingname'";
+                                      $supplierlist = mysqli_query($conn, $query);
+
+                                      while ($next = mysqli_fetch_array($supplierlist)){
+//                                          echo "<option value=12></option><br>";
+                                          echo "<option value='$next[IDofSupplier]'>".$next['supplierName']."</option>";
+                                      }
+
+                                echo "</select>";
                               echo "</div>";
                             echo "</div>";
                           }
-
                         }
                       }
                        ?>
-                    <form action="postPurchaseOrder.php" method="GET">
-                     <div class="form-group">
-                        <p class="form-control-static">
-                              <label>Supplier:</label></br>
-                               <select class="form-control" name="supplier" id="supplier-list">
-                               <?php
-                                 $result = mysqli_query($conn, 'SELECT * FROM Supplier');
-
-                                 while($row = mysqli_fetch_array($result)){
-                                   echo "<label><option value=\"{$row['supplierID']}\">{$row['company']}</option></label>
-                                   <br>";
-                                 }
-                                ?>
-                              </select><br><small class="form-text text-muted">Not in the list of suppliers? <a href="addSupplier.php">Click here</a></small><br>
-
-                        </p>
+                  <br>
+<!--                    <form action="postPurchaseOrder.php" method="GET">-->
+<!--                     <div class="form-group">-->
+<!--                        <p class="form-control-static">-->
+<!--                              <label>Supplier:</label></br>-->
+<!--                               <select class="form-control" name="supplier" id="supplier-list">-->
+<!--                               --><?php
+//                                 $result = mysqli_query($conn, 'SELECT * FROM Supplier');
+//
+//                                 while($row = mysqli_fetch_array($result)){
+//                                   echo "<label><option value=\"{$row['supplierID']}\">{$row['name']}</option></label>
+//                                   <br>";
+//                                 }
+//                                ?>
+<!--                              </select><br><small class="form-text text-muted">Not in the list of suppliers? <a href="addSupplier.php">Click here</a></small><br>-->
+<!---->
+<!--                        </p>-->
                     <input type="submit" name="submit" value="Select Supplier" class="btn btn-success"/></div>
                     </form>
+                  <?php } ?>
                   </div>
               </div>
           </div>
       </div>
+
+
+
+
       <hr class="style1">
       <h3><b>Supplier info</b></h3>
       <div class="row">
@@ -100,7 +182,7 @@
                                 <th>Matching Ingredient</th>
                                 <th>Price per Unit</th>
                                 <th>UOM</th>
-                                <th>Type</th>
+
                                 <th>Delivery Days</th>
                             </tr>
                         </thead>
@@ -109,13 +191,13 @@
                         <?php
                             $result = mysqli_query($conn,'SELECT RawMaterial.name AS name,
                                                                  RawMaterial.unitOfMeasurement AS uom,
-                                                                 RawMaterialType.name AS typename,
+
                                                                  RawMaterial.pricePerUnit AS price,
-                                                                 Supplier.name AS suppName,
+                                                                 Supplier.company AS suppName,
                                                                  Supplier.duration AS days,
                                                                  Ingredient.name AS ingname
                                                           FROM RawMaterial
-                                                          INNER JOIN RawMaterialType ON RawMaterial.rawMaterialTypeID=RawMaterialType.rawMaterialTypeID
+
                                                           INNER JOIN Supplier ON Supplier.supplierID=Rawmaterial.supplierID
                                                           INNER JOIN RMIngredient ON RawMaterial.rawMaterialID=RMIngredient.rawMaterialID
                                                           INNER JOIN Ingredient ON Ingredient.ingredientID=RMIngredient.ingredientID');
@@ -128,7 +210,7 @@
                               $uom = $row['uom'];
                               $supp = $row['suppName'];
                               $days = $row['days'];
-                              $type = $row['typename'];
+
 
                                   echo '<tr>';
                                     echo '<td>';
@@ -146,9 +228,7 @@
                                     echo '<td>';
                                       echo $uom;
                                     echo '</td>';
-                                    echo '<td>';
-                                      echo $type;
-                                    echo'</td>';
+
                                     echo '<td>';
                                       echo $days;
                                     echo'</td>';
@@ -166,7 +246,6 @@
           </div>
       </div><br><br>
   </div>
-</div>
 
 
 
