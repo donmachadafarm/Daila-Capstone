@@ -14,16 +14,16 @@
 <?php
   $id = $_GET['id'];
 
-  $query = "SELECT Supplier.name AS suppName,
-                                       PurchaseOrder.purchaseOrderID AS id,
-                                       PurchaseOrder.totalPrice AS pricez,
-                                       PurchaseOrder.orderDate AS date,
-                                       PurchaseOrder.deadline AS deadline,
-                                       PurchaseOrder.status AS status
-                                  FROM PurchaseOrder
-                                  INNER JOIN Supplier ON PurchaseOrder.supplierID =Supplier.supplierID
-                                  WHERE purchaseOrderID = $id
-                                  ORDER BY id DESC LIMIT 1";
+  $query = "SELECT Supplier.company AS suppName,
+                   PurchaseOrder.purchaseOrderID AS id,
+                   PurchaseOrder.totalPrice AS pricez,
+                   PurchaseOrder.orderDate AS date,
+                   PurchaseOrder.deadline AS deadline,
+                   PurchaseOrder.status AS status
+              FROM PurchaseOrder
+              INNER JOIN Supplier ON PurchaseOrder.supplierID =Supplier.supplierID
+              WHERE purchaseOrderID = $id
+              ORDER BY id DESC LIMIT 1";
 
     $sql = mysqli_query($conn,$query);
 

@@ -51,7 +51,7 @@
                 <tbody>
 
                 <?php
-                if($result = mysqli_query($conn,'SELECT Supplier.name AS suppName,
+                if($result = mysqli_query($conn,'SELECT Supplier.company AS suppName,
                                                      PurchaseOrder.purchaseOrderID AS id,
                                                      PurchaseOrder.totalPrice AS price,
                                                      PurchaseOrder.orderDate AS date,

@@ -124,7 +124,7 @@
           <div class="col-lg-12">
               <h2 class="page-header"><br><br>
                  Items list for Purchase Order
-              </h2><h4>Supplier: <small><?php echo $resh['name']; ?></small> <a href="makePurchaseOrder.php" class="btn btn-primary btn-sm float-right">go back</a>
+              </h2><h4>Supplier: <small><?php echo $resh['company']; ?></small> <a href="makePurchaseOrder.php" class="btn btn-primary btn-sm float-right">go back</a>
 </h4>
               <hr class="style1">
           </div>

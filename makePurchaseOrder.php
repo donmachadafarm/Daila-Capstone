@@ -75,7 +75,7 @@
                                  $result = mysqli_query($conn, 'SELECT * FROM Supplier');
 
                                  while($row = mysqli_fetch_array($result)){
-                                   echo "<label><option value=\"{$row['supplierID']}\">{$row['name']}</option></label>
+                                   echo "<label><option value=\"{$row['supplierID']}\">{$row['company']}</option></label>
                                    <br>";
                                  }
                                 ?>

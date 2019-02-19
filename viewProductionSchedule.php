@@ -312,7 +312,14 @@
                                         <p>
                                           <h5>Finished production for <strong><?php echo $row['name']; ?>?</strong></h5>
                                           <br>
-                                          <h5>Order needs: <?php echo round($row['quantity']+($row['quantity']*0.01)); ?></h5>
+                                          <h5>Order needs: <?php
+                                                  if ($row['quantity']<100) {
+                                                    echo round($row['quantity']);
+                                                  }else {
+                                                    echo round($row['quantity']+($row['quantity']*0.01));
+                                                  }
+                                                            ?>
+                                          </h5>
                                         </p>
                                       </div>
                                       <label>Total Yield:</label></br>
@@ -322,9 +329,6 @@
                                         <input type="number" name="good" class="form-control" required>
                                       </br>
                                       <small>items less than 100 will not have 1% extra</small>
-                                      <!-- <label>Total Loss:</label></br>
-                                        <input type="number" name="loss" class="form-control" required>
-                                      </br> -->
                                       <div class="modal-footer">
                                           <button type="submit" name="add" class="btn btn-primary">Confirm</button>
                                           <button type="button" class="btn btn-default btn-outline-secondary" data-dismiss="modal">Cancel</button>

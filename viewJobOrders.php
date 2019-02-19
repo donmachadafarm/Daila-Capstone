@@ -69,6 +69,7 @@
 
                 <?php
                 if($result = mysqli_query($conn,'SELECT JobOrder.orderID AS ID,
+                                                        Customer.customerID AS custid,
                                                         Customer.company AS custname,
                                                         JobOrder.orderDate AS datereq,
                                                         JobOrder.dueDate AS duedate,
@@ -81,6 +82,7 @@
 
                     while($row = mysqli_fetch_array($result)){
                         $id = $row['ID'];
+                        $cusid = $row['custid'];
                         $name = $row['custname'];
                         $status = $row['status'];
                         $duedate = $row['duedate'];
@@ -121,10 +123,17 @@
                                   <i class="fas fa-exclamation-circle"></i>
                                 </button></a>  ';
                             } else {
-                              echo '<a href="#approve'.$id.'" data-target="#approve'.$id.'" data-toggle="modal">
-                                <button type="button" class="btn btn-success btn-sm">
-                                  <i class="fas fa-check-circle"></i>
-                                </button></a>  ';
+                              if ($cusid == 1) {
+                                echo '<a href="#approved'.$id.'" data-target="#approved'.$id.'" data-toggle="modal">
+                                  <button type="button" class="btn btn-success btn-sm">
+                                    <i class="fas fa-check-circle"></i>
+                                  </button></a>  ';
+                              } else {
+                                echo '<a href="#approve'.$id.'" data-target="#approve'.$id.'" data-toggle="modal">
+                                  <button type="button" class="btn btn-success btn-sm">
+                                    <i class="fas fa-check-circle"></i>
+                                  </button></a>  ';
+                              }
                             }
                           echo '</td>';
 
@@ -150,6 +159,35 @@
                                             <input type="number" name="" value="" placeholder="OR number" class="form-control"><br>
                                             <input type="number" name="" value="" placeholder="Amount" class="form-control">
                                           </p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="submit" name="approve" class="btn btn-primary">Continue</button>
+                                            <button type="button" class="btn btn-default btn-outline-secondary" data-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+                            </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="approved<?php echo $id; ?>" class="modal fade" role="dialog">
+                        <div class="modal-dialog">
+                            <form method="post">
+                                <div class="modal-content">
+
+                                    <div class="modal-header">
+                                        <h4>Notice</h4>
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    </div>
+
+                                    <div class="modal-body">
+                                        <input type="hidden" name="jo_id" value="<?php echo $id; ?>">
+                                        <div class="text-center">
+                                          <p>
+                                            <h6>Approve Order?</h6>
+                                            <br>
+                                            <h6>Note: This action will put the Job Order in production!</h6><br>
+
                                         </div>
                                         <div class="modal-footer">
                                             <button type="submit" name="approve" class="btn btn-primary">Continue</button>
