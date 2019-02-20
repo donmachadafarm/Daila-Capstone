@@ -76,6 +76,7 @@
                                 $prodType = $row['producttypename'];
                                 $quantity = $row['quantity'];
                                 $price = $row['productPrice'];
+                                $restockingValue = 100;
 
                               while ($row2 = mysqli_fetch_array($result)){
                                   $id2 = $row2['ID'];
@@ -83,14 +84,17 @@
                                   $prodType2 = $row2['producttypename'];
                                   $quantity2 = $row2['quantity'];
                                   $price2 = $row2['productPrice'];
-                                  $reorderPoint = $row2['restock'];
+                                  $reorderPoint = ($row2['restock']/12)*100;
                                   $leadTIme = $row2['maxLead'];
+                                  $thisValue;
 
                                   if ($reorderPoint*$leadTIme>$quantity2){
+                                      $thisValue = $reorderPoint*$leadTIme;
+                                      $restockingValue = $thisValue;
                                       echo '<div class="alert alert-warning"><strong>Warning!</strong> Product ';
                                       echo $prodName2;
                                       echo ' has reached optimal restocking point. Restocking recommended. Recommended level: ';
-                                      echo $reorderPoint*$leadTIme;
+                                      echo $restockingValue;
                                       echo '</div>';
                                   }
 
@@ -111,7 +115,7 @@
                                     echo'</td>';
 
                                     echo '<td class="text-center">';
-                                      echo '<a href="makeJobOrder.php?ids='.$id.'&name='.$prodName.'"><button type="button" class="btn btn-primary btn-sm">Restock</button></a> ';
+                                      echo '<a href="makeJobOrder.php?ids='.$id.'&name='.$prodName.'&val='.$restockingValue.'"><button type="button" class="btn btn-primary btn-sm">Restock</button></a> ';
                                     echo '</td>';
                                   echo '</tr>';
 

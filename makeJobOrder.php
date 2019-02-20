@@ -12,6 +12,7 @@
 <?php
   $prodid = $_GET['ids'];
   $prodname = $_GET['name'];
+  $restockQuantity = $_GET['val'];
 
   // main submit conditional
   if (isset($_POST['submit'])){
@@ -78,7 +79,7 @@
                         <p class="form-control-static">
                           <input type="hidden" name="prodid" value="<?php echo $prodid; ?>">
                           <label>Quantity:</label></br>
-                            <input type="number" name="quantity" class="form-control" required>
+                            <input type="number" name="quantity" value="<?php echo $restockQuantity; ?>" class="form-control" required>
                           </br>
                           <label>Due Date:</label></br>
                             <input type="date" id="txtDate" name="deadline" class="form-control" required>
