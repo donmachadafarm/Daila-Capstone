@@ -52,7 +52,7 @@ if (!isset($_SESSION['userType'])){
                     $startDate = $_POST['startDate'];
                     $endDate = $_POST['endDate'];
                     $result = mysqli_query($conn, "SELECT joborder.orderID AS JOID,
-                                                        customer.name AS cName,
+                                                        customer.company AS cName,
                                                         joborder.orderDate AS orderDate,
                                                         joborder.totalPrice AS totalPrice
                                                     FROM joborder
@@ -129,7 +129,7 @@ if (!isset($_SESSION['userType'])){
 
                 else{
                     $result = mysqli_query($conn, "SELECT joborder.orderID AS JOID,
-                                                        customer.name AS cName,
+                                                        customer.company AS cName,
                                                         joborder.orderDate AS orderDate,
                                                         joborder.totalPrice AS totalPrice
                                                     FROM joborder

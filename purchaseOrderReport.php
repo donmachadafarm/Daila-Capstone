@@ -119,9 +119,23 @@ if (!isset($_SESSION['userType'])){
                             echo '</tr>';
 
                         }
+
+                        echo '</tbody>';
+                        echo '</table>';
+
+                        echo '<div class="container">';
+                        echo '<div class="row">';
+                        echo '<div class="col-lg-12">';
+                        echo '<h4 class="text-right">Total Expense: ';
+                        echo number_format($sum, 2);
+                        echo '</h4>';
+                        echo '</div>';
+                        echo '</div>';
+                        echo '</div>';
+
                     }
                 }
-                else{
+                else {
                     $result = mysqli_query($conn, "SELECT purchaseorder.purchaseOrderID AS POID,
                                                         purchaseorder.orderDate AS orderDate,
                                                         purchaseorder.deadline AS dueDate,
@@ -130,64 +144,73 @@ if (!isset($_SESSION['userType'])){
                                                     FROM purchaseorder
                                                     WHERE purchaseorder.status!='removed'
                                                     ORDER BY purchaseorder.purchaseOrderID DESC");
+                    $count = mysqli_num_rows($result);
 
                     $result2 = mysqli_query($conn, "SELECT SUM(purchaseorder.totalPrice) AS sum
                                                     FROM purchaseorder
                                                     WHERE purchaseorder.status!='removed'");
 
-                    while ($row = mysqli_fetch_array($result2)){
-                        $sum = $row['sum'];
-                    }
+                    if ($count == "0") {
+                        echo '<h2 class="text-center">There are no transactions yet</h2>';
+                    } else {
 
-                    while ($row = mysqli_fetch_array($result)) {
+                        while ($row = mysqli_fetch_array($result2)) {
+                            $sum = $row['sum'];
+                        }
 
-                        $id = $row['POID'];
-                        $date = $row['orderDate'];
-                        $ddate = $row['dueDate'];
-                        $total = $row['total'];
-                        $stat = $row['status'];
+                        while ($row = mysqli_fetch_array($result)) {
 
-                        echo '<tr>';
-                        echo '<td class="text-center">';
-                        echo $id;
-                        echo '</td>';
+                            $id = $row['POID'];
+                            $date = $row['orderDate'];
+                            $ddate = $row['dueDate'];
+                            $total = $row['total'];
+                            $stat = $row['status'];
 
-                        echo '<td class="text-center">';
-                        echo '<a href="detailsPO.php?id='.$id.'">';
-                        echo 'View Items</a>';
-                        echo '</td>';
+                            echo '<tr>';
+                            echo '<td class="text-center">';
+                            echo $id;
+                            echo '</td>';
 
-                        echo '<td class="text-center">';
-                        echo $date;
-                        echo '</td>';
+                            echo '<td class="text-center">';
+                            echo '<a href="detailsPO.php?id=' . $id . '">';
+                            echo 'View Items</a>';
+                            echo '</td>';
 
-                        echo '<td class="text-center">';
-                        echo $ddate;
-                        echo '</td>';
+                            echo '<td class="text-center">';
+                            echo $date;
+                            echo '</td>';
 
-                        echo '<td class="text-center">';
-                        echo number_format($total, 2);
-                        echo '</td>';
+                            echo '<td class="text-center">';
+                            echo $ddate;
+                            echo '</td>';
 
-                        echo '<td class="text-center">';
-                        echo $stat;
-                        echo '</td>';
-                        echo '</tr>';
+                            echo '<td class="text-center">';
+                            echo number_format($total, 2);
+                            echo '</td>';
+
+                            echo '<td class="text-center">';
+                            echo $stat;
+                            echo '</td>';
+                            echo '</tr>';
+
+                        }
+
+                        echo '</tbody>';
+                        echo '</table>';
+
+                        echo '<div class="container">';
+                        echo '<div class="row">';
+                        echo '<div class="col-lg-12">';
+                        echo '<h4 class="text-right">Total Revenue: ';
+                        echo number_format($sum, 2);
+                        echo '</h4>';
+                        echo '</div>';
+                        echo '</div>';
+                        echo '</div>';
 
                     }
                 }
                 ?>
-                </tbody>
-            </table>
-
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <h4 class="text-right">Total Expense: <?php echo number_format($sum, 2) ?></h4>
-                    </div>
-                </div>
-            </div>
-
 
         </div>
     </div>

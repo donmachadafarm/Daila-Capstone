@@ -53,10 +53,10 @@ if (!isset($_SESSION['userType'])){
                     $startDate = $_POST['startDate'];
                     $endDate = $_POST['endDate'];
                     $result = mysqli_query($conn, "SELECT joborder.orderID AS JOID,
-                                                        customer.name AS cName,
+                                                        customer.company AS cName,
                                                         joborder.orderDate AS orderDate,
                                                         joborder.totalPrice AS totalPrice,
-                                                        joborder.status AS status,
+                                                        joborder.status AS status
                                                     FROM joborder
                                                     JOIN customer on joborder.customerID=customer.customerID
                                                     WHERE joborder.orderDate BETWEEN '$startDate' AND '$endDate'
@@ -119,26 +119,26 @@ if (!isset($_SESSION['userType'])){
                             echo '</tr>';
 
                         }
+
+                        echo '</tbody>';
+                        echo '</table>';
+
+                        echo '<div class="container">';
+                        echo '<div class="row">';
+                        echo '<div class="col-lg-12">';
+                        echo '<h4 class="text-right">Total Revenue: ';
+                        echo number_format($sum, 2);
+                        echo '</h4>';
+                        echo '</div>';
+                        echo '</div>';
+                        echo '</div>';
+
                     }
-
-                    echo '</tbody>';
-                    echo '</table>';
-
-                    echo '<div class="container">';
-                    echo '<div class="row">';
-                    echo '<div class="col-lg-12">';
-                    echo '<h4 class="text-right">Total Revenue: ';
-                    echo number_format($sum, 2);
-                    echo '</h4>';
-                    echo '</div>';
-                    echo '</div>';
-                    echo '</div>';
-
                 }
 
                 else{
                     $result = mysqli_query($conn, "SELECT joborder.orderID AS JOID,
-                                                        customer.name AS cName,
+                                                        customer.company AS cName,
                                                         joborder.orderDate AS orderDate,
                                                         joborder.totalPrice AS totalPrice,
                                                         joborder.status AS status
@@ -150,7 +150,8 @@ if (!isset($_SESSION['userType'])){
 
                     $result2 = mysqli_query($conn, "SELECT SUM(joborder.totalPrice) AS sum
                                                     FROM joborder
-                                                    WHERE joborder.type = 'Made to Order'");
+                                                    WHERE joborder.type = 'Made to Order'
+                                                    AND joborder.status!='Pending for approval'");
 
                     if ($count == "0"){
                         echo '<h2 class="text-center">There are no transactions yet</h2>';
@@ -196,21 +197,21 @@ if (!isset($_SESSION['userType'])){
                             echo '</tr>';
 
                         }
+
+                        echo '</tbody>';
+                        echo '</table>';
+
+                        echo '<div class="container">';
+                        echo '<div class="row">';
+                        echo '<div class="col-lg-12">';
+                        echo '<h4 class="text-right">Total Revenue: ';
+                        echo number_format($sum, 2);
+                        echo '</h4>';
+                        echo '</div>';
+                        echo '</div>';
+                        echo '</div>';
+
                     }
-
-                    echo '</tbody>';
-                    echo '</table>';
-
-                    echo '<div class="container">';
-                    echo '<div class="row">';
-                    echo '<div class="col-lg-12">';
-                    echo '<h4 class="text-right">Total Revenue: ';
-                    echo number_format($sum, 2);
-                    echo '</h4>';
-                    echo '</div>';
-                    echo '</div>';
-                    echo '</div>';
-
                 }
 
                 ?>
