@@ -72,7 +72,7 @@
             <thead>
               <tr>
                 <th>Product Name</th>
-                <th>Quantity</th>
+                <th>Quantity Remaining</th>
                 <th>Status</th>
                 <th class="text-center">Action</th>
               </tr>
@@ -83,13 +83,12 @@
 
                 $query = "SELECT Product.name AS name,
                                  Product.productID AS prodid,
-                                 Production.quantity AS qty,
+                                 Shipping.shippingQuantity AS qty,
                                  Shipping.status AS status
                           FROM JobOrder
                           JOIN Shipping ON Shipping.orderID = JobOrder.orderID
-                          JOIN Production ON Production.orderID = JobOrder.orderID
-                          JOIN Product ON Production.productID = Product.productID
-                          WHERE Production.orderID = $id";
+                          JOIN Product ON Shipping.productID = Product.productID
+                          WHERE Shipping.orderID = $id";
 
                 $sql = mysqli_query($conn,$query);
 

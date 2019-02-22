@@ -12,7 +12,7 @@
 <!-- put all the contents here  -->
 
 <?php
-  
+
 
  ?>
 
@@ -31,7 +31,6 @@
                 <tr>
                     <th class="text-center">Job Order #</th>
                     <th class="text-center">Customer</th>
-                    <th class="text-center">Production Date</th>
                     <th class="text-center">Type</th>
                     <th class="text-center">Status</th>
                     <th class="text-center">Action</th>
@@ -40,19 +39,18 @@
                 <tbody>
 
                 <?php
-                if($result = mysqli_query($conn,'SELECT JobOrder.orderID AS orid,
-                                                        JobOrder.customerID AS cusid,
-                                                        Customer.company AS name,
-                                                        Production.endDate AS date,
-                                                        JobOrder.type AS type,
-                                                        JobOrder.status AS status
-                                                FROM JobOrder
-                                                JOIN Customer ON Customer.customerID = JobOrder.customerID
-                                                JOIN Production ON Production.orderID = JobOrder.orderID
+                if($result = mysqli_query($conn,'SELECT DISTINCT Shipping.orderID AS orid,
+                                                       JobOrder.customerID AS cusid,
+                                                       Customer.company AS name,
+                                                       JobOrder.type AS type,
+                                                       Shipping.status AS status
+                                                FROM Shipping
+                                                JOIN JobOrder ON JobOrder.orderID = Shipping.orderID
+                                                JOIN Customer ON JobOrder.customerID = Customer.customerID
                                                 WHERE JobOrder.status = "Shipping"')){
+
                     while($row = mysqli_fetch_array($result)){
                         $orderid = $row['orid'];
-                        $date = $row['date'];
                         $name = $row['name'];
                         $type = $row['type'];
                         $status = $row['status'];
@@ -63,9 +61,6 @@
                           echo '</td>';
                           echo '<td class="text-center">';
                             echo $name;
-                          echo'</td>';
-                          echo '<td class="text-center">';
-                            echo $date;
                           echo'</td>';
                           echo '<td class="text-center">';
                             echo $type;
