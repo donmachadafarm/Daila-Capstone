@@ -73,6 +73,7 @@
         }
       }
 
+
       echo "<script>
         alert('Recipes added for product $name!');
         window.location.replace('addProductProcess.php?id=".$proid."');

@@ -45,7 +45,11 @@
 
           $query = "UPDATE ProductionProcess SET status = 'Shipping', machineQueue = 0 WHERE orderID = $ordid AND productID = $pid";
 
-          mysqli_query($conn,$query);
+            mysqli_query($conn,$query);
+
+          $query = "INSERT INTO Shipping (orderID,productID,shippingQuantity,shippedQuantity,status) VALUES ('{$ordid}','{$pid}','$good',0,'Pending')";
+
+            mysqli_query($conn,$query);
 
     /*
         next lines are for reordering the queue update the sequence
@@ -104,7 +108,7 @@
           }
 
             echo "<script>
-              alert('Products are added to inventory!');
+              alert('Products are now for Shipping!');
                   </script>";
               // window.location.replace('viewProductionSchedule.php');
 

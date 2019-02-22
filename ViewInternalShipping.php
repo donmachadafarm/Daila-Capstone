@@ -12,13 +12,13 @@
 <!-- put all the contents here  -->
 
 <?php
-
+  
 
  ?>
 
 <div class="container">
     <div class="row">
-        <div class="col-lg-12">
+         <div class="col-lg-12">
             <h1 class="page-header"><br><br>
                 Internal Shipping of Orders
             </h1>
@@ -30,7 +30,7 @@
                 <thead>
                 <tr>
                     <th class="text-center">Job Order #</th>
-                    <th class="text-center">Total Items</th>
+                    <th class="text-center">Customer</th>
                     <th class="text-center">Production Date</th>
                     <th class="text-center">Type</th>
                     <th class="text-center">Status</th>
@@ -41,19 +41,19 @@
 
                 <?php
                 if($result = mysqli_query($conn,'SELECT JobOrder.orderID AS orid,
-                                                        count(Production.orderID) AS count,
+                                                        JobOrder.customerID AS cusid,
+                                                        Customer.company AS name,
                                                         Production.endDate AS date,
                                                         JobOrder.type AS type,
                                                         JobOrder.status AS status
                                                 FROM JobOrder
+                                                JOIN Customer ON Customer.customerID = JobOrder.customerID
                                                 JOIN Production ON Production.orderID = JobOrder.orderID
-                                                WHERE JobOrder.status == "Shipping"')){
-
-
+                                                WHERE JobOrder.status = "Shipping"')){
                     while($row = mysqli_fetch_array($result)){
                         $orderid = $row['orid'];
-                        $count = $row['count'];
                         $date = $row['date'];
+                        $name = $row['name'];
                         $type = $row['type'];
                         $status = $row['status'];
 
@@ -61,29 +61,22 @@
                           echo '<td class="text-center">';
                               echo $orderid;
                           echo '</td>';
-
                           echo '<td class="text-center">';
-                            echo $count;
+                            echo $name;
                           echo'</td>';
-
                           echo '<td class="text-center">';
                             echo $date;
                           echo'</td>';
-
                           echo '<td class="text-center">';
                             echo $type;
                           echo'</td>';
-
                           echo '<td class="text-center">';
                             echo $status;
                           echo'</td>';
-
                           echo '<td class="text-center">';
                             echo '<a href="ViewIndivShipping.php?id='.$orderid.'"><button type="button" class="btn btn-primary btn-sm">View Details</button></a> ';
                           echo '</td>';
-
                         echo '</tr>';
-
                           }
                         }
                     ?>
@@ -94,6 +87,7 @@
 
         </div>
     </div>
+
 </div>
 
 
