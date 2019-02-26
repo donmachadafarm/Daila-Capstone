@@ -231,7 +231,7 @@
                                               </div>
                                             </div><br>
                                             <?php
-                                              $inv = get_need_inventory($conn,$id);
+                                              $inv = get_need_inventory2($conn,$id);
                                               $count = count($inv);
 
                                               for ($i=0; $i < $count; $i++) {
@@ -255,7 +255,6 @@
                                                     echo "</div>";
                                                     echo "<div class='col text-center'>";
                                                       echo number_format($nid, 2, '.', ',');
-                                                      // echo $nid;
                                                     echo "</div>";
                                                   echo "</div>";
                                                 }

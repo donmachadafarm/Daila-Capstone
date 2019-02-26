@@ -45,41 +45,41 @@ include 'includes/sections/header.php';
 
 
 // get due dates ng mga may same process id at machine ids
-$sql = mysqli_query($conn,"SELECT JobOrder.dueDate
-                            FROM JobOrder
-                            JOIN ProductionProcess ON JobOrder.orderID = ProductionProcess.orderID
-                            WHERE ProductionProcess.processTypeID = 1 AND ProductionProcess.machineID = 4");
-// store sa array
-$deadlines = array();
-while ($row = mysqli_fetch_array($sql)) {
-  array_push($deadlines,$row[0]);
-}
-
-// print_p($deadlines);
-// dummy data
-$arr = array('2018-11-21', '2018-11-25', '2018-12-01', '2018-11-22', '2018-11-24');
-
-// sortsort
-function date_sort($a, $b) {
-    return strtotime($a) - strtotime($b);
-}
-usort($arr, "date_sort");
-// print_p($arr);
-// finding the closest date sa array ng deadlines
-// echo find_closest_today($arr,date('Y-m-d'));
-// lumabas 2018-11-22
-// next gagawin mo dito is lahat ng mga may deadline na starting sa returned deadline sa taas imomove mo ung queue nila
-
-
-// get the cuurent queue muna nung nag result ng query from the closest deadline tapos from there don kana mag increment
-$sql = mysqli_query($conn,"SELECT machineQueue
-                            From ProductionProcess
-                            WHERE ProductionProcess.processTypeID = 1 AND ProductionProcess.machineID = 4
-                            ORDER BY machineQueue DESC LIMIT 1");
-
-  $row = mysqli_fetch_array($sql);
-
-  $curqueue = $row[0];
+// $sql = mysqli_query($conn,"SELECT JobOrder.dueDate
+//                             FROM JobOrder
+//                             JOIN ProductionProcess ON JobOrder.orderID = ProductionProcess.orderID
+//                             WHERE ProductionProcess.processTypeID = 1 AND ProductionProcess.machineID = 4");
+// // store sa array
+// $deadlines = array();
+// while ($row = mysqli_fetch_array($sql)) {
+//   array_push($deadlines,$row[0]);
+// }
+//
+// // print_p($deadlines);
+// // dummy data
+// $arr = array('2018-11-21', '2018-11-25', '2018-12-01', '2018-11-22', '2018-11-24');
+//
+// // sortsort
+// function date_sort($a, $b) {
+//     return strtotime($a) - strtotime($b);
+// }
+// usort($arr, "date_sort");
+// // print_p($arr);
+// // finding the closest date sa array ng deadlines
+// // echo find_closest_today($arr,date('Y-m-d'));
+// // lumabas 2018-11-22
+// // next gagawin mo dito is lahat ng mga may deadline na starting sa returned deadline sa taas imomove mo ung queue nila
+//
+//
+// // get the cuurent queue muna nung nag result ng query from the closest deadline tapos from there don kana mag increment
+// $sql = mysqli_query($conn,"SELECT machineQueue
+//                             From ProductionProcess
+//                             WHERE ProductionProcess.processTypeID = 1 AND ProductionProcess.machineID = 4
+//                             ORDER BY machineQueue DESC LIMIT 1");
+//
+//   $row = mysqli_fetch_array($sql);
+//
+//   $curqueue = $row[0];
 
 // if (check_complete_proc($conn,151,10)) {
 //   echo "false";
@@ -135,17 +135,50 @@ $sql = mysqli_query($conn,"SELECT machineQueue
 
 // echo get_curr_queue($conn,1,4)+1;
 
-$query = "SELECT Recipe.productID AS ProductID,
-                  Recipe.ingredientID AS Ingredientid,
-                  Ingredient.quantity AS CurrentInventoryQuantity,
-                  Recipe.quantity AS IndivNeedINGQTY
-            FROM `Recipe`
-            INNER JOIN Ingredient ON Ingredient.ingredientID = Recipe.ingredientID
-            WHERE Recipe.productID = 1";
+// $query = "SELECT Recipe.productID AS ProductID,
+//                   Recipe.ingredientID AS Ingredientid,
+//                   Ingredient.quantity AS CurrentInventoryQuantity,
+//                   Recipe.quantity AS IndivNeedINGQTY
+//             FROM `Recipe`
+//             INNER JOIN Ingredient ON Ingredient.ingredientID = Recipe.ingredientID
+//             WHERE Recipe.productID = 1";
+//
+// $sql = mysqli_query($conn,$query);
+//
+// while ($row = mysqli_fetch_array($sql)) {
+//   print_p($row);
+// }
 
-$sql = mysqli_query($conn,$query);
+$inv = get_need_inventory3($conn,1,100);
+$count = count($inv);
 
-while ($row = mysqli_fetch_array($sql)) {
-  print_p($row);
-}
+print_p($inv);
+
+// for ($i=0; $i < $count; $i++) {
+//   for ($j=0; $j < count($inv[$i]); $j++) {
+//     $ing = $inv[$i][$j]['ingredientid'];
+//     $nid = $inv[$i][$j]['needquantityforPO'];
+//     $pro = $inv[$i][$j]['productid'];
+//
+//     $sql = mysqli_query($conn,"SELECT * FROM Product WHERE productID = $pro");
+//     $row = mysqli_fetch_array($sql);
+//     $name = $row['name'];
+//     $sql1 = mysqli_query($conn,"SELECT * FROM Ingredient WHERE ingredientID = $ing");
+//     $rowe = mysqli_fetch_array($sql1);
+//     $ingname = $rowe['name'];
+//     echo "<div class='row'>";
+//       echo "<div class='col'>";
+//         echo "$name";
+//       echo "</div>";
+//       echo "<div class='col'>";
+//         echo "$ingname";
+//       echo "</div>";
+//       echo "<div class='col text-center'>";
+//         echo number_format($nid, 2, '.', ',');
+//         // echo $nid;
+//       echo "</div>";
+//     echo "</div>";
+//   }
+//
+//}
 ?>
