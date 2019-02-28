@@ -79,7 +79,7 @@
                         <p class="form-control-static">
                           <input type="hidden" name="prodid" value="<?php echo $prodid; ?>">
                           <label>Quantity:</label></br>
-                            <input type="number" name="quantity" value="<?php echo $restockQuantity; ?>" class="form-control" required>
+                            <input type="number" name="quantity" value="<?php echo round($restockQuantity); ?>" class="form-control" required>
                           </br>
                           <label>Due Date:</label></br>
                             <input type="date" id="txtDate" name="deadline" class="form-control" required>

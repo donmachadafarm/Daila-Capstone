@@ -115,7 +115,7 @@ if (isset($_POST['submit'])){
                       <div class='row'>
                           <div class='col'>Product:</div>
                           <div class='col'>Ingredient:</div>
-                          <div class='col'>Amount:</div>
+                          <div class='col'>Quantity:</div>
                           <div class='col'>Supplier:</div>
                       </div>
                   </div>

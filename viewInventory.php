@@ -16,7 +16,7 @@
       <div class="row">
           <div class="col-lg-12">
               <h1 class="page-header"><br><br>
-                  View Inventory
+                  Finished Goods Inventory
               </h1>
           </div>
       </div>
@@ -41,20 +41,20 @@
 //                            print_p($dateNow);
 //                            print_p($monthAgo);
 
-                            $allInventory = mysqli_query($conn, "SELECT product.name AS productname, 
-                                                                product.quantity AS quantity, 
-                                                                productType.name AS producttypename, 
-                                                                product.productPrice, 
+                            $allInventory = mysqli_query($conn, "SELECT product.name AS productname,
+                                                                product.quantity AS quantity,
+                                                                productType.name AS producttypename,
+                                                                product.productPrice,
                                                                 product.productID AS ID
                                                                 FROM product
                                                                 JOIN productType ON product.productTypeID=productType.productTypeID
                                                                 GROUP BY product.name
                                                                 ");
 
-                            $result = mysqli_query($conn,"SELECT product.name AS productname, 
-                                                                product.quantity AS quantity, 
-                                                                productType.name AS producttypename, 
-                                                                product.productPrice, 
+                            $result = mysqli_query($conn,"SELECT product.name AS productname,
+                                                                product.quantity AS quantity,
+                                                                productType.name AS producttypename,
+                                                                product.productPrice,
                                                                 product.productID AS ID,
                                                                 MAX(supplier.duration) AS maxLead,
                                                                 ROUND(AVG(productsales.quantity)) AS restock

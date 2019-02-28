@@ -164,8 +164,8 @@
                                              ?>
                                              <h6>Downpayment of <?php echo number_format($cost); ?> is required (50% dp)</h6>
                                             <small><h6>Note: This action will put the Job Order in production!</h6><br></small>
-                                            <input type="number" name="" value="" placeholder="OR number" class="form-control"><br>
-                                            <input type="number" name="" value="<?php echo $cost; ?>" placeholder="" class="form-control">
+                                            <input required type="number" name="" value="" placeholder="OR number" class="form-control"><br>
+                                            <input required type="number" name="" value="<?php echo $cost; ?>" placeholder="" class="form-control">
                                           </p>
 
                                         </div>
@@ -234,32 +234,33 @@
                                               $inv = get_need_inventory2($conn,$id);
                                               $count = count($inv);
 
-                                              for ($i=0; $i < $count; $i++) {
-                                                for ($j=0; $j < count($inv[$i]); $j++) {
-                                                  $ing = $inv[$i][$j]['ingredientid'];
-                                                  $nid = $inv[$i][$j]['needquantityforPO'];
-                                                  $pro = $inv[$i][$j]['productid'];
-
-                                                  $sql = mysqli_query($conn,"SELECT * FROM Product WHERE productID = $pro");
-                                                  $row = mysqli_fetch_array($sql);
-                                                  $name = $row['name'];
-                                                  $sql1 = mysqli_query($conn,"SELECT * FROM Ingredient WHERE ingredientID = $ing");
-                                                  $rowe = mysqli_fetch_array($sql1);
-                                                  $ingname = $rowe['name'];
-                                                  echo "<div class='row'>";
-                                                    echo "<div class='col'>";
-                                                      echo "$name";
-                                                    echo "</div>";
-                                                    echo "<div class='col'>";
-                                                      echo "$ingname";
-                                                    echo "</div>";
-                                                    echo "<div class='col text-center'>";
-                                                      echo number_format($nid, 2, '.', ',');
-                                                    echo "</div>";
-                                                  echo "</div>";
-                                                }
-
-                                              }
+                                              print_p($inv);
+                                              // for ($i=0; $i < $count; $i++) {
+                                              //   for ($j=0; $j < count($inv[$i]); $j++) {
+                                              //     $ing = $inv[$i][$j]['ingredientid'];
+                                              //     $nid = $inv[$i][$j]['needquantityforPO'];
+                                              //     $pro = $inv[$i][$j]['productid'];
+                                              //
+                                              //     $sql = mysqli_query($conn,"SELECT * FROM Product WHERE productID = $pro");
+                                              //     $row = mysqli_fetch_array($sql);
+                                              //     $name = $row['name'];
+                                              //     $sql1 = mysqli_query($conn,"SELECT * FROM Ingredient WHERE ingredientID = $ing");
+                                              //     $rowe = mysqli_fetch_array($sql1);
+                                              //     $ingname = $rowe['name'];
+                                              //     echo "<div class='row'>";
+                                              //       echo "<div class='col'>";
+                                              //         echo "$name";
+                                              //       echo "</div>";
+                                              //       echo "<div class='col'>";
+                                              //         echo "$ingname";
+                                              //       echo "</div>";
+                                              //       echo "<div class='col text-center'>";
+                                              //         echo number_format($nid, 2, '.', ',');
+                                              //       echo "</div>";
+                                              //     echo "</div>";
+                                              //   }
+                                              //
+                                              // }
                                             ?>
 
                                         <br><br>
