@@ -28,8 +28,10 @@
   if (isset($_POST['out'])) {
     $orderid = $_POST['orderid'];
     $date = date('Y-m-d');
+    $payment = $_POST['payment'];
+    $or = $_POST['or'];
 
-    $query = "INSERT INTO Sales (orderID,saleDate,totalPrice) VALUES ($orderid,'$date',0)";
+    $query = "INSERT INTO Sales (orderID,officialReceipt,saleDate,totalPrice,payment) VALUES ($orderid,$or,'$date',0,$payment)";
 
       mysqli_query($conn,$query);
 
@@ -199,10 +201,28 @@
                                         $total += $row[2];
                                       }
 
+                                      $query = "SELECT * FROM Sales WHERE orderID = '$id'";
+
+                                      $sql = mysqli_query($conn,$query);
+
+                                      $row = mysqli_fetch_array($sql);
+
+                                      $remaining = $row['totalPrice'] - $row['payment'];
+                                      $or = $row['officialReceipt'];
+                                      $date = $row['saleDate'];
                                        ?>
 
-                                    <?php echo "<br><p class='pull-right'>Total: " . number_format($total,2); ?>
-                                  </div>
+                                                                             <hr class="style1">
+                                    <?php echo "<br><p class='pull-center'>Total: " . number_format($total,2). "</p>"; ?>
+                                      <p>
+                                        Remaining Balance: <?php echo $remaining; ?><br />
+                                        Last Payed: <?php echo $date; ?><br />
+                                        Official Receipt: <?php echo $or; ?>
+                                      </p>
+
+                                      <input type="number" class="form-control" placeholder="Official Receipt" name="or" value="" required><br>
+                                      <input type="number" class="form-control" name="payment" value="<?php echo $remaining; ?>" required>
+                                </div>
                                   <div class="modal-footer">
 
                                       <button type="submit" name="out" class="btn btn-primary">Continue</button>

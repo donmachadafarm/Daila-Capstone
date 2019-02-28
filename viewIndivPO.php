@@ -42,6 +42,8 @@
       $ids = $_POST['poitem_id'];
       $rmid = $_POST['rmid'];
       $poid = $_POST['poid'];
+      $defect = $_POST['defective'];
+      $ornum = $_POST['delivery'];
 
       $query = "SELECT * FROM POItem WHERE rawMaterialID = $rmid AND purchaseOrderID = $poid";
 
@@ -49,7 +51,7 @@
 
         $row = mysqli_fetch_array($sql);
 
-      $qty = $row['quantity'];
+      $qty = $row['quantity'] - $defect;
 
       $query = "SELECT * FROM RMIngredient WHERE rawMaterialID = $rmid";
 
@@ -63,7 +65,7 @@
 
         if(mysqli_query($conn,$query)){
 
-          mysqli_query($conn,"UPDATE POItem SET status = 'Delivered' WHERE rawMaterialID = $rmid AND purchaseOrderID = $poid");
+          mysqli_query($conn,"UPDATE POItem SET status = 'Delivered',deliveryReceipt = '$ornum',defective = '$defect' WHERE rawMaterialID = $rmid AND purchaseOrderID = $poid");
 
           echo "<meta http-equiv='refresh' content='0'>";
 
@@ -202,8 +204,10 @@
                                           <p>
                                             <h6>Update Purchase Order Status?</h6>
                                             <br>
-                                            <h6>Note: This action will add the requested Raw Materials into the inventory!</h6>
+                                            <input type="number" name="delivery" placeholder="Delivery Receipt" value="" class="form-control" required><br>
+                                            <input type="number" name="defective" placeholder="Number of defects" value="" class="form-control" required>
                                           </p>
+                                          <small>Note: This action will add the requested Raw Materials into the inventory!</small>
                                         </div>
                                         <div class="modal-footer">
                                             <button type="submit" name="update" class="btn btn-primary">Continue</button>
