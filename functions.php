@@ -719,6 +719,73 @@ function get_prodname($conn,$prod){
   return $row[0];
 
 }
+//gets the max lead time of a raw material of a product
+function get_maxlead($conn, $prod){
+    $leadTime = 0;
+    $query = "SELECT MAX(supplier.duration) as 'Max Lead Time'
+                FROM product
+                JOIN recipe on product.productID = recipe.productID
+                JOIN rmingredient on recipe.ingredientID = rmingredient.ingredientID
+                JOIN rawmaterial on rmingredient.rawMaterialID = rawmaterial.rawMaterialID
+                JOIN supplier on rawmaterial.supplierID = supplier.supplierID
+                WHERE product.productID = $prod";
+
+    $sql = mysqli_query($conn, $query);
+
+    $row = mysqli_fetch_array($sql);
+
+        $leadTime = $row['Max Lead Time'];
+
+    return $leadTime;
+}
+//get total sales average
+function get_total_average($conn, $prod){
+    $query = "SELECT product.name, ROUND(AVG(productsales.quantity)) as 'Average'
+                FROM product
+                JOIN productsales on product.productID = productsales.productID
+                WHERE product.productID = $prod";
+
+    $sql = mysqli_query($conn, $query);
+
+    $row = mysqli_fetch_array($sql);
+
+    $aveSales = $row['Average'];
+
+    return $aveSales;
+}
+//get total sales average given the date range
+function get_range_average($conn, $prod, $start, $end){
+    $query = "SELECT product.name, AVG(productsales.quantity) as 'Average'
+                FROM product
+                JOIN productsales on product.productID = productsales.productID
+                JOIN sales on productsales.salesID = sales.salesID
+                WHERE product.productID = '$prod'
+                AND sales.saleDate BETWEEN '$start' AND '$end'";
+
+    $sql = mysqli_query($conn, $query);
+
+    $row = mysqli_fetch_array($sql);
+
+    $aveSales = $row['Average'];
+
+    return $aveSales;
+}
+//get sales of specific month
+function get_monthly($conn, $prod, $month){
+    $query = "SELECT product.name, AVG(productsales.quantity) as 'Average'
+                FROM product
+                JOIN productsales on product.productID = productsales.productID
+                JOIN sales on productsales.salesID = sales.salesID
+                WHERE product.productID = '$prod'
+                AND MONTH(sales.saleDate) = '$month'";
+    $sql = mysqli_query($conn, $query);
+
+    $row = mysqli_fetch_array($sql);
+
+    $aveSales = $row['Average'];
+
+    return $aveSales;
+}
 
 
  ?>
