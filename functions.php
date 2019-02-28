@@ -236,6 +236,132 @@ function get_need_inventory($conn,$orderid){
     return $needstock;
 }
 
+function get_need_inventory2($conn,$orderid){
+  $query = "SELECT receipt.productID,
+                   receipt.quantity
+            FROM Receipt
+            WHERE `orderID` = $orderid";
+  $sql = mysqli_query($conn,$query);
+  $needstock = array();
+  // iterates thru all products in the receipt per joborder
+    // while($row = mysqli_fetch_array($sql)){
+    for ($j=0; $j < mysqli_num_rows($sql); $j++) {
+      $row = mysqli_fetch_array($sql);
+
+      $id = $row['productID'];
+      $recipeqty = $row['quantity'];
+      $query1 = "SELECT Recipe.productID AS ProductID,
+                        Recipe.ingredientID AS Ingredientid,
+                        Ingredient.quantity AS CurrentInventoryQuantity,
+                        Recipe.quantity AS IndivNeedINGQTY,
+                        Recipe.quantity*$recipeqty AS NeededIngredientQuantity
+                  FROM `Recipe`
+                  JOIN Ingredient ON Ingredient.ingredientID = Recipe.ingredientID
+                  WHERE Recipe.productID = $id AND Recipe.quantity*$recipeqty > Ingredient.quantity";
+        $sql1 = mysqli_query($conn,$query1);
+
+        for ($i=0; $i < mysqli_num_rows($sql1); $i++) {
+          $rowed = mysqli_fetch_array($sql1);
+          // print_p($rowed);
+          $prodakid = $rowed['ProductID'];
+          $ingredid = $rowed['Ingredientid'];
+          $oriingid = $rowed['IndivNeedINGQTY'];
+          $ingquant = $rowed['NeededIngredientQuantity'];
+          $currinvq = $rowed['CurrentInventoryQuantity'];
+
+          if ($currinvq < $ingquant) {
+            // echo $ingquant."<br />";
+            $diff = $ingquant - $currinvq;
+            $needstock[$j][$i]['productid'] = $prodakid;
+            $needstock[$j][$i]['ingredientid'] = $ingredid;
+            $needstock[$j][$i]['needquantityforPO'] = $diff;
+          }
+        }
+
+    }
+
+    return $needstock;
+}
+
+function get_need_inventory3($conn,$prodid,$qty){
+      $needstock = array();
+
+      $query1 = "SELECT Recipe.productID AS ProductID,
+                        Recipe.ingredientID AS Ingredientid,
+                        Ingredient.name AS ingname,
+                        Ingredient.quantity AS CurrentInventoryQuantity,
+                        RawMaterial.supplierID AS supid,
+                        Recipe.quantity AS IndivNeedINGQTY,
+                        Recipe.quantity*$qty AS NeededIngredientQuantity,
+                        Supplier.company AS name,
+                        Supplier.duration AS duration
+                  FROM `Recipe`
+                  JOIN Ingredient ON Ingredient.ingredientID = Recipe.ingredientID
+                  JOIN RMIngredient ON RMIngredient.ingredientID = Ingredient.ingredientID
+                  JOIN RawMaterial ON RawMaterial.rawMaterialID = RMIngredient.rawMaterialID
+                  JOIN Supplier ON RawMaterial.supplierID = Supplier.supplierID
+                  WHERE Recipe.productID = $prodid AND Recipe.quantity*$qty > Ingredient.quantity";
+        $sql1 = mysqli_query($conn,$query1);
+
+        for ($i=0; $i < mysqli_num_rows($sql1); $i++) {
+          $rowed = mysqli_fetch_array($sql1);
+          // print_p($rowed);
+
+          $prodakid = $rowed['ProductID'];
+          $ingredid = $rowed['Ingredientid'];
+          $ingrenam = $rowed['ingname'];
+          $supplyid = $rowed['supid'];
+          $oriingid = $rowed['IndivNeedINGQTY'];
+          $ingquant = $rowed['NeededIngredientQuantity'];
+          $currinvq = $rowed['CurrentInventoryQuantity'];
+
+
+          $needstock[$i]['productid'] = $prodakid;
+          $needstock[$i]['ingredientid'] = $ingredid;
+          $needstock[$i]['ingname'] = $ingrenam;
+          $needstock[$i]['supid'] = $supplyid;
+          $needstock[$i]['needqty'] = $ingquant;
+
+        }
+
+
+
+    return $needstock;
+}
+
+function get_suppname($conn,$id){
+    $query = "SELECT * FROM Supplier WHERE supplieriD = '$id'";
+
+    $sql = mysqli_query($conn,$query);
+
+    $row = mysqli_fetch_array($sql);
+
+    return $row['company'];
+
+}
+
+function get_suppdur($conn,$id){
+    $query = "SELECT * FROM Supplier WHERE supplieriD = '$id'";
+
+    $sql = mysqli_query($conn,$query);
+
+    $row = mysqli_fetch_array($sql);
+
+    return $row['duration'];
+
+}
+
+function get_ingname($conn,$id){
+    $query = "SELECT * FROM Ingredient WHERE ingredientID = '$id'";
+
+    $sql = mysqli_query($conn,$query);
+
+    $row = mysqli_fetch_array($sql);
+
+    return $row['name'];
+
+}
+
 
 // check first if ingredients need are enuf then use This
 // function reduces the ingredients table using ingredientid per product * qty in order
@@ -662,5 +788,6 @@ function get_monthly($conn, $prod, $month){
 
     return $aveSales;
 }
+
 
  ?>

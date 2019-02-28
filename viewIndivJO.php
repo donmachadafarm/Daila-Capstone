@@ -55,7 +55,7 @@
                 <td>Total Cost for JO: <b><?php echo number_format($pricez); ?></b></td>
                 <td>JO Type: <?php echo $type; ?></td>
                 <td>Purchase Order date posted: <?php echo $date; ?></td>
-                <td>Deadline for supplier: <?php echo $deadline; ?></td>
+                <td>Deadline: <?php echo $deadline; ?></td>
               </tr>
             </table>
           </div>

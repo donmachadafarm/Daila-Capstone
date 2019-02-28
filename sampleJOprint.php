@@ -38,11 +38,15 @@
                 </thead>
 
             <?php
+              $dayz = 0;
+              $checker = 0;
+
               $prod = $_POST['product'];
               $quantity = $_POST['quantity'];
 
               $sum = 0;
               foreach ($prod as $key => $value) {
+                $qty = $quantity[$key];
                 $query = "SELECT Product.name FROM Product WHERE productID = '$value'";
 
                   $sql = mysqli_query($conn,$query);
@@ -59,6 +63,10 @@
                 $sum+=$time;
                 $qty = $quantity[$key];
 
+                if (get_need_inventory3($conn,$value,$qty)) {
+                  $checker++;
+                }
+
              ?>
 
 
@@ -69,84 +77,38 @@
                       <td><?php echo seconds_datetime($time); ?></td>
                     </tr>
                 </tbody>
-                <?php } ?>
+          <?php } ?>
             </table>
+
+
+
+
             <br>
             <p><b>Total Production Time:</b> <?php echo seconds_datetime($sum); ?></p>
             <hr class="style1">
-            <?php
-              $checker = 0;
 
+            <?php
+
+            if ($checker>0) {
+              echo "<h5>Lacking Ingredients on the following:</h5>";
               foreach ($prod as $key => $value) {
                 $qty = $quantity[$key];
 
-                $query1 = "SELECT Ingredient.ingredientID AS ingid,
-                                  Ingredient.quantity AS CurrentInventoryQuantity,
-                                  Recipe.quantity*$qty AS NeededIngredientQuantity
-                            FROM `Recipe`
-                            INNER JOIN Ingredient ON Ingredient.ingredientID = Recipe.ingredientID
-                            WHERE Recipe.productID = $value";
-
-                  $sql1 = mysqli_query($conn,$query1);
-
-                  $ingar = array();
-                  $prid = array();
-                  while ($rowed = mysqli_fetch_array($sql1)) {
-                    $ingid = $rowed['ingid'];
-                    $ingquant = $rowed['NeededIngredientQuantity'];
-                    $currinvq = $rowed['CurrentInventoryQuantity'];
-
-                    if ($currinvq < $ingquant) {
-                      $prid[] = $value;
-                      $ingar[] = $ingid;
-                      $checker++;
+                if (get_need_inventory3($conn,$value,$qty)) {
+                  echo "<div class = 'container'>";
+                  $inv = get_need_inventory3($conn,$value,$qty);
+                    echo "<b>" . get_prodname($conn,$inv[0]['productid']) . "</b><br />";
+                    foreach ($inv as $key => $value) {
+                      $dayz+=get_suppdur($conn,$inv[$key]['supid']);
+                      echo "<div style='text-indent: 20px'>Need: " . $inv[$key]['ingname'] . " - " . number_format($inv[$key]['needqty']) . "Pcs</div>";
+                      echo "<div style='text-indent: 30px'>Supplier: ". get_suppname($conn,$inv[$key]['supid']) . " (Estimated Delivery - " . get_suppdur($conn,$inv[$key]['supid']) . " Days)</div>";
                     }
-                  }
+                  echo "</div>";
                 }
-                  $p = array_unique($prid);
-                ?>
+              }
+            }
+            ?>
 
-                <?php if ($checker>0): ?>
-                  <div class="container">
-                    <h5>Products with lacking ingredients</h5>
-
-                    <p>
-                <?php
-                  $dayz = 0;
-                  foreach ($p as $key => $value) {
-
-                    $sq = mysqli_query($conn,"SELECT * FROM Product WHERE productid = '$value'");
-                    $r = mysqli_fetch_array($sq);
-                  ?>
-                  <h6>Product: <?php echo $r['name']; ?></h6>
-
-                  <?php
-
-                    foreach ($ingar as $k => $v) {
-
-                      $sq1 = mysqli_query($conn,"SELECT Ingredient.name,
-                                                        RMIngredient.rawMaterialID,
-                                                        RawMaterial.rawMaterialID,
-                                                        RawMaterial.supplierID,
-                                                        Supplier.company,
-                                                        MAX(Supplier.duration)
-                                                 FROM RMIngredient
-                                                 JOIN Ingredient ON Ingredient.ingredientID = RMIngredient.ingredientID
-                                                 JOIN RawMaterial ON RMIngredient.rawMaterialID = RawMaterial.rawMaterialID
-                                                 JOIN Supplier ON Supplier.supplierID = RawMaterial.rawMaterialID
-                                                 WHERE Ingredient.ingredientID = $v");
-
-                      while ($r1 = mysqli_fetch_array($sq1)) {
-                        $dayz+=$r1[5];
-                        echo $r1[4]." (Days to deliver: ".$r1[5].") - ";
-                        echo $r1['name']."<br />";
-                      } ?>
-                  </p>
-
-
-                <?php }
-                    } endif; ?>
-                  </div>
 
             <hr class="style1">
 
@@ -159,6 +121,7 @@
             <div class="pull-right">
 
               <?php
+
               $query = "SELECT SUM(timeEstimate) FROM ProductionProcess";
 
               $sql = mysqli_query($conn,$query);

@@ -21,32 +21,38 @@
       // query here
       $joid = $_POST['joborderid'];
       $prodid = $_POST['productid'];
+      $qty = $_POST['qty'];
 
-      $query = "SELECT * FROM Production WHERE orderID = $joid AND productID = $prodid";
+      $query = "UPDATE Product SET quantity = quantity + $qty WHERE productID = '$prodid'";
 
-        $sql = mysqli_query($conn,$query);
+        mysqli_query($conn,$query);
 
-        $row = mysqli_fetch_array($sql);
+      $query = "UPDATE Shipping SET shippingQuantity = shippingQuantity - $qty, shippedQuantity = shippedQuantity + $qty WHERE productID = '$prodid' AND orderID = '$joid'";
 
-        $good = $row['totalGoods'];
+        mysqli_query($conn,$query);
 
-      // add qty to product inventory using ['good']
-      $query = "UPDATE Product SET quantity = quantity + $good WHERE productID = $prodid";
-      mysqli_query($conn,$query);
+      $sql = mysqli_query($conn,"SELECT * FROM Shipping WHERE orderid = '$joid' AND productID = '$prodid'");
 
-      $query = "UPDATE Production SET status = Finished WHERE productID = $prodid AND orderID = $joid";
-      mysqli_query($conn,$query);
+      $row = mysqli_fetch_array($sql);
 
+      if ($row['shippingQuantity'] == 0) {
+        mysqli_query($conn,"UPDATE Shipping SET status = 'Shipped' WHERE orderid = '$joid' AND productID = '$prodid'");
+      }
+
+      // checker if there are still shipping status in production
       $sql = mysqli_query($conn,"SELECT * FROM Production WHERE productID = $prodid AND orderID = $joid AND status = 'Shipping'");
 
       $count = mysqli_num_rows($sql);
 
       if($count == 0){
-        mysqli_query($conn,"UPDATE JobOrder SET status = 'Finished!' WHERE orderID = $joid");
+        mysqli_query($conn,"UPDATE JobOrder SET status = 'For Out' WHERE orderID = $joid");
       }
 
 
     }
+
+
+
 
  ?>
 
@@ -58,27 +64,15 @@
               </h1>
           </div>
       </div>
-      <a href="viewPurchaseOrders.php" class="btn btn-primary btn-sm float-right" style="color:white">go back</a>
-      <!-- <div class="row">
-          <div class="col-lg-12">
-            <table class="table table-borderless" id="dataTables-example">
-              <tr>
-                <td>Total Cost for PO: <b><?php //echo $pricez; ?></b></td>
-                <td>Current status of PO: <?php //echo $status; ?></td>
-                <td>Purchase Order date posted: <?php //echo $date; ?></td>
-                <td>Deadline for supplier: <?php //echo $deadline; ?></td>
-              </tr>
-            </table>
-          </div>
-      </div><br><br><br> -->
+      <a href="viewInternalShipping.php" class="btn btn-primary btn-sm float-right" style="color:white">go back</a>
       <div class="row">
         <div class="col-lg-12">
-          <h3>List of Products in Job Order</h3>
-          <table class="table table-bordered table-hover" id="dataTables-example">
+          <h3>List of Products in Job Order</h3><br><hr class="style1"><br>
+          <table class="table table-bordered table-hover" >
             <thead>
               <tr>
                 <th>Product Name</th>
-                <th>Quantity</th>
+                <th>Quantity Remaining</th>
                 <th>Status</th>
                 <th class="text-center">Action</th>
               </tr>
@@ -89,18 +83,17 @@
 
                 $query = "SELECT Product.name AS name,
                                  Product.productID AS prodid,
-                                 Production.quantity AS qty,
-                                 Production.status AS status
+                                 Shipping.shippingQuantity AS qty,
+                                 Shipping.status AS status
                           FROM JobOrder
-                          JOIN Production ON Production.orderID = JobOrder.orderID
-                          JOIN Product ON Production.productID = Product.productID
-                          WHERE Production.orderID = $id";
+                          JOIN Shipping ON Shipping.orderID = JobOrder.orderID
+                          JOIN Product ON Shipping.productID = Product.productID
+                          WHERE Shipping.orderID = $id";
 
                 $sql = mysqli_query($conn,$query);
 
                 while ($row = mysqli_fetch_array($sql)) {
                     $name = $row['name'];
-                    $orderid = $row['orderid'];
                     $qty = $row['qty'];
                     $status = $row['status'];
                     $prodid = $row['prodid'];
@@ -119,7 +112,7 @@
                       echo "</td>";
 
                       echo "<td class='text-center'>";
-                      if ($status != 'Added') {
+                      if ($status != 'Shipped') {
                         echo '<a href="#update'.$prodid.'" data-target="#update'.$prodid.'" data-toggle="modal"><button type="button" class="btn btn-success btn-sm">Receive</button></a>';
                       }else {
                         echo '<button type="button" class="btn btn-sm btn-secondary" disabled>Received</button>';
@@ -144,9 +137,9 @@
                                         <input type="hidden" name="productid" value="<?php echo $prodid; ?>">
                                         <div class="text-center">
                                           <p>
-                                            <h6>Add product into inventory?</h6>
+                                            <h6>How many arrived?</h6>
                                             <br>
-                                            <h6>Note: This action will add the product in the inventory!</h6>
+                                            <input type="number" placeholder="Expected: <?php echo $qty; ?>" name="qty" class="form-control" value="">
                                           </p>
                                         </div>
                                         <div class="modal-footer">

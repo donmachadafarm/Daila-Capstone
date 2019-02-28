@@ -22,9 +22,7 @@
           <h6 class="dropdown-header text-center"><b> Raw Materials </b></h6>
           <a class="dropdown-item text-center" href="addrawmaterial.php">Add Raw Materials</a>
           <a class="dropdown-item text-center" href="viewrawmaterials.php">View Raw Materials</a>
-
           <a class="dropdown-item text-center" href="makepurchaseorder.php">Create Purchase Order</a>
-
           <a class="dropdown-item text-center" href="viewPurchaseOrders.php">View Purchase Orders</a>
           <div class="dropdown-divider"></div>
           <h6 class="dropdown-header text-center"><b> Products </b></h6>
@@ -41,19 +39,24 @@
         </a>
         <div class="dropdown-menu">
           <?php if($_SESSION['userType']!=103 || $_SESSION['userType']==104): ?>
-          <h6 class="dropdown-header text-center"><b> Job Orders </b></h6>
           <!-- Add More Links if needed for every functionality -->
-          <a class="dropdown-item" href="viewProductionJobOrder.php">Production Out</a>
+          <h6 class="dropdown-header text-center"><b> Invoice </b></h6>
+          <a class="dropdown-item text-center"  href="viewProductionJobOrder.php">Production Out</a>
+          <a class="dropdown-item text-center" href="salesInvoice.php">Create Invoice</a>
+          <div class="dropdown-divider"></div>
           <?php endif; ?>
           <?php if($_SESSION['userType']==103 || $_SESSION['userType']==104): ?>
-          <a class="dropdown-item" href="viewProductionSchedule.php">Production Schedule</a>
+          <h6 class="dropdown-header text-center"><b> Production </b></h6>
+          <a class="dropdown-item text-center" href="viewProductionSchedule.php">Production Schedule</a>
+          <a class="dropdown-item text-center" href="viewInternalShipping.php">View Internal Shipping</a>
+          <div class="dropdown-divider"></div>
           <?php endif; ?>
           <?php if($_SESSION['userType']!=103  || $_SESSION['userType']==104): ?>
           <!--  -->
-          <a class="dropdown-item" href="samplejo.php">Create Mock Job Order</a>
-          <a class="dropdown-item" href="makeCustomerJobOrder.php">Create Job Order</a>
-          <a class="dropdown-item" href="viewJobOrders.php">Pending Job Orders</a>
-          <a class="dropdown-item" href="salesInvoice.php">Generate Invoice</a>
+          <h6 class="dropdown-header text-center"><b> Job Orders </b></h6>
+          <a class="dropdown-item text-center" href="samplejo.php">Create Mock Job Order</a>
+          <a class="dropdown-item text-center" href="makeCustomerJobOrder.php">Create Job Order</a>
+          <a class="dropdown-item text-center" href="viewJobOrders.php">Pending Job Orders</a>
         </div>
           <?php endif; ?>
       </li>

@@ -14,11 +14,56 @@
 // Get date today
 $today = date("Y-m-d");
 
+// Get userid
+$user = $_SESSION['userid'];
+
 if (isset($_POST['submit'])){
+  $ing = $_POST['ing'];
+  $qty = $_POST['qty'];
+  $sup = $_POST['supplier'];
+  $id = $_POST['orderid'];
 
-   // inert PO
-   // $query = "INSERT into PurchaseOrder (supplierID,totalPrice,orderDate,status,deadline,createdBy) values ('1','0','{$today}','Pending','{$today}','{$user}')";
+  for ($i=0; $i < count($_POST['supplier']); $i++) {
+    // get deadline from the orderid
+    $query = "SELECT * FROM JobOrder WHERE orderID = '$id'";
 
+      $sql = mysqli_query($conn,$query);
+
+      $row = mysqli_fetch_array($sql);
+
+      $deadline = $row['dueDate'];
+
+    // get the rawmat details (total price->qty*pricePerUnit,unit of measurement, rawmatID)
+    $query = "SELECT * FROM RawMaterial WHERE supplierID = '$sup[$i]'";
+
+      $sql = mysqli_query($conn,$query);
+
+      $row = mysqli_fetch_array($sql);
+
+      $total = $row['pricePerUnit'] * $qty[$i];
+
+      $uom = $row['unitOfMeasurement'];
+
+      $rmid = $row['rawMaterialID'];
+
+    // insert query for PO
+    $query = "INSERT INTO PurchaseOrder (supplierID,totalPrice,orderDate,status,deadline,createdBy) values ('{$sup[$i]}','{$total}','{$today}','Pending','{$deadline}','{$user}')";
+
+      $sql = mysqli_query($conn,$query);
+
+    // get the PO details for POItem insert
+    $query = "SELECT * FROM PurchaseOrder ORDER BY purchaseOrderID DESC LIMIT 1 ";
+
+      $sql = mysqli_query($conn,$query);
+
+      $row = mysqli_fetch_array($sql);
+
+      $poid = $row['purchaseOrderID'];
+
+    $query = "INSERT INTO POItem (purchaseOrderID,rawMaterialID,quantity,subTotal,unitOfMeasurement,status) VALUES('$poid','$rmid','$qty[$i]','$total','$uom','Not Delivered')";
+
+      $sql = mysqli_query($conn,$query);
+  }
 }
 
 
@@ -65,7 +110,6 @@ if (isset($_POST['submit'])){
 
                 <?php
                 } else{
-
                 ?>
                   <div class="panel-body"><br>
                       <div class='row'>
@@ -79,7 +123,7 @@ if (isset($_POST['submit'])){
 
                     <!--PO form-->
 
-                  <form action="postPurchaseOrder.php" method="GET">
+                  <form action="makePurchaseOrder.php" method="POST">
                       <div class="form-group">
                           <p class="form-control-static">
 
@@ -89,7 +133,7 @@ if (isset($_POST['submit'])){
                       if (isset($_GET['id'])) {
                         $id = $_GET['id'];
 
-                        $inv = get_need_inventory($conn,$id);
+                        $inv = get_need_inventory2($conn,$id);
                         $count = count($inv);
 
                         //
@@ -98,40 +142,37 @@ if (isset($_POST['submit'])){
                             $ing = $inv[$i][$j]['ingredientid'];
                             $nid = $inv[$i][$j]['needquantityforPO'];
                             $pro = $inv[$i][$j]['productid'];
-                            $unit = $inv[$i][$j]['uom'];
 
-                            $sql = mysqli_query($conn,"SELECT * FROM Product WHERE productID = $pro");
-                            $row = mysqli_fetch_array($sql);
-                            $name = $row['name'];
-                            $sql1 = mysqli_query($conn,"SELECT * FROM Ingredient WHERE ingredientID = $ing");
-                            $rowe = mysqli_fetch_array($sql1);
-                            $ingname = $rowe['name'];
+
+
                             echo "<div class='row'>";
+                              echo "<input type = 'hidden' name = 'orderid' value = '".$id."'>";
                               echo "<div class='col'>";
-                                echo "$name";
-                                echo "<input name = \"rawmat[]\" type = \"hidden\">";
-                              echo "</div>";
-                              echo "<div class='col'>";
-                                echo "$ingname";
-                              echo "</div>";
-                              echo "<div class='col'>";
-                              echo number_format($nid, 2);
-                              echo " $unit";
+                                echo get_prodname($conn,$pro);
                               echo "</div>";
 
                               echo "<div class='col'>";
-                                echo "<select class=\"form-control\" name=\"supplier\" id=\"supplier-list\">";
+                                echo get_ingname($conn,$ing);
+                                echo "<input name ='ing[]' value = '".$ing."' type = 'hidden'>";
+                              echo "</div>";
+
+                              echo "<div class='col'>";
+                                echo number_format($nid, 2);
+                                echo "<input name ='qty[]' value = '". number_format($nid) ."' type='hidden'>";
+                              echo "</div>";
+
+                              echo "<div class='col'>";
+                                echo "<select class='form-control' name='supplier[]'>";
 
                                       $query = "SELECT supplier.company as supplierName, supplier.supplierID as IDofSupplier
                                           from ingredient
                                           join rmingredient on ingredient.ingredientID = rmingredient.ingredientID
                                           join rawmaterial on rmingredient.rawMaterialID = rawmaterial.rawMaterialID
                                           join supplier on rawmaterial.supplierID = supplier.supplierID
-                                          WHERE ingredient.name = '$ingname'";
+                                          WHERE ingredient.ingredientid = '$ing'";
                                       $supplierlist = mysqli_query($conn, $query);
 
                                       while ($next = mysqli_fetch_array($supplierlist)){
-//                                          echo "<option value=12></option><br>";
                                           echo "<option value='$next[IDofSupplier]'>".$next['supplierName']."</option>";
                                       }
 
@@ -143,23 +184,7 @@ if (isset($_POST['submit'])){
                       }
                        ?>
                   <br>
-<!--                    <form action="postPurchaseOrder.php" method="GET">-->
-<!--                     <div class="form-group">-->
-<!--                        <p class="form-control-static">-->
-<!--                              <label>Supplier:</label></br>-->
-<!--                               <select class="form-control" name="supplier" id="supplier-list">-->
-<!--                               --><?php
-//                                 $result = mysqli_query($conn, 'SELECT * FROM Supplier');
-//
-//                                 while($row = mysqli_fetch_array($result)){
-//                                   echo "<label><option value=\"{$row['supplierID']}\">{$row['name']}</option></label>
-//                                   <br>";
-//                                 }
-//                                ?>
-<!--                              </select><br><small class="form-text text-muted">Not in the list of suppliers? <a href="addSupplier.php">Click here</a></small><br>-->
-<!---->
-<!--                        </p>-->
-                    <input type="submit" name="submit" value="Select Supplier" class="btn btn-success"/></div>
+                    <input type="submit" name="submit" value="Proceed" class="btn btn-success"/></div>
                     </form>
                   <?php } ?>
                   </div>
@@ -167,11 +192,19 @@ if (isset($_POST['submit'])){
           </div>
       </div>
 
+      <!--                                                                                   -->
+      <!--                                                                                   -->
+      <!--                                                                                   -->
+      <!--                               N O T    I N C L U D E D                            -->
+      <!--                                                                                   -->
+      <!--                                                                                   -->
+      <!--                                                                                   -->
+      <!--                                                                                   -->
+      <!--                                                                                   -->
+      <!--                                                                                   -->
 
-
-
-      <hr class="style1">
-      <h3><b>Supplier info</b></h3>
+      <hr class="style1"><br>
+      <h2 class="text-center">Supplier info</h2>
       <div class="row">
           <div class="col-lg-12">
                     <table class="table table-hover" id="dataTables-example">
