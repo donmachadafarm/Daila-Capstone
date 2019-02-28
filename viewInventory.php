@@ -16,6 +16,7 @@ $yearAgo = date("Y-m-d", strtotime("-1 year"));
 $halfYearAgo = date("Y-m-d", strtotime("-6 months"));
 $threeMonthsAgo = date("Y-m-d", strtotime("-3 months"));
 $thisMonth = date('m');
+$thisMonthWord = date('F');
 ?>
 
 <!-- put all the contents here  -->
@@ -34,7 +35,7 @@ $thisMonth = date('m');
                     <option value="2" <?php if($example == '2') { ?> selected <?php } ?>>Yearly Average - Past 1 Year</option>
                     <option value="3" <?php if($example == '3') { ?> selected <?php } ?>>6 Month Average - Past 6 Months</option>
                     <option value="4" <?php if($example == '4') { ?> selected <?php } ?>>3 Month Average - Past 3 Months</option>
-                    <option value="5" <?php if($example == '5') { ?> selected <?php } ?>>Seasonality - This Month Last Year</option>
+                    <option value="5" <?php if($example == '5') { ?> selected <?php } ?>>Seasonality - All Sales from the Month of <?php echo $thisMonthWord?></option>
 
                 </select>
                 <input type="submit" name="choose" id="submitButton" value="Submit">
