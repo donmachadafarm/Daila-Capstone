@@ -148,7 +148,7 @@ if (!isset($_SESSION['userType'])){
 
                     $result2 = mysqli_query($conn, "SELECT SUM(purchaseorder.totalPrice) AS sum
                                                     FROM purchaseorder
-                                                    WHERE purchaseorder.status!='removed'");
+                                                    WHERE purchaseorder.status='Completed!'");
 
                     if ($count == "0") {
                         echo '<h2 class="text-center">There are no transactions yet</h2>';
@@ -201,7 +201,7 @@ if (!isset($_SESSION['userType'])){
                         echo '<div class="container">';
                         echo '<div class="row">';
                         echo '<div class="col-lg-12">';
-                        echo '<h4 class="text-right">Total Revenue: ';
+                        echo '<h4 class="text-right">Total Expense: ';
                         echo number_format($sum, 2);
                         echo '</h4>';
                         echo '</div>';

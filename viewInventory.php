@@ -237,7 +237,7 @@ $thisMonthWord = date('F');
                         $restockingValue = 100;
                         $maxLeadTime = get_maxlead($conn, $id);
                         $averageSales = get_range_average($conn, $id, $halfYearAgo, $dateNow);
-                        $reorderPoint = number_format(100+($averageSales*$maxLeadTime), 0);
+                        $reorderPoint = 100+($averageSales*$maxLeadTime);
                         $needed = $reorderPoint-$quantity;
 
                         if ($reorderPoint>$quantity){
