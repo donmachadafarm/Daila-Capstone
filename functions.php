@@ -131,24 +131,18 @@ function check_for_inventory_match($conn,$orderid){
                       Recipe.ingredientID AS Ingredientid,
                       Ingredient.quantity AS CurrentInventoryQuantity,
                       Recipe.quantity AS IndivNeedINGQTY,
-                      Recipe.quantity*$recipeqty AS NeededIngredientQuantity
+                      round(Recipe.quantity*$recipeqty) AS NeededIngredientQuantity
                 FROM `Recipe`
                 INNER JOIN Ingredient ON Ingredient.ingredientID = Recipe.ingredientID
-                WHERE Recipe.productID = $id";
+                WHERE Recipe.productID = $id AND round(Recipe.quantity*$recipeqty) > Ingredient.quantity";
 
       $sql1 = mysqli_query($conn,$query1);
 
-      while ($rowed = mysqli_fetch_array($sql1)) {
-        $prodakid = $rowed['ProductID'];
-        $ingredid = $rowed['Ingredientid'];
-        $oriingid = $rowed['IndivNeedINGQTY'];
-        $ingquant = $rowed['NeededIngredientQuantity'];
-        $currinvq = $rowed['CurrentInventoryQuantity'];
-
-        if ($currinvq < $ingquant) {
-          $invgreat++;
-        }
+      if (mysqli_num_rows($sql1)) {
+        $invgreat++;
       }
+
+
     }
     return $invgreat;
 }
@@ -236,13 +230,53 @@ function get_need_inventory($conn,$orderid){
     return $needstock;
 }
 
+function get_need_inv($conn,$id,$qty){
+  $needstock = array();
+
+      $query1 = "SELECT Recipe.productID AS ProductID,
+                        Recipe.ingredientID AS Ingredientid,
+                        Ingredient.quantity AS CurrentInventoryQuantity,
+                        Recipe.quantity AS IndivNeedINGQTY,
+                        round(Recipe.quantity*$qty) AS NeededIngredientQuantity
+                  FROM `Recipe`
+                  JOIN Ingredient ON Ingredient.ingredientID = Recipe.ingredientID
+                  WHERE Recipe.productID = $id AND round(Recipe.quantity*$qty) > Ingredient.quantity";
+
+          $sql1 = mysqli_query($conn,$query1);
+
+
+            for ($i=0; $i < mysqli_num_rows($sql1); $i++) {
+              $rowed = mysqli_fetch_array($sql1);
+              // print_p($rowed);
+              $prodakid = $rowed['ProductID'];
+              $ingredid = $rowed['Ingredientid'];
+              $oriingid = $rowed['IndivNeedINGQTY'];
+              $ingquant = $rowed['NeededIngredientQuantity'];
+              $currinvq = $rowed['CurrentInventoryQuantity'];
+
+              if ($currinvq < $ingquant) {
+                // echo $ingquant."<br />";
+                $diff = $ingquant - $currinvq;
+                $needstock[$i]['productid'] = $prodakid;
+                $needstock[$i]['ingredientid'] = $ingredid;
+                $needstock[$i]['needquantityforPO'] = $ingquant;
+              }
+            }
+
+
+
+    return $needstock;
+}
+
 function get_need_inventory2($conn,$orderid){
   $query = "SELECT receipt.productID,
                    receipt.quantity
             FROM Receipt
             WHERE `orderID` = $orderid";
   $sql = mysqli_query($conn,$query);
+  $prodarr = array();
   $needstock = array();
+
   // iterates thru all products in the receipt per joborder
     // while($row = mysqli_fetch_array($sql)){
     for ($j=0; $j < mysqli_num_rows($sql); $j++) {
@@ -250,36 +284,46 @@ function get_need_inventory2($conn,$orderid){
 
       $id = $row['productID'];
       $recipeqty = $row['quantity'];
-      $query1 = "SELECT Recipe.productID AS ProductID,
-                        Recipe.ingredientID AS Ingredientid,
-                        Ingredient.quantity AS CurrentInventoryQuantity,
-                        Recipe.quantity AS IndivNeedINGQTY,
-                        Recipe.quantity*$recipeqty AS NeededIngredientQuantity
-                  FROM `Recipe`
-                  JOIN Ingredient ON Ingredient.ingredientID = Recipe.ingredientID
-                  WHERE Recipe.productID = $id AND Recipe.quantity*$recipeqty > Ingredient.quantity";
-        $sql1 = mysqli_query($conn,$query1);
 
-        for ($i=0; $i < mysqli_num_rows($sql1); $i++) {
-          $rowed = mysqli_fetch_array($sql1);
-          // print_p($rowed);
-          $prodakid = $rowed['ProductID'];
-          $ingredid = $rowed['Ingredientid'];
-          $oriingid = $rowed['IndivNeedINGQTY'];
-          $ingquant = $rowed['NeededIngredientQuantity'];
-          $currinvq = $rowed['CurrentInventoryQuantity'];
+      if (!empty(get_need_inv($conn,$id,$recipeqty))) {
+        $prodarr[] = $id;
+      }
 
-          if ($currinvq < $ingquant) {
-            // echo $ingquant."<br />";
-            $diff = $ingquant - $currinvq;
-            $needstock[$j][$i]['productid'] = $prodakid;
-            $needstock[$j][$i]['ingredientid'] = $ingredid;
-            $needstock[$j][$i]['needquantityforPO'] = $diff;
-          }
+  }
+  // print_p($prodarr);
+  for($j = 0; $j < count($prodarr);$j++) {
+    $query1 = "SELECT Recipe.productID AS ProductID,
+                  Recipe.ingredientID AS Ingredientid,
+                  Ingredient.quantity AS CurrentInventoryQuantity,
+                  Recipe.quantity AS IndivNeedINGQTY,
+                  round(Recipe.quantity*$recipeqty) AS NeededIngredientQuantity
+            FROM `Recipe`
+            JOIN Ingredient ON Ingredient.ingredientID = Recipe.ingredientID
+            WHERE Recipe.productID = $prodarr[$j] AND round(Recipe.quantity*$recipeqty) > Ingredient.quantity";
+
+    $sql1 = mysqli_query($conn,$query1);
+
+    if(mysqli_num_rows($sql1)!=0){
+
+      for ($i=0; $i < mysqli_num_rows($sql1); $i++) {
+        $rowed = mysqli_fetch_array($sql1);
+        // print_p($rowed);
+        $prodakid = $rowed['ProductID'];
+        $ingredid = $rowed['Ingredientid'];
+        $oriingid = $rowed['IndivNeedINGQTY'];
+        $ingquant = $rowed['NeededIngredientQuantity'];
+        $currinvq = $rowed['CurrentInventoryQuantity'];
+
+        if ($currinvq < $ingquant) {
+          // echo $ingquant."<br />";
+          $diff = $ingquant - $currinvq;
+          $needstock[$j][$i]['productid'] = $prodakid;
+          $needstock[$j][$i]['ingredientid'] = $ingredid;
+          $needstock[$j][$i]['needquantityforPO'] = $ingquant;
         }
-
+      }
     }
-
+  }
     return $needstock;
 }
 

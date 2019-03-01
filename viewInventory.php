@@ -26,7 +26,7 @@ $thisMonthWord = date('F');
     <div class="row">
         <div class="col-lg-12">
             <h1 class="page-header"><br><br>
-                View Inventory
+                Finished Goods Inventory
             </h1>
             <label for="chooseAlgo">Choose Forecasting Algorithm:</label>
             <form method="post">
@@ -59,10 +59,10 @@ $thisMonthWord = date('F');
                 <?php
                 if (!isset($_POST['choose'])){
 
-                    $allInventory = mysqli_query($conn, "SELECT product.name AS productname, 
-                                                                product.quantity AS quantity, 
-                                                                productType.name AS producttypename, 
-                                                                product.productPrice, 
+                    $allInventory = mysqli_query($conn, "SELECT product.name AS productname,
+                                                                product.quantity AS quantity,
+                                                                productType.name AS producttypename,
+                                                                product.productPrice,
                                                                 product.productID AS ID
                                                                 FROM product
                                                                 JOIN productType ON product.productTypeID=productType.productTypeID
@@ -112,10 +112,10 @@ $thisMonthWord = date('F');
                 }
 
                 elseif ($example ==1){
-                    $allInventory = mysqli_query($conn, "SELECT product.name AS productname, 
-                                                                product.quantity AS quantity, 
-                                                                productType.name AS producttypename, 
-                                                                product.productPrice, 
+                    $allInventory = mysqli_query($conn, "SELECT product.name AS productname,
+                                                                product.quantity AS quantity,
+                                                                productType.name AS producttypename,
+                                                                product.productPrice,
                                                                 product.productID AS ID
                                                                 FROM product
                                                                 JOIN productType ON product.productTypeID=productType.productTypeID
@@ -165,10 +165,10 @@ $thisMonthWord = date('F');
                 }
 
                 elseif ($example == 2){
-                    $allInventory = mysqli_query($conn, "SELECT product.name AS productname, 
-                                                                product.quantity AS quantity, 
-                                                                productType.name AS producttypename, 
-                                                                product.productPrice, 
+                    $allInventory = mysqli_query($conn, "SELECT product.name AS productname,
+                                                                product.quantity AS quantity,
+                                                                productType.name AS producttypename,
+                                                                product.productPrice,
                                                                 product.productID AS ID
                                                                 FROM product
                                                                 JOIN productType ON product.productTypeID=productType.productTypeID
@@ -218,10 +218,10 @@ $thisMonthWord = date('F');
                 }
 
                 elseif ($example == 3){
-                    $allInventory = mysqli_query($conn, "SELECT product.name AS productname, 
-                                                                product.quantity AS quantity, 
-                                                                productType.name AS producttypename, 
-                                                                product.productPrice, 
+                    $allInventory = mysqli_query($conn, "SELECT product.name AS productname,
+                                                                product.quantity AS quantity,
+                                                                productType.name AS producttypename,
+                                                                product.productPrice,
                                                                 product.productID AS ID
                                                                 FROM product
                                                                 JOIN productType ON product.productTypeID=productType.productTypeID
@@ -271,10 +271,10 @@ $thisMonthWord = date('F');
                 }
 
                 elseif ($example == 4){
-                    $allInventory = mysqli_query($conn, "SELECT product.name AS productname, 
-                                                                product.quantity AS quantity, 
-                                                                productType.name AS producttypename, 
-                                                                product.productPrice, 
+                    $allInventory = mysqli_query($conn, "SELECT product.name AS productname,
+                                                                product.quantity AS quantity,
+                                                                productType.name AS producttypename,
+                                                                product.productPrice,
                                                                 product.productID AS ID
                                                                 FROM product
                                                                 JOIN productType ON product.productTypeID=productType.productTypeID
@@ -324,10 +324,10 @@ $thisMonthWord = date('F');
                 }
 
                 elseif ($example == 5){
-                    $allInventory = mysqli_query($conn, "SELECT product.name AS productname, 
-                                                                product.quantity AS quantity, 
-                                                                productType.name AS producttypename, 
-                                                                product.productPrice, 
+                    $allInventory = mysqli_query($conn, "SELECT product.name AS productname,
+                                                                product.quantity AS quantity,
+                                                                productType.name AS producttypename,
+                                                                product.productPrice,
                                                                 product.productID AS ID
                                                                 FROM product
                                                                 JOIN productType ON product.productTypeID=productType.productTypeID

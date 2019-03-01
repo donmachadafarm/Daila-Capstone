@@ -26,12 +26,28 @@
   // approve job order conditional submit button puts the job order in production
   if(isset($_POST['approve'])){
     $id = $_POST['jo_id'];
+    $or = $_POST['or'];
+    $payment = $_POST['cost'];
 
     $query = "UPDATE `JobOrder` SET `status` = 'Incomplete' WHERE `orderID` = $id";
 
     if(mysqli_query($conn,$query)){
       echo "<script>alert('Job order products are now in production!')</script>";
     }
+
+    $q = "SELECT SUM(subtotal) FROM Receipt WHERE orderID = '$id'";
+
+      $sql = mysqli_query($conn,$q);
+
+      $row = mysqli_fetch_array($sql);
+
+      $total = $row[0];
+
+    $date = date('Y-m-d');
+
+    $query = "INSERT INTO Sales (orderID,officialReceipt,saleDate,totalPrice,payment) VALUES ($id,$or,'$date',$total,$payment)";
+
+      mysqli_query($conn,$query);
 
     // subtract ingredients per product based on Quantity
     reduce_inventory_rawmats_production($conn,$id);
@@ -164,8 +180,8 @@
                                              ?>
                                              <h6>Downpayment of <?php echo number_format($cost); ?> is required (50% dp)</h6>
                                             <small><h6>Note: This action will put the Job Order in production!</h6><br></small>
-                                            <input type="number" name="" value="" placeholder="OR number" class="form-control"><br>
-                                            <input type="number" name="" value="<?php echo $cost; ?>" placeholder="" class="form-control">
+                                            <input required type="number" name="or" value="" placeholder="OR number" class="form-control"><br>
+                                            <input required type="number" name="cost" value="<?php echo $cost; ?>" placeholder="" class="form-control">
                                           </p>
 
                                         </div>
@@ -227,13 +243,14 @@
                                                 <b>Ingredient</b>
                                               </div>
                                               <div class="col">
-                                                <b>Needed Ingredients</b>
+                                                <b>Needed Quantity</b>
                                               </div>
                                             </div><br>
                                             <?php
                                               $inv = get_need_inventory2($conn,$id);
                                               $count = count($inv);
 
+                                              // print_p($inv);
                                               for ($i=0; $i < $count; $i++) {
                                                 for ($j=0; $j < count($inv[$i]); $j++) {
                                                   $ing = $inv[$i][$j]['ingredientid'];
@@ -254,7 +271,7 @@
                                                       echo "$ingname";
                                                     echo "</div>";
                                                     echo "<div class='col text-center'>";
-                                                      echo number_format($nid, 2, '.', ',');
+                                                      echo ceil($nid);
                                                     echo "</div>";
                                                   echo "</div>";
                                                 }

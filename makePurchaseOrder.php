@@ -115,7 +115,7 @@ if (isset($_POST['submit'])){
                       <div class='row'>
                           <div class='col'>Product:</div>
                           <div class='col'>Ingredient:</div>
-                          <div class='col'>Amount:</div>
+                          <div class='col'>Quantity:</div>
                           <div class='col'>Supplier:</div>
                       </div>
                   </div>
@@ -146,19 +146,19 @@ if (isset($_POST['submit'])){
 
 
                             echo "<div class='row'>";
-                              echo "<input type = 'hidden' name = 'orderid' value = '".$id."'>";
+                              echo "<input class='form-control' type = 'hidden' name = 'orderid' value = '".$id."'>";
                               echo "<div class='col'>";
                                 echo get_prodname($conn,$pro);
                               echo "</div>";
 
                               echo "<div class='col'>";
                                 echo get_ingname($conn,$ing);
-                                echo "<input name ='ing[]' value = '".$ing."' type = 'hidden'>";
+                                echo "<input class='form-control' name ='ing[]' value = '".$ing."' type = 'hidden'>";
                               echo "</div>";
 
                               echo "<div class='col'>";
-                                echo number_format($nid, 2);
-                                echo "<input name ='qty[]' value = '". number_format($nid) ."' type='hidden'>";
+                                echo ceil($nid);
+                                echo "<input class='form-control' name ='qty[]' value = '". ceil($nid) ."' type='hidden'>";
                               echo "</div>";
 
                               echo "<div class='col'>";
