@@ -236,7 +236,6 @@ function get_need_inv($conn,$id,$qty){
       $query1 = "SELECT Recipe.productID AS ProductID,
                         Recipe.ingredientID AS Ingredientid,
                         Ingredient.quantity AS CurrentInventoryQuantity,
-                        Recipe.quantity AS IndivNeedINGQTY,
                         round(Recipe.quantity*$qty) AS NeededIngredientQuantity
                   FROM `Recipe`
                   JOIN Ingredient ON Ingredient.ingredientID = Recipe.ingredientID
@@ -250,20 +249,15 @@ function get_need_inv($conn,$id,$qty){
               // print_p($rowed);
               $prodakid = $rowed['ProductID'];
               $ingredid = $rowed['Ingredientid'];
-              $oriingid = $rowed['IndivNeedINGQTY'];
               $ingquant = $rowed['NeededIngredientQuantity'];
               $currinvq = $rowed['CurrentInventoryQuantity'];
 
-              if ($currinvq < $ingquant) {
-                // echo $ingquant."<br />";
-                $diff = $ingquant - $currinvq;
                 $needstock[$i]['productid'] = $prodakid;
                 $needstock[$i]['ingredientid'] = $ingredid;
                 $needstock[$i]['needquantityforPO'] = $ingquant;
-              }
+                $needstock[$i]['currentInventory'] = $currinvq;
+
             }
-
-
 
     return $needstock;
 }
@@ -319,6 +313,7 @@ function get_need_inventory2($conn,$orderid){
           $diff = $ingquant - $currinvq;
           $needstock[$j][$i]['productid'] = $prodakid;
           $needstock[$j][$i]['ingredientid'] = $ingredid;
+          $needstock[$j][$i]['currentInventory'] = $currinvq;
           $needstock[$j][$i]['needquantityforPO'] = $ingquant;
         }
       }

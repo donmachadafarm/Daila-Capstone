@@ -45,7 +45,8 @@
                                   <br>";
                                 }
                                ?>
-                             </select><small class="form-text text-muted">Not in the list of Customers? <a href="addCustomerToOrder.php">Click here</a></small><br>
+                             </select>
+                             <small class="form-text text-muted">Not in the list of Customers? <a href="addCustomerToOrder.php">Click here</a></small><br>
                              <small class="form-text text-muted">Adding a custom product? <a href="addProduct.php">Click here</a></small><br>
 
                     <input type="submit" name="submit" value="Continue" class="btn btn-success"/></div>

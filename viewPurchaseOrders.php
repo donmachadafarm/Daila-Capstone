@@ -40,10 +40,10 @@
             <table class="table table-borderless table-hover" id="dataTables-example">
                 <thead>
                 <tr>
+                    <th class="text-center">Deadline</th>
                     <th class="text-center">Supplier</th>
                     <th class="text-center">Total Cost</th>
                     <th class="text-center">Date Requested</th>
-                    <th class="text-center">Deadline</th>
                     <th class="text-center">Status</th>
                     <th class="text-center">Action</th>
                 </tr>
@@ -72,6 +72,10 @@
 
                         echo '<tr>';
                           echo '<td class="text-center">';
+                            echo $deadline;
+                          echo'</td>';
+                          
+                          echo '<td class="text-center">';
                               echo $name;
                           echo '</td>';
 
@@ -83,9 +87,7 @@
                             echo $date;
                           echo'</td>';
 
-                          echo '<td class="text-center">';
-                            echo $deadline;
-                          echo'</td>';
+
 
                           echo '<td class="text-center">';
                             echo $status;
