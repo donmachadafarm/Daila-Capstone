@@ -82,9 +82,9 @@ $thisMonthWord = date('F');
                         $needed = $reorderPoint-$quantity;
 
                         if ($reorderPoint>$quantity){
-                            echo '<div class="alert alert-warning"><strong>Warning!</strong> Product ';
+                            echo '<div class="alert alert-warning"><strong>Warning!</strong> Restock Product ';
                             echo $prodName;
-                            echo ' has reached optimal restocking point. Restocking recommended. Recommended level: ';
+                            echo ' to ';
                             echo $reorderPoint;
                             echo '</div>';
                         }
@@ -135,9 +135,9 @@ $thisMonthWord = date('F');
                         $needed = $reorderPoint-$quantity;
 
                         if ($reorderPoint>$quantity){
-                            echo '<div class="alert alert-warning"><strong>Warning!</strong> Product ';
+                            echo '<div class="alert alert-warning"><strong>Warning!</strong> Restock Product ';
                             echo $prodName;
-                            echo ' has reached optimal restocking point. Restocking recommended. Recommended level: ';
+                            echo ' to ';
                             echo $reorderPoint;
                             echo '</div>';
                         }
@@ -188,9 +188,9 @@ $thisMonthWord = date('F');
                         $needed = $reorderPoint-$quantity;
 
                         if ($reorderPoint>$quantity){
-                            echo '<div class="alert alert-warning"><strong>Warning!</strong> Product ';
+                            echo '<div class="alert alert-warning"><strong>Warning!</strong> Restock Product ';
                             echo $prodName;
-                            echo ' has reached optimal restocking point. Restocking recommended. Recommended level: ';
+                            echo ' to ';
                             echo $reorderPoint;
                             echo '</div>';
                         }
@@ -241,9 +241,9 @@ $thisMonthWord = date('F');
                         $needed = $reorderPoint-$quantity;
 
                         if ($reorderPoint>$quantity){
-                            echo '<div class="alert alert-warning"><strong>Warning!</strong> Product ';
+                            echo '<div class="alert alert-warning"><strong>Warning!</strong> Restock Product ';
                             echo $prodName;
-                            echo ' has reached optimal restocking point. Restocking recommended. Recommended level: ';
+                            echo ' to ';
                             echo $reorderPoint;
                             echo '</div>';
                         }
@@ -294,9 +294,9 @@ $thisMonthWord = date('F');
                         $needed = $reorderPoint-$quantity;
 
                         if ($reorderPoint>$quantity){
-                            echo '<div class="alert alert-warning"><strong>Warning!</strong> Product ';
+                            echo '<div class="alert alert-warning"><strong>Warning!</strong> Restock Product ';
                             echo $prodName;
-                            echo ' has reached optimal restocking point. Restocking recommended. Recommended level: ';
+                            echo ' to ';
                             echo $reorderPoint;
                             echo '</div>';
                         }
@@ -347,9 +347,9 @@ $thisMonthWord = date('F');
                         $needed = $reorderPoint-$quantity;
 
                         if ($reorderPoint>$quantity){
-                            echo '<div class="alert alert-warning"><strong>Warning!</strong> Product ';
+                            echo '<div class="alert alert-warning"><strong>Warning!</strong> Restock Product ';
                             echo $prodName;
-                            echo ' has reached optimal restocking point. Restocking recommended. Recommended level: ';
+                            echo ' to ';
                             echo $reorderPoint;
                             echo '</div>';
                         }

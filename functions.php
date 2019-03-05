@@ -827,6 +827,26 @@ function get_monthly($conn, $prod, $month){
 
     return $aveSales;
 }
-
+//get needed of the product
+function get_ingredients($conn, $ingredid){
+    $query = "SELECT product.productID as 'pid', 
+                product.name as 'pname', 
+                ingredient.ingredientID as 'iid', 
+                ingredient.name 'iname', 
+                recipe.quantity as 'quantity',
+                recipe.unitOfMeasurement as 'units'
+                FROM product
+                JOIN recipe ON product.productID = recipe.productID
+                JOIN ingredient on recipe.ingredientID = ingredient.ingredientID
+                WHERE ingredient.ingredientID = '$ingredid'";
+    $sql = mysqli_query($conn, $query);
+    $ids = array();
+    if (mysqli_num_rows($sql) > 0){
+      while($row = mysqli_fetch_assoc($sql)){
+        $ids[] = $row;
+      }
+    }
+    return $ids;
+}
 
  ?>
