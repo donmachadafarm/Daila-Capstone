@@ -49,7 +49,7 @@
                     <div class="table-repsonsive">
                        <table class="table table-borderless" id="item_table">
                         <tr>
-                         <th>Product</th>
+                         <th>Product</th><small class="form-text text-muted">Adding a custom product? <a href="addProduct.php">Click here</a></small><br>
                          <th>Quantity</th>
                         </tr>
                         <tr>

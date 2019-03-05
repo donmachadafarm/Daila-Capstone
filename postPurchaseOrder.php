@@ -39,7 +39,17 @@
   // main submit conditional start here for debugging submit purchase order
   if (isset($_POST['submit'])){
       // get deadline
-      $deadline = $_POST['deadline'];
+      // $deadline = $_POST['deadline'];
+      $query = "SELECT * FROM Supplier WHERE supplierID = '$supid'";
+
+        $sql = mysqli_query($conn,$query);
+
+        $row = mysqli_fetch_array($sql);
+
+        $duration = $row['duration'];
+
+        $deadline = date('Y-m-d', strtotime($Date. ' + '.$duration.' days'));
+
       $user = $_SESSION['userid'];
 
       // insert purchase order
@@ -64,7 +74,7 @@
       // variables storing post variable(array) -> regular variable(array)
       $rawmatid=$_POST['rawmat'];
       $qty=$_POST['quantity'];
-      $uom=$_POST['uom'];
+      // $uom=$_POST['uom'];
       $total = 0;
 
       $result = array();
@@ -157,13 +167,13 @@
                         </div>
                        </div>
                        <hr class="style1">
-                       <div class="col-lg-4">
+                       <!-- <div class="col-lg-4">
                          <div class="container">
                            <label><strong>Deadline to supplier:</strong></label></br>
                              <input type="date" id="txtDate" name="deadline" class="form-control" required>
                            </br>
                          </div>
-                       </div>
+                       </div> -->
                        <div class="col-lg-12">
                          <div align="center">
                           <a href="#confirm" data-target="#confirm" data-toggle="modal"><button type="button" class="btn btn-success btn-sm">Submit</button></a>

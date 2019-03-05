@@ -22,16 +22,19 @@ if (isset($_POST['submit'])){
   $qty = $_POST['qty'];
   $sup = $_POST['supplier'];
   $id = $_POST['orderid'];
+  $date = date('M-d-Y');
 
   for ($i=0; $i < count($_POST['supplier']); $i++) {
     // get deadline from the orderid
-    $query = "SELECT * FROM JobOrder WHERE orderID = '$id'";
+    $query = "SELECT * FROM Supplier WHERE supplierID = '$sup[$i]'";
 
       $sql = mysqli_query($conn,$query);
 
       $row = mysqli_fetch_array($sql);
 
-      $deadline = $row['dueDate'];
+      $duration = $row['duration'];
+
+      $deadline = date('Y-m-d', strtotime($Date. ' + '.$duration.' days'));
 
     // get the rawmat details (total price->qty*pricePerUnit,unit of measurement, rawmatID)
     $query = "SELECT * FROM RawMaterial WHERE supplierID = '$sup[$i]'";
@@ -62,7 +65,14 @@ if (isset($_POST['submit'])){
 
     $query = "INSERT INTO POItem (purchaseOrderID,rawMaterialID,quantity,subTotal,unitOfMeasurement,status) VALUES('$poid','$rmid','$qty[$i]','$total','$uom','Not Delivered')";
 
-      $sql = mysqli_query($conn,$query);
+      if(mysqli_query($conn,$query)){
+        echo "<script>
+          alert('Purchase Order/s Added!');
+           window.location.replace('viewPurchaseOrders.php');
+              </script>";
+      }else {
+        echo "<script>alert('Failed!')</script>";
+      }
   }
 }
 

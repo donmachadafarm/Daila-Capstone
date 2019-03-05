@@ -72,10 +72,11 @@
             <table class="table table-borderless table-hover" id="dataTables-example">
                 <thead>
                 <tr>
-                    <th class="text-center">ID</th>
+                    <!-- <th class="text-center">ID</th> -->
+
+                    <th class="text-center">Due Date</th>
                     <th class="text-center">Customer</th>
                     <th class="text-center">Date Requested</th>
-                    <th class="text-center">Due Date</th>
                     <th class="text-center">Type</th>
                     <th class="text-center">Status</th>
                     <th class="text-center">Action</th>
@@ -106,9 +107,12 @@
                         $type = $row['type'];
 
                         echo '<tr>';
+                          // echo '<td class="text-center">';
+                          //     echo $id;
+                          // echo '</td>';
                           echo '<td class="text-center">';
-                              echo $id;
-                          echo '</td>';
+                            echo $duedate;
+                          echo'</td>';
 
                           echo '<td class="text-center">';
                               echo $name;
@@ -116,10 +120,6 @@
 
                           echo '<td class="text-center">';
                             echo $datereq;
-                          echo'</td>';
-
-                          echo '<td class="text-center">';
-                            echo $duedate;
                           echo'</td>';
 
                           echo '<td class="text-center">';
@@ -254,7 +254,7 @@
                                               for ($i=0; $i < $count; $i++) {
                                                 for ($j=0; $j < count($inv[$i]); $j++) {
                                                   $ing = $inv[$i][$j]['ingredientid'];
-                                                  $nid = $inv[$i][$j]['needquantityforPO'];
+                                                  $nid = $inv[$i][$j]['currentInventory'];
                                                   $pro = $inv[$i][$j]['productid'];
 
                                                   $sql = mysqli_query($conn,"SELECT * FROM Product WHERE productID = $pro");

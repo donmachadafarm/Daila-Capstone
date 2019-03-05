@@ -149,8 +149,8 @@ include 'includes/sections/header.php';
 //   print_p($row);
 // }
 
-$inv = get_need_inventory2($conn,28);
-// $inv = get_need_inv($conn,2,100);
+$inv = get_need_inventory2($conn,35);
+// $inv = get_need_inv($conn,3,200);
 $count = count($inv);
 
 print_p($inv);

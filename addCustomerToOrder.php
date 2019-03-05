@@ -34,7 +34,7 @@
         $row = mysqli_fetch_array($sql);
         $c = $row['customerID'];
         echo "<script>
-          window.location.replace('postCustomerJobOrder.php?customer=$c');
+          window.location.replace('sampleJO.php');
         </script>";
       }else {
         echo "<script> alert('Failed to Add account!');
