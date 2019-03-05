@@ -215,7 +215,10 @@
 
             $dayz+=5;
 
-            $dayz+=max($daysArr);
+            if (!empty($daysArr)) {
+              $dayz+=max($daysArr);
+            }
+
 
             $date = strtotime($dayz." days ".$time." seconds");
 

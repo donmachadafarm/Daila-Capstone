@@ -216,7 +216,7 @@
                                     <?php echo "<br><p class='pull-center'>Total: " . number_format($total,2). "</p>"; ?>
                                       <p>
                                         Remaining Balance: <?php echo $remaining; ?><br />
-                                        Last Payed: <?php echo $date; ?><br />
+                                        Last Paid: <?php echo $date; ?><br />
                                         Official Receipt: <?php echo $or; ?>
                                       </p>
 

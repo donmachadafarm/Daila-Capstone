@@ -138,7 +138,7 @@
                                           <input type="number" name="cost" class="form-control" required>
                                         </br>
                                         <label>Date finished maintenance:</label></br>
-                                          <input type="date" name="datefinish" id="txtDateMax" class="form-control" required>
+                                          <input type="date" name="datefinish" max="<?php echo date("Y-m-d");?>" class="form-control" required>
                                         </br>
                                         <label>Problem Identified ("n/a" if none):</label></br>
                                           <textarea name="problem" rows="2" class="form-control"></textarea>

@@ -28,10 +28,19 @@
       $producttype=$_GET['type'];
       $prodprice=$_GET['price'];
       $uom =$_GET['uom'];
+      if (isset($_GET['custom'])) {
+        $custom = $_GET['custom'];
+      }else {
+        $custom = 0;
+      }
 
 
   if (isset($_POST['submit'])){
-      mysqli_query($conn,"INSERT into Product (name,quantity,productTypeID,productPrice,unitOfMeasurement) values ('{$name}','{$quantity}','{$producttype}','{$prodprice}','{$uom}')");
+      if ($custom==1) {
+        mysqli_query($conn,"INSERT into Product (name,quantity,productTypeID,productPrice,unitOfMeasurement) values ('{$name}','{$quantity}','{$producttype}','{$prodprice}','{$uom}','{$custom}')");
+      }else {
+        mysqli_query($conn,"INSERT into Product (name,quantity,productTypeID,productPrice,unitOfMeasurement) values ('{$name}','{$quantity}','{$producttype}','{$prodprice}','{$uom}')");
+      }
 
       $query="SELECT * FROM Product ORDER BY productID DESC LIMIT 1";
 

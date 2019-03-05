@@ -66,6 +66,7 @@ $thisMonthWord = date('F');
                                                                 product.productID AS ID
                                                                 FROM product
                                                                 JOIN productType ON product.productTypeID=productType.productTypeID
+                                                                WHERE product.custom <> 1
                                                                 GROUP BY product.name
                                                                 ");
 
@@ -119,6 +120,7 @@ $thisMonthWord = date('F');
                                                                 product.productID AS ID
                                                                 FROM product
                                                                 JOIN productType ON product.productTypeID=productType.productTypeID
+                                                                WHERE product.custom <> 1
                                                                 GROUP BY product.name
                                                                 ");
 
@@ -172,6 +174,7 @@ $thisMonthWord = date('F');
                                                                 product.productID AS ID
                                                                 FROM product
                                                                 JOIN productType ON product.productTypeID=productType.productTypeID
+                                                                WHERE product.custom <> 1
                                                                 GROUP BY product.name
                                                                 ");
 
@@ -225,6 +228,7 @@ $thisMonthWord = date('F');
                                                                 product.productID AS ID
                                                                 FROM product
                                                                 JOIN productType ON product.productTypeID=productType.productTypeID
+                                                                WHERE product.custom <> 1
                                                                 GROUP BY product.name
                                                                 ");
 
@@ -278,6 +282,7 @@ $thisMonthWord = date('F');
                                                                 product.productID AS ID
                                                                 FROM product
                                                                 JOIN productType ON product.productTypeID=productType.productTypeID
+                                                                WHERE product.custom <> 1
                                                                 GROUP BY product.name
                                                                 ");
 
@@ -331,6 +336,7 @@ $thisMonthWord = date('F');
                                                                 product.productID AS ID
                                                                 FROM product
                                                                 JOIN productType ON product.productTypeID=productType.productTypeID
+                                                                WHERE product.custom <> 1
                                                                 GROUP BY product.name
                                                                 ");
 

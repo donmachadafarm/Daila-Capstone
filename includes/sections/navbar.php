@@ -54,7 +54,7 @@
           <?php if($_SESSION['userType']!=103  || $_SESSION['userType']==104): ?>
           <!--  -->
           <h6 class="dropdown-header text-center"><b> Job Orders </b></h6>
-          <a class="dropdown-item text-center" href="samplejo.php">Create Mock Job Order</a>
+          <a class="dropdown-item text-center" href="samplejo.php">Create Job Order</a>
           <!-- <a class="dropdown-item text-center" href="makeCustomerJobOrder.php">Create Job Order</a> -->
           <a class="dropdown-item text-center" href="viewJobOrders.php">Pending Job Orders</a>
         </div>
