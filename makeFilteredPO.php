@@ -14,6 +14,7 @@
 $ingID = $_GET['ids'];
 $ingName = $_GET['name'];
 $restockQuantity = $_GET['val'];
+$unit = $_GET['unit'];
 
 // Get date today
 $today = date("Y-m-d");
@@ -22,62 +23,7 @@ $today = date("Y-m-d");
 $user = $_SESSION['userid'];
 
 if (isset($_POST['submit'])){
-  $ing = $_POST['ing'];
-  $qty = $_POST['qty'];
-  $sup = $_POST['supplier'];
-  $id = $_POST['orderid'];
-  $date = date('M-d-Y');
-
-  for ($i=0; $i < count($_POST['supplier']); $i++) {
-    // get deadline from the orderid
-    $query = "SELECT * FROM Supplier WHERE supplierID = '$sup[$i]'";
-
-      $sql = mysqli_query($conn,$query);
-
-      $row = mysqli_fetch_array($sql);
-
-      $duration = $row['duration'];
-
-      $deadline = date('Y-m-d', strtotime($Date. ' + '.$duration.' days'));
-
-    // get the rawmat details (total price->qty*pricePerUnit,unit of measurement, rawmatID)
-    $query = "SELECT * FROM RawMaterial WHERE supplierID = '$sup[$i]'";
-
-      $sql = mysqli_query($conn,$query);
-
-      $row = mysqli_fetch_array($sql);
-
-      $total = $row['pricePerUnit'] * $qty[$i];
-
-      $uom = $row['unitOfMeasurement'];
-
-      $rmid = $row['rawMaterialID'];
-
-    // insert query for PO
-    $query = "INSERT INTO PurchaseOrder (supplierID,totalPrice,orderDate,status,deadline,createdBy) values ('{$sup[$i]}','{$total}','{$today}','Pending','{$deadline}','{$user}')";
-
-      $sql = mysqli_query($conn,$query);
-
-    // get the PO details for POItem insert
-    $query = "SELECT * FROM PurchaseOrder ORDER BY purchaseOrderID DESC LIMIT 1 ";
-
-      $sql = mysqli_query($conn,$query);
-
-      $row = mysqli_fetch_array($sql);
-
-      $poid = $row['purchaseOrderID'];
-
-    $query = "INSERT INTO POItem (purchaseOrderID,rawMaterialID,quantity,subTotal,unitOfMeasurement,status) VALUES('$poid','$rmid','$qty[$i]','$total','$uom','Not Delivered')";
-
-      if(mysqli_query($conn,$query)){
-        echo "<script>
-          alert('Purchase Order/s Added!');
-           window.location.replace('viewPurchaseOrders.php');
-              </script>";
-      }else {
-        echo "<script>alert('Failed!')</script>";
-      }
-  }
+  
 }
 
 
@@ -105,16 +51,30 @@ if (isset($_POST['submit'])){
                           <div class='col'>Quantity:</div>
                           <div class='col'>Supplier:</div>
                       </div>
-                  </div>
-                  <form action="makePurchaseOrder.php" method="POST">
-                      <div class="form-group">
-                          <p class="form-control-static">
-                          <div class="row">
-                            <input class = "form-control" name = "<?php $ingName ?>" type = "hidden">
+                      <div class = 'row'>
+                          <div class='col'><?php echo $ingName ?></div>
+                          <div class='col'><?php echo $restockQuantity?> <?php echo $unit ?>s</div>
+                          <div class='col'>
+                            <select class = "form-control" name = "supplier">
+                              <?php
+                                $query = "SELECT supplier.company as supplierName, supplier.supplierID as supplierID
+                                          FROM ingredient
+                                          JOIN rmingredient on ingredient.ingredientID = rmingredient.ingredientID
+                                          JOIN rawmaterial on rmingredient.rawMaterialID = rawmaterial.rawMaterialID
+                                          JOIN supplier on rawmaterial.supplierID = supplier.supplierID
+                                          WHERE ingredient.ingredientID = '$ingID'";
+                                $supplierList = mysqli_query($conn, $query);
+
+                                while($next = mysqli_fetch_array($supplierList)){
+                                  echo "<option value='$next[supplierID]'>".$next['supplierName']."</option>";
+                                }
+                              ?>
+
+                            </select>
                           </div>
+                          <input type="submit" name="submit" value="Proceed" class="btn btn-success"/>
                       </div>
-                      
-                  </form>
+                  </div>
               </div>
           </div>
       </div>

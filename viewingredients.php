@@ -104,7 +104,7 @@
                                       echo $uom;
                                     echo '</td>';
                                     echo '<td class="text-center">';
-                                      echo '<a href="makeFilteredPO.php?ids='.$id.'&name='.$name.'&val='.$inNeeded.'"><button type="button" class="btn btn-primary btn-sm">Restock</button></a> ';
+                                      echo '<a href="makeFilteredPO.php?ids='.$id.'&name='.$name.'&val='.$inNeeded.'&unit='.$uom.'"><button type="button" class="btn btn-primary btn-sm">Restock</button></a> ';
                                     echo '</td>';
                                   echo '</tr>';
 
