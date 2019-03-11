@@ -53,11 +53,11 @@
                              </br>
                              <label>Unit of Measurement:</label></br>
                                <select name="uom" class="form-control item_name" required>
-                                 <option value="Pieces">Pieces</option>
+                                 <option value="Pieces">Piece</option>
                                  <option value="Liter">Liter</option>
                                  <option value="Gallon">Gallon</option>
                                  <option value="Kilogram">Kilogram</option>
-                                 <option value="Bottles">Bottles</option>
+                                 <option value="Bottles">Bottle</option>
                                  <option value="Pack">Pack</option>
                                </select>
                              </br>

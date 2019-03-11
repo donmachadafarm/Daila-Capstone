@@ -90,7 +90,7 @@
 
 <div class="container">
   <div id="page-wrapper">
-    <form action="" method="post">
+    <form class="" action="" method="post">
 
       <div class="row">
           <div class="col-lg-12">
@@ -237,28 +237,27 @@
           </div>
       </div><br>
 
-      <div class="text-center">
-        <div class="row">
-
-          <div class="col-sm-4">
-            <select class="form-control" name="customer">
+        <div class="form-row">
+          <div class="form-group col-sm-6">
+            <label for="customer">Customer:</label>
+            <select id="customer" class="form-control" name="customer">
               <option value="" disabled>Select Customer</option><?php echo fill_unit_select_box($conn); ?>
             </select>
-          </div>
-          <div class="col">
+
             <small class="form-text text-muted">Not in the list of Customers? <a href="addCustomerToOrder.php">Click here</a></small>
           </div>
-          <div class="col">
-            <input class="form-control" type="date" min="<?php echo date("Y-m-d",$date); ?>" required name="deadline" value="<?php echo date("Y-m-d",$date); ?>">
+          <div class="form-group col-sm-4">
+            <label for="date">Deadline: </label>
+            <input id="date" class="form-control" type="date" min="<?php echo date("Y-m-d",$date); ?>" required name="deadline" value="<?php echo date("Y-m-d",$date); ?>">
           </div>
+        </div>
+        <br>
+        
           <div class="col">
             <input type="submit" class="btn btn-primary pull-right" name="proceed" value="Proceed to order">
           </div>
 
-        </div>
 
-
-      </div>
 
                   <br><br>
 

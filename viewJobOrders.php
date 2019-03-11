@@ -254,8 +254,11 @@
                                               for ($i=0; $i < $count; $i++) {
                                                 for ($j=0; $j < count($inv[$i]); $j++) {
                                                   $ing = $inv[$i][$j]['ingredientid'];
-                                                  $nid = $inv[$i][$j]['currentInventory'];
+                                                  $cur = $inv[$i][$j]['currentInventory'];
                                                   $pro = $inv[$i][$j]['productid'];
+                                                  $nid = $inv[$i][$j]['needquantityforPO'];
+
+                                                  $need = $nid - $cur;
 
                                                   $sql = mysqli_query($conn,"SELECT * FROM Product WHERE productID = $pro");
                                                   $row = mysqli_fetch_array($sql);
@@ -271,7 +274,7 @@
                                                       echo "$ingname";
                                                     echo "</div>";
                                                     echo "<div class='col text-center'>";
-                                                      echo ceil($nid);
+                                                      echo ceil($need);
                                                     echo "</div>";
                                                   echo "</div>";
                                                 }

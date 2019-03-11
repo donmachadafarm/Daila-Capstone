@@ -10,7 +10,10 @@ if (!isset($_SESSION['userType'])){
 ?>
 
 <?php
-$example = $_POST["example"];
+if (isset($_POST["example"])) {
+  $example = $_POST["example"];
+}
+
 $dateNow = date("Y-m-d");
 $yearAgo = date("Y-m-d", strtotime("-1 year"));
 $halfYearAgo = date("Y-m-d", strtotime("-6 months"));

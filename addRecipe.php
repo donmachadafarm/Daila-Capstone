@@ -54,7 +54,7 @@
 
       $ingid=$_POST['ingredient'];
       $qty=$_POST['quantity'];
-      $uom=$_POST['uom'];
+      // $uom=$_POST['uom'];
 
       $result = array();
       // combines the duplicates of rawmat id and adds the qty
