@@ -150,10 +150,11 @@ if (isset($_POST['submit'])){
                         for ($i=0; $i < $count; $i++) {
                           for ($j=0; $j < count($inv[$i]); $j++) {
                             $ing = $inv[$i][$j]['ingredientid'];
-                            $nid = $inv[$i][$j]['needquantityforPO'];
+                            $cur = $inv[$i][$j]['currentInventory'];
                             $pro = $inv[$i][$j]['productid'];
+                            $nid = $inv[$i][$j]['needquantityforPO'];
 
-
+                            $need = $nid - $cur;
 
                             echo "<div class='row'>";
                               echo "<input class='form-control' type = 'hidden' name = 'orderid' value = '".$id."'>";
@@ -167,8 +168,8 @@ if (isset($_POST['submit'])){
                               echo "</div>";
 
                               echo "<div class='col'>";
-                                echo ceil($nid);
-                                echo "<input class='form-control' name ='qty[]' value = '". ceil($nid) ."' type='hidden'>";
+                                echo ceil($need);
+                                echo "<input class='form-control' name ='qty[]' value = '". ceil($need) ."' type='hidden'>";
                               echo "</div>";
 
                               echo "<div class='col'>";

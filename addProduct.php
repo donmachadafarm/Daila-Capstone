@@ -53,14 +53,20 @@
                              </br>
                              <label>Unit of Measurement:</label></br>
                                <select name="uom" class="form-control item_name" required>
-                                 <option value="Pieces">Pieces</option>
+                                 <option value="Pieces">Piece</option>
                                  <option value="Liter">Liter</option>
                                  <option value="Gallon">Gallon</option>
                                  <option value="Kilogram">Kilogram</option>
-                                 <option value="Bottles">Bottles</option>
+                                 <option value="Bottles">Bottle</option>
                                  <option value="Pack">Pack</option>
                                </select>
                              </br>
+                             <div class="form-check form-check-inline">
+                               <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="1" name="custom">
+                               <label class="form-check-label" for="inlineCheckbox1">Custom Product?</label>
+                             </div>
+
+
                         </p>
                     <input type="submit" name="submit" value="Next" class="btn btn-success"/></div>
                     </form>
