@@ -149,7 +149,7 @@ include 'includes/sections/header.php';
 //   print_p($row);
 // }
 
-$inv = get_need_inventory2($conn,35);
+$inv = get_need_inventory3($conn,1,200);
 // $inv = get_need_inv($conn,3,200);
 $count = count($inv);
 

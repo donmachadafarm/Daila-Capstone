@@ -36,7 +36,7 @@
 
 
   if (isset($_POST['submit'])){
-      if ($custom==1) {
+      if (empty($custom)) {
         mysqli_query($conn,"INSERT into Product (name,quantity,productTypeID,productPrice,unitOfMeasurement) values ('{$name}','{$quantity}','{$producttype}','{$prodprice}','{$uom}','{$custom}')");
       }else {
         mysqli_query($conn,"INSERT into Product (name,quantity,productTypeID,productPrice,unitOfMeasurement) values ('{$name}','{$quantity}','{$producttype}','{$prodprice}','{$uom}')");

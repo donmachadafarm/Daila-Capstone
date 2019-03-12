@@ -98,7 +98,7 @@
                   <div class="text-left">
                     <div class="row">
                       <div class="col">
-                        Mock Job Order
+                        Job Order
                       </div>
                       <div class="col-sm-2">
 
@@ -191,7 +191,7 @@
                     echo "<b>" . get_prodname($conn,$inv[0]['productid']) . "</b><br />";
                     foreach ($inv as $key => $value) {
                       $daysArr[] = get_suppdur($conn,$inv[$key]['supid']);
-                      echo "<div style='text-indent: 20px'>Need: " . $inv[$key]['ingname'] . " - " . number_format($inv[$key]['needqty']) . "Pcs</div>";
+                      echo "<div style='text-indent: 20px'><b>Need: " . $inv[$key]['ingname'] . "</b> - " . number_format($inv[$key]['needqty']) ." " .$inv[$key]['uom']. "</div>";
                       echo "<div style='text-indent: 30px'>Supplier: ". get_suppname($conn,$inv[$key]['supid']) . " (Estimated Delivery - " . get_suppdur($conn,$inv[$key]['supid']) . " Days)</div>";
                     }
                   echo "</div>";
@@ -252,7 +252,7 @@
           </div>
         </div>
         <br>
-        
+
           <div class="col">
             <input type="submit" class="btn btn-primary pull-right" name="proceed" value="Proceed to order">
           </div>

@@ -34,10 +34,15 @@ if (isset($_POST['submit'])){
 
       $duration = $row['duration'];
 
-      $deadline = date('Y-m-d', strtotime($Date. ' + '.$duration.' days'));
+      $deadline = date('Y-m-d', strtotime($date. ' + '.$duration.' days'));
 
     // get the rawmat details (total price->qty*pricePerUnit,unit of measurement, rawmatID)
-    $query = "SELECT * FROM RawMaterial WHERE supplierID = '$sup[$i]'";
+    $query = "SELECT RawMaterial.pricePerUnit,
+                     RawMaterial.unitOfMeasurement,
+                     RawMaterial.rawMaterialID
+              FROM RawMaterial
+              JOIN RMIngredient ON RMIngredient.rawMaterialID = RawMaterial.rawMaterialID
+              WHERE RawMaterial.supplierID = '$sup[$i]' &&  RMIngredient.ingredientID = '$ing[$i]'";
 
       $sql = mysqli_query($conn,$query);
 
@@ -50,7 +55,8 @@ if (isset($_POST['submit'])){
       $rmid = $row['rawMaterialID'];
 
     // insert query for PO
-    $query = "INSERT INTO PurchaseOrder (supplierID,totalPrice,orderDate,status,deadline,createdBy) values ('{$sup[$i]}','{$total}','{$today}','Pending','{$deadline}','{$user}')";
+    $query = "INSERT INTO PurchaseOrder (supplierID,totalPrice,orderDate,status,deadline,createdBy)
+                VALUES ('{$sup[$i]}','{$total}','{$today}','Pending','{$deadline}','{$user}')";
 
       $sql = mysqli_query($conn,$query);
 
@@ -63,7 +69,8 @@ if (isset($_POST['submit'])){
 
       $poid = $row['purchaseOrderID'];
 
-    $query = "INSERT INTO POItem (purchaseOrderID,rawMaterialID,quantity,subTotal,unitOfMeasurement,status) VALUES('$poid','$rmid','$qty[$i]','$total','$uom','Not Delivered')";
+    $query = "INSERT INTO POItem (purchaseOrderID,rawMaterialID,quantity,subTotal,unitOfMeasurement,status)
+                VALUES('$poid','$rmid','$qty[$i]','$total','$uom','Not Delivered')";
 
       if(mysqli_query($conn,$query)){
         echo "<script>
