@@ -401,6 +401,17 @@ function get_ingname($conn,$id){
 
 }
 
+function get_ingunit($conn,$id){
+  $query = "SELECT * FROM Ingredient WHERE ingredientID = '$id'";
+
+  $sql = mysqli_query($conn,$query);
+
+  $row = mysqli_fetch_array($sql);
+
+  return $row['name'];
+
+}
+
 
 // check first if ingredients need are enuf then use This
 // function reduces the ingredients table using ingredientid per product * qty in order

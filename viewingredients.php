@@ -7,7 +7,20 @@
   if (!isset($_SESSION['userType'])){
     echo "<script>window.location='logout.php'</script>";
   }
-  $example = 1;
+  
+  if (isset($_POST["example"])) {
+    $example = $_POST["example"];
+  }else{
+      $example = 1;
+  }
+
+  $dateNow = date("Y-m-d");
+  $yearAgo = date("Y-m-d", strtotime("-1 year"));
+  $halfYearAgo = date("Y-m-d", strtotime("-6 months"));
+  $threeMonthsAgo = date("Y-m-d", strtotime("-3 months"));
+  $thisMonth = date('m');
+  $thisMonthWord = date('F');
+
 ?>
 
 <!-- put all the contents here  -->
@@ -47,7 +60,10 @@
                         <tbody>
 
                         <?php
-                            $result = mysqli_query($conn,'SELECT DISTINCT(Ingredient.ingredientID) AS id,
+
+                        if(!isset($_POST['choose'])){
+                          //None selected - default to Total
+                          $result2 = mysqli_query($conn,'SELECT DISTINCT(Ingredient.ingredientID) AS id,
                                                                  Ingredient.name AS name,
                                                                  Ingredient.quantity AS quantity,
                                                                  RawMaterial.unitOfMeasurement AS uom
@@ -55,7 +71,70 @@
                                                                  JOIN RMIngredient ON RMIngredient.ingredientID = Ingredient.ingredientID
                                                                  JOIN RawMaterial ON RMIngredient.rawMaterialID = RawMaterial.rawMaterialID
                                                                  ORDER BY ingredient.ingredientID');
+                          $result = mysqli_query($conn,'SELECT DISTINCT(Ingredient.ingredientID) AS id,
+                                                                 Ingredient.name AS name,
+                                                                 Ingredient.quantity AS quantity,
+                                                                 RawMaterial.unitOfMeasurement AS uom
+                                                                 FROM Ingredient
+                                                                 JOIN RMIngredient ON RMIngredient.ingredientID = Ingredient.ingredientID
+                                                                 JOIN RawMaterial ON RMIngredient.rawMaterialID = RawMaterial.rawMaterialID
+                                                                 ORDER BY ingredient.ingredientID');
+                                                                 
+                          // FOR WARNINGS COLLAPSE
+                          echo "<button class='btn btn-warning' type='button' data-toggle='collapse' data-target='#collapseExample' aria-expanded='false' aria-controls='collapseExample'>Restock Warnings</button>";
 
+                            echo "<div class='collapse' id='collapseExample'>";
+                            echo "<div class='card card-body'>";
+                          while($row2 = mysqli_fetch_array($result2)){
+                            $id2 = $row2['id'];
+                            $name2 = $row2['name'];
+                            $qty2 = $row2['quantity'];
+                            $uom2 = $row2['uom'];
+                            $products2 = get_ingredients($conn, $id2);
+                            $total2 = 0;
+                            $unit2;
+                            $inNeeded2 = 0;
+                            $count=0;
+
+                            // set collapse box for notifs
+                            
+                            foreach($products2 as $prod2){
+                              $prodID2 = $prod2['pid'];
+                              $ave2 = get_total_average($conn, $prodID2);
+                              
+                              $mlt2 = get_maxlead($conn, $prodID2);
+                              
+                              $reorderpoint2 = ($ave2*$mlt2)+100;
+                              
+                              $recipeQuantity2 = $prod2['quantity'];
+                              
+                              $inNeeded2 = $recipeQuantity2*$reorderpoint2;
+                              
+                              $total2 += $inNeeded2;
+                            }
+                            $needed2 = $total2-$qty2;
+                            if ($total2>$qty2){
+                              echo '<div class="alert alert-warning"><strong>Warning!</strong> Restock Ingredient ';
+                              echo $name2;
+                              echo " to ";
+                              echo $total2;
+                              echo ". Need ";
+                              echo $needed2;
+                              echo " ";
+                              echo $uom2;
+                              echo "s more. ";
+                              echo '<a href="makeFilteredPO.php?ids='.$id2.='&val='.$needed2.'&unit='.$uom2.'">Restock</a>';
+                              echo "</div>";
+                              $count++;
+                          }
+                          if($count==0){
+                            echo "<h3>No Warnings to Show</h3>";
+                          }
+                          }
+                          echo "</div>";
+                          echo "</div>";
+
+                          
 
                             while($row = mysqli_fetch_array($result)){
                               $id = $row['id'];
@@ -80,18 +159,7 @@
                                 
                                 $total += $inNeeded;
                               }
-                              if ($total>$qty){
-                                echo '<div class="alert alert-warning"><strong>Warning!</strong> Restock Ingredient ';
-                                echo $name;
-                                echo ' to ';
-                                echo $total;
-                                echo '. Need ';
-                                echo $total-$qty;
-                                echo ' ';
-                                echo $uom;
-                                echo 's more ';
-                                echo '</div>';
-                            }
+                              $needed = $total-$qty;
 
                                   echo '<tr>';
                                     echo '<td>';
@@ -104,13 +172,143 @@
                                       echo $uom;
                                     echo '</td>';
                                     echo '<td class="text-center">';
-                                      echo '<a href="makeFilteredPO.php?ids='.$id.'&name='.$name.'&val='.$inNeeded.'&unit='.$uom.'"><button type="button" class="btn btn-primary btn-sm">Restock</button></a> ';
+                                      echo '<a href="makeFilteredPO.php?ids='.$id.='&val='.$needed.'&unit='.$uom.'"><button type="button" class="btn btn-primary btn-sm">Restock</button></a> ';
                                     echo '</td>';
                                   echo '</tr>';
 
 
                             }
+                        }
+                        elseif($example==1){
+                          //Total
+                          $result2 = mysqli_query($conn,'SELECT DISTINCT(Ingredient.ingredientID) AS id,
+                                                                 Ingredient.name AS name,
+                                                                 Ingredient.quantity AS quantity,
+                                                                 RawMaterial.unitOfMeasurement AS uom
+                                                                 FROM Ingredient
+                                                                 JOIN RMIngredient ON RMIngredient.ingredientID = Ingredient.ingredientID
+                                                                 JOIN RawMaterial ON RMIngredient.rawMaterialID = RawMaterial.rawMaterialID
+                                                                 ORDER BY ingredient.ingredientID');
+                          $result = mysqli_query($conn,'SELECT DISTINCT(Ingredient.ingredientID) AS id,
+                                                                 Ingredient.name AS name,
+                                                                 Ingredient.quantity AS quantity,
+                                                                 RawMaterial.unitOfMeasurement AS uom
+                                                                 FROM Ingredient
+                                                                 JOIN RMIngredient ON RMIngredient.ingredientID = Ingredient.ingredientID
+                                                                 JOIN RawMaterial ON RMIngredient.rawMaterialID = RawMaterial.rawMaterialID
+                                                                 ORDER BY ingredient.ingredientID');
+                                                                 
+                          // FOR WARNINGS COLLAPSE
+                          echo "<button class='btn btn-warning' type='button' data-toggle='collapse' data-target='#collapseExample' aria-expanded='false' aria-controls='collapseExample'>Restock Warnings</button>";
 
+                            echo "<div class='collapse' id='collapseExample'>";
+                            echo "<div class='card card-body'>";
+                          while($row2 = mysqli_fetch_array($result2)){
+                            $id2 = $row2['id'];
+                            $name2 = $row2['name'];
+                            $qty2 = $row2['quantity'];
+                            $uom2 = $row2['uom'];
+                            $products2 = get_ingredients($conn, $id2);
+                            $total2 = 0;
+                            $unit2;
+                            $inNeeded2 = 0;
+                            $count=0;
+
+                            // set collapse box for notifs
+                            
+                            foreach($products2 as $prod2){
+                              $prodID2 = $prod2['pid'];
+                              $ave2 = get_total_average($conn, $prodID2);
+                              
+                              $mlt2 = get_maxlead($conn, $prodID2);
+                              
+                              $reorderpoint2 = ($ave2*$mlt2)+100;
+                              
+                              $recipeQuantity2 = $prod2['quantity'];
+                              
+                              $inNeeded2 = $recipeQuantity2*$reorderpoint2;
+                              
+                              $total2 += $inNeeded2;
+                            }
+                            $needed2 = $total2-$qty2;
+                            if ($total2>$qty2){
+                              echo '<div class="alert alert-warning"><strong>Warning!</strong> Restock Ingredient ';
+                              echo $name2;
+                              echo " to ";
+                              echo $total2;
+                              echo ". Need ";
+                              echo $needed2;
+                              echo " ";
+                              echo $uom2;
+                              echo "s more. ";
+                              echo '<a href="makeFilteredPO.php?ids='.$id2.='&val='.$needed2.'&unit='.$uom2.'">Restock</a>';
+                              echo "</div>";
+                              $count++;
+                          }
+                          if($count==0){
+                            echo "<h3>No Warnings to Show</h3>";
+                          }
+                          }
+                          echo "</div>";
+                          echo "</div>";
+
+                          
+
+                            while($row = mysqli_fetch_array($result)){
+                              $id = $row['id'];
+                              $name = $row['name'];
+                              $qty = $row['quantity'];
+                              $uom = $row['uom'];
+                              $products = get_ingredients($conn, $id);
+                              $total = 0;
+                              $unit;
+                              $inNeeded = 0;
+                              foreach($products as $prod){
+                                $prodID = $prod['pid'];
+                                $ave = get_total_average($conn, $prodID);
+                                
+                                $mlt = get_maxlead($conn, $prodID);
+                                
+                                $reorderpoint = ($ave*$mlt)+100;
+                                
+                                $recipeQuantity = $prod['quantity'];
+                                
+                                $inNeeded = $recipeQuantity*$reorderpoint;
+                                
+                                $total += $inNeeded;
+                              }
+                              $needed = $total-$qty;
+
+                                  echo '<tr>';
+                                    echo '<td>';
+                                      echo $name;
+                                    echo '</td>';
+                                    echo '<td>';
+                                      echo $qty;
+                                    echo '</td>';
+                                    echo '<td>';
+                                      echo $uom;
+                                    echo '</td>';
+                                    echo '<td class="text-center">';
+                                      echo '<a href="makeFilteredPO.php?ids='.$id.='&val='.$needed.'&unit='.$uom.'"><button type="button" class="btn btn-primary btn-sm">Restock</button></a> ';
+                                    echo '</td>';
+                                  echo '</tr>';
+
+
+                            }
+                        }
+                        elseif($example==2){
+                          //Past 1 Year
+                        }
+                        elseif($example==3){
+                          //Past 6 Months
+                        } 
+                        elseif($example==4){
+                          //Past 3 Months
+                        } 
+                        elseif($example==5){
+                          //Seasonality
+                        }
 
                             echo '<br /><br />';
 

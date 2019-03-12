@@ -12,6 +12,8 @@ if (!isset($_SESSION['userType'])){
 <?php
 if (isset($_POST["example"])) {
   $example = $_POST["example"];
+}else{
+    $example = 1;
 }
 
 $dateNow = date("Y-m-d");

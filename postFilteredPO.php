@@ -8,9 +8,8 @@
     echo "<script>window.location='logout.php'</script>";
   }
 
-  if(isset($_GET['supplier'])){
-    $supid = $_GET['supplier'];
-  }
+  
+  
   //$supid = $_GET['supplier'];
 
   function fill_unit_select_box($conn){

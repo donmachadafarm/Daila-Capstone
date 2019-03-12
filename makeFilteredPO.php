@@ -12,7 +12,7 @@
 <?php
 
 $ingID = $_GET['ids'];
-$ingName = $_GET['name'];
+$ingName = get_ingname($conn, $ingID);
 $restockQuantity = $_GET['val'];
 $unit = $_GET['unit'];
 
@@ -23,7 +23,17 @@ $today = date("Y-m-d");
 $user = $_SESSION['userid'];
 
 if (isset($_POST['submit'])){
-  
+  $sup = $_POST['supplier'];
+  $date = date('M-d-Y');
+  $query = "SELECT supplier.duration AS 'duration'
+            FROM supplier 
+            WHERE supplier.company = '$sup'";
+  $result = mysqli_query($conn, $query);
+  $row = mysqli_fetch_array($result);
+  $duration = $row['duration'];
+  $deadline = date('Y-m-d', strtotime($date. ' + ' .$duration.' days'));
+// Get total price
+  $query2 = "SELECT ";
 }
 
 
@@ -50,6 +60,7 @@ if (isset($_POST['submit'])){
                           <div class='col'>Ingredient:</div>
                           <div class='col'>Quantity:</div>
                           <div class='col'>Supplier:</div>
+                          <div class='col'></div>
                       </div>
                       <div class = 'row'>
                           <div class='col'><?php echo $ingName ?></div>
@@ -72,7 +83,8 @@ if (isset($_POST['submit'])){
 
                             </select>
                           </div>
-                          <input type="submit" name="submit" value="Proceed" class="btn btn-success"/>
+                          <div class='col'> <input type="submit" name="submit" value="Proceed" class="btn btn-success"/> </div>
+
                       </div>
                   </div>
               </div>
