@@ -325,11 +325,20 @@ function get_need_inventory2($conn,$orderid){
 function get_need_inventory3($conn,$prodid,$qty){
       $needstock = array();
 
+      $q = "SELECT count(Recipe.ingredientID) as count FROM Recipe WHERE Recipe.productID = '$prodid'";
+
+        $sqlt = mysqli_query($conn,$q);
+
+        $rowee = mysqli_fetch_array($sqlt);
+
+        $count = $rowee['count'];
+
       $query1 = "SELECT Recipe.productID AS ProductID,
                         Recipe.ingredientID AS Ingredientid,
                         Ingredient.name AS ingname,
                         Ingredient.quantity AS CurrentInventoryQuantity,
                         RawMaterial.supplierID AS supid,
+                        RawMaterial.unitOfMeasurement AS uom,
                         Recipe.quantity AS IndivNeedINGQTY,
                         Recipe.quantity*$qty AS NeededIngredientQuantity,
                         Supplier.company AS name,
@@ -339,7 +348,9 @@ function get_need_inventory3($conn,$prodid,$qty){
                   JOIN RMIngredient ON RMIngredient.ingredientID = Ingredient.ingredientID
                   JOIN RawMaterial ON RawMaterial.rawMaterialID = RMIngredient.rawMaterialID
                   JOIN Supplier ON RawMaterial.supplierID = Supplier.supplierID
-                  WHERE Recipe.productID = $prodid AND Recipe.quantity*$qty > Ingredient.quantity";
+                  WHERE Recipe.productID = $prodid AND Recipe.quantity*$qty > Ingredient.quantity
+                  LIMIT $count";
+
         $sql1 = mysqli_query($conn,$query1);
 
         for ($i=0; $i < mysqli_num_rows($sql1); $i++) {
@@ -353,13 +364,14 @@ function get_need_inventory3($conn,$prodid,$qty){
           $oriingid = $rowed['IndivNeedINGQTY'];
           $ingquant = $rowed['NeededIngredientQuantity'];
           $currinvq = $rowed['CurrentInventoryQuantity'];
-
+          $uom = $rowed['uom'];
 
           $needstock[$i]['productid'] = $prodakid;
           $needstock[$i]['ingredientid'] = $ingredid;
           $needstock[$i]['ingname'] = $ingrenam;
           $needstock[$i]['supid'] = $supplyid;
           $needstock[$i]['needqty'] = $ingquant;
+          $needstock[$i]['uom'] = $uom;
 
         }
 
@@ -840,10 +852,10 @@ function get_monthly($conn, $prod, $month){
 }
 //get needed of the product
 function get_ingredients($conn, $ingredid){
-    $query = "SELECT product.productID as 'pid', 
-                product.name as 'pname', 
-                ingredient.ingredientID as 'iid', 
-                ingredient.name 'iname', 
+    $query = "SELECT product.productID as 'pid',
+                product.name as 'pname',
+                ingredient.ingredientID as 'iid',
+                ingredient.name 'iname',
                 recipe.quantity as 'quantity',
                 recipe.unitOfMeasurement as 'units'
                 FROM product
