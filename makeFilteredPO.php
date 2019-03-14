@@ -11,10 +11,12 @@
 
 <?php
 
-$ingID = $_GET['ids'];
-$ingName = get_ingname($conn, $ingID);
-$restockQuantity = $_GET['val'];
-$unit = $_GET['unit'];
+if(isset($_GET['ids'])){
+  $ingID = $_GET['ids'];
+  $ingName = get_ingname($conn, $ingID);
+  $restockQuantity = $_GET['val'];
+  $unit = $_GET['unit'];
+}
 
 // Get date today
 $today = date("Y-m-d");
@@ -24,6 +26,8 @@ $user = $_SESSION['userid'];
 
 if (isset($_POST['submit'])){
   $sup = $_POST['supplier'];
+  $val = $_POST['restockQuantity'];
+  $ing = $_POST['ingredient'];
   $date = date('M-d-Y');
   $query = "SELECT supplier.duration AS 'duration'
             FROM supplier 
@@ -32,8 +36,48 @@ if (isset($_POST['submit'])){
   $row = mysqli_fetch_array($result);
   $duration = $row['duration'];
   $deadline = date('Y-m-d', strtotime($date. ' + ' .$duration.' days'));
-// Get total price
-  $query2 = "SELECT ";
+
+  //get wanted rawmat - ingredient
+  $rmquery = "SELECT RawMaterial.pricePerUnit as 'price',
+  RawMaterial.unitOfMeasurement as 'uom',
+  RawMaterial.rawMaterialID as 'rmid'
+  FROM RawMaterial
+  JOIN RMIngredient ON RMIngredient.rawMaterialID = RawMaterial.rawMaterialID
+  WHERE RawMaterial.supplierID = '$sup' &&  RMIngredient.ingredientID = '$ing'";
+
+  $rmsql = mysqli_query($conn, $rmquery);
+  $rmrow = mysqli_fetch_array($rmsql);
+
+  $total = $rmrow['price'] * $val;
+  $uom = $rmrow['uom'];
+  $rmid = $rmrow['rmid'];
+
+  // insert purchase order
+  $query2 = "INSERT into PurchaseOrder (supplierID,totalPrice,orderDate,status,deadline,createdBy) values ('{$sup}','{$total}','{$today}','Pending','{$deadline}','{$user}')";
+
+  mysqli_query($conn, $query2);
+
+  // get the PO details for POItem insert
+  $query3 = "SELECT * FROM PurchaseOrder ORDER BY purchaseOrderID DESC LIMIT 1 ";
+
+  $sql3 = mysqli_query($conn,$query3);
+
+  $row3 = mysqli_fetch_array($sql3);
+
+  $poid = $row3['purchaseOrderID'];
+
+$query = "INSERT INTO POItem (purchaseOrderID,rawMaterialID,quantity,subTotal,unitOfMeasurement,status)
+            VALUES('$poid','$rmid','$val','$total','$uom','Not Delivered')";
+
+if(mysqli_query($conn,$query3)){
+  echo "<script>
+    alert('Purchase Order/s Added!');
+     window.location.replace('viewPurchaseOrders.php');
+        </script>";
+}else {
+  echo "<script>alert('Failed!')</script>";
+}
+
 }
 
 
@@ -51,46 +95,54 @@ if (isset($_POST['submit'])){
               </h1>
           </div>
       </div>
-
-      <div class="row">
-          <div class="col-lg-8">
-              <div class="panel panel-default">
-                  <div class="panel-body"><br>
-                      <div class='row'>
-                          <div class='col'>Ingredient:</div>
-                          <div class='col'>Quantity:</div>
-                          <div class='col'>Supplier:</div>
-                          <div class='col'></div>
-                      </div>
-                      <div class = 'row'>
-                          <div class='col'><?php echo $ingName ?></div>
-                          <div class='col'><?php echo $restockQuantity?> <?php echo $unit ?>s</div>
-                          <div class='col'>
-                            <select class = "form-control" name = "supplier">
-                              <?php
-                                $query = "SELECT supplier.company as supplierName, supplier.supplierID as supplierID
-                                          FROM ingredient
-                                          JOIN rmingredient on ingredient.ingredientID = rmingredient.ingredientID
-                                          JOIN rawmaterial on rmingredient.rawMaterialID = rawmaterial.rawMaterialID
-                                          JOIN supplier on rawmaterial.supplierID = supplier.supplierID
-                                          WHERE ingredient.ingredientID = '$ingID'";
-                                $supplierList = mysqli_query($conn, $query);
-
-                                while($next = mysqli_fetch_array($supplierList)){
-                                  echo "<option value='$next[supplierID]'>".$next['supplierName']."</option>";
-                                }
-                              ?>
-
-                            </select>
+      <?php if(isset($_GET['ids'])){ ?>
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="panel panel-default">
+                    <div class="panel-body"><br>
+                        <form action="makeFilteredPO.php" method="POST">
+                          <div class='row'>
+                              <div class='col'>Ingredient:</div>
+                              <div class='col'>Quantity:</div>
+                              <div class='col'>Supplier:</div>
+                              <div class='col'></div>
                           </div>
-                          <div class='col'> <input type="submit" name="submit" value="Proceed" class="btn btn-success"/> </div>
+                          <div class = 'row'>
+                          <input class='form-control' type = 'hidden' name = 'ingredient' value = <?php $ingID ?>>
+                              <div class='col'><?php echo $ingName ?></div>
+                              <input class='form-control' type = 'hidden' name = 'restockQuantity' value = <?php $restockQuantity ?>>
+                              <div class='col'><?php echo $restockQuantity?> <?php echo $unit ?>s</div>
+                              <div class='col'>
+                                <select class = "form-control" name = "supplier">
+                                  <?php
+                                    $query = "SELECT supplier.company as supplierName, supplier.supplierID as supplierID
+                                              FROM ingredient
+                                              JOIN rmingredient on ingredient.ingredientID = rmingredient.ingredientID
+                                              JOIN rawmaterial on rmingredient.rawMaterialID = rawmaterial.rawMaterialID
+                                              JOIN supplier on rawmaterial.supplierID = supplier.supplierID
+                                              WHERE ingredient.ingredientID = '$ingID'";
+                                    $supplierList = mysqli_query($conn, $query);
 
-                      </div>
-                  </div>
-              </div>
-          </div>
-      </div>
+                                    while($next = mysqli_fetch_array($supplierList)){
+                                      echo "<option value='$next[supplierID]'>".$next['supplierName']."</option>";
+                                    }
+                                  ?>
 
+                                </select>
+                              </div>
+                              <div class='col'> 
+                              
+                              <input type="submit" name="submit" value="Proceed" class="btn btn-success"/> 
+                              
+                              </div>
+
+                          </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+      <?php } ?>
       <!--                                                                                   -->
       <!--                                                                                   -->
       <!--                                                                                   -->
@@ -121,6 +173,8 @@ if (isset($_POST['submit'])){
                         <tbody>
 
                         <?php
+
+                          if(isset($_GET['ids'])){
                             $result = mysqli_query($conn,"SELECT RawMaterial.name AS name,
                                                                  RawMaterial.unitOfMeasurement AS uom,
 
@@ -169,7 +223,7 @@ if (isset($_POST['submit'])){
 
 
                             }
-
+                          }
 
                             echo '<br /><br />';
 
