@@ -119,6 +119,8 @@
                 </script>";
           }
   }
+
+  $date = date("Y-m-d");
 ?>
 
 <!-- put all the contents here  -->
@@ -148,7 +150,7 @@
                   </div>
                   <div class="col">
                     <label><strong>Date:</strong></label></br>
-                      <input type="date" name="date" class="form-control" id="txtDateMax" required>
+                      <input type="date" name="date" class="form-control" value="<?php echo $date; ?>" id="txtDateMax" required>
                     </br>
                   </div>
                 </div>

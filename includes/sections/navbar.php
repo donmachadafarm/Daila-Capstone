@@ -5,62 +5,99 @@
     <span class="navbar-toggler-icon"></span>
   </button>
   <div class="collapse navbar-collapse" id="navbarText">
+
     <ul class="navbar-nav mr-auto">
-      <?php if($_SESSION['userType']!=103 && $_SESSION['userType']!=100): ?>
+
+
+      <!-- inventory management -->
+
+
+      <?php if($_SESSION['userType']==104 || $_SESSION['userType']==101 || $_SESSION['userType']==102 || $_SESSION['userType']==103): ?>
       <li class="nav-item dropdown">
         <a class="nav-link" href="#" id="navbardrop" data-toggle="dropdown">
           Inventory Management
         </a>
         <div class="dropdown-menu">
-          <h6 class="dropdown-header text-center"><b> Ingredients </b></h6>
-          <!-- Add More Links if needed for every functionality -->
 
-          <a class="dropdown-item text-center" href="addingredient.php">Add Ingredient</a>
-          <a class="dropdown-item text-center" href="viewingredients.php">View Ingredients</a>
-          <!-- use divider if needed -->
-          <div class="dropdown-divider"></div>
-          <h6 class="dropdown-header text-center"><b> Raw Materials </b></h6>
-          <a class="dropdown-item text-center" href="addrawmaterial.php">Add Raw Materials</a>
-          <a class="dropdown-item text-center" href="viewrawmaterials.php">View Raw Materials</a>
-          <a class="dropdown-item text-center" href="makepurchaseorder.php">Create Purchase Order</a>
-          <a class="dropdown-item text-center" href="viewPurchaseOrders.php">View Purchase Orders</a>
-          <div class="dropdown-divider"></div>
-          <h6 class="dropdown-header text-center"><b> Products </b></h6>
-          <a class="dropdown-item text-center" href="addproduct.php">Add Product</a>
+          <?php if($_SESSION['userType']==101  || $_SESSION['userType']==102 || $_SESSION['userType']==103 || $_SESSION['userType']==104): ?>
+            <h6 class="dropdown-header text-center"><b> Ingredients </b></h6>
+            <!-- Add More Links if needed for every functionality -->
+              <?php if($_SESSION['userType'] == 101 || $_SESSION['userType']==102 || $_SESSION['userType']==104): ?>
+              <a class="dropdown-item text-center" href="addingredient.php">Add Ingredient</a>
+              <?php endif; ?>
+              <a class="dropdown-item text-center" href="viewingredients.php">View Ingredients</a>
+            <!-- use divider if needed -->
+            <div class="dropdown-divider"></div>
+          <?php endif;?>
 
-          <a class="dropdown-item text-center" href="viewInventory.php">View Products</a>
+          <?php if($_SESSION['userType']==101  || $_SESSION['userType']==102 || $_SESSION['userType']==103 || $_SESSION['userType']==104): ?>
+            <h6 class="dropdown-header text-center"><b> Raw Materials </b></h6>
+
+              <?php if($_SESSION['userType'] == 101 || $_SESSION['userType']==102 || $_SESSION['userType']==104): ?>
+              <a class="dropdown-item text-center" href="addrawmaterial.php">Add Raw Materials</a>
+              <?php endif;?>
+
+              <a class="dropdown-item text-center" href="viewrawmaterials.php">View Raw Materials</a>
+
+              <?php if($_SESSION['userType'] == 101 || $_SESSION['userType']==102 || $_SESSION['userType']==104): ?>
+              <a class="dropdown-item text-center" href="makepurchaseorder.php">Create Purchase Order</a>
+              <a class="dropdown-item text-center" href="viewPurchaseOrders.php">View Purchase Orders</a>
+              <?php endif;?>
+
+              <div class="dropdown-divider"></div>
+          <?php endif; ?>
+
+          <?php if($_SESSION['userType']==101  || $_SESSION['userType']==102 || $_SESSION['userType']==104): ?>
+            <h6 class="dropdown-header text-center"><b> Products </b></h6>
+              <a class="dropdown-item text-center" href="addproduct.php">Add Product</a>
+            <?php if($_SESSION['userType'] == 101 || $_SESSION['userType']==102 || $_SESSION['userType']==104): ?>
+              <a class="dropdown-item text-center" href="viewInventory.php">View Products</a>
+            <?php endif; ?>
+
+          <?php endif; ?>
+
         </div>
       </li>
       <?php endif; ?>
-      <?php if($_SESSION['userType']!=100): ?>
+
+
+      <!-- production management -->
+
+
+      <?php if($_SESSION['userType']==104 || $_SESSION['userType']==101 || $_SESSION['userType']==103): ?>
       <li class="nav-item dropdown">
         <a class="nav-link" href="#" id="navbardrop" data-toggle="dropdown">
           Production Management
         </a>
         <div class="dropdown-menu">
-          <?php if($_SESSION['userType']!=103 || $_SESSION['userType']==104): ?>
+
+          <?php if($_SESSION['userType']==104 || $_SESSION['userType']==101): ?>
+          <h6 class="dropdown-header text-center"><b> Job Orders </b></h6>
+            <a class="dropdown-item text-center" href="samplejo.php">Create Job Order</a>
+            <a class="dropdown-item text-center" href="viewJobOrders.php">Pending Job Orders</a>
+          <?php endif; ?>
+          <div class="dropdown-divider"></div>
+          <?php if($_SESSION['userType']==103 || $_SESSION['userType']==104 || $_SESSION['userType']==101): ?>
+          <h6 class="dropdown-header text-center"><b> Production </b></h6>
+            <a class="dropdown-item text-center" href="viewProductionSchedule.php">Production Schedule</a>
+            <a class="dropdown-item text-center" href="viewInternalShipping.php">View Internal Shipping</a>
+          <div class="dropdown-divider"></div>
+          <?php endif; ?>
+          <?php if($_SESSION['userType']==104 || $_SESSION['userType']==101): ?>
           <!-- Add More Links if needed for every functionality -->
           <h6 class="dropdown-header text-center"><b> Invoice </b></h6>
-          <a class="dropdown-item text-center"  href="viewProductionJobOrder.php">Production Out</a>
-          <a class="dropdown-item text-center" href="salesInvoice.php">Create Invoice</a>
-          <div class="dropdown-divider"></div>
+            <a class="dropdown-item text-center"  href="viewProductionJobOrder.php">Production Out</a>
+            <a class="dropdown-item text-center" href="salesInvoice.php">Create Invoice</a>
           <?php endif; ?>
-          <?php if($_SESSION['userType']==103 || $_SESSION['userType']==104): ?>
-          <h6 class="dropdown-header text-center"><b> Production </b></h6>
-          <a class="dropdown-item text-center" href="viewProductionSchedule.php">Production Schedule</a>
-          <a class="dropdown-item text-center" href="viewInternalShipping.php">View Internal Shipping</a>
-          <div class="dropdown-divider"></div>
-          <?php endif; ?>
-          <?php if($_SESSION['userType']!=103  || $_SESSION['userType']==104): ?>
-          <!--  -->
-          <h6 class="dropdown-header text-center"><b> Job Orders </b></h6>
-          <a class="dropdown-item text-center" href="samplejo.php">Create Job Order</a>
-          <!-- <a class="dropdown-item text-center" href="makeCustomerJobOrder.php">Create Job Order</a> -->
-          <a class="dropdown-item text-center" href="viewJobOrders.php">Pending Job Orders</a>
+
         </div>
-          <?php endif; ?>
       </li>
       <?php endif; ?>
+
+
+      <!-- equipment monitoring -->
+
+
       <?php if($_SESSION['userType'] == 103 || $_SESSION['userType']==104): ?>
       <li class="nav-item dropdown">
         <a class="nav-link" href="#" id="navbardrop" data-toggle="dropdown">
@@ -73,6 +110,10 @@
         </div>
       </li>
       <?php endif;?>
+
+
+      <!-- reports -->
+
 
       <?php if($_SESSION['userType']==104 || $_SESSION['userType']==100): ?>
       <li class="nav-item dropdown">
@@ -103,11 +144,11 @@
             <?php echo $_SESSION['username']; ?>
           </a>
           <div class="dropdown-menu dropdown-menu-right">
-            <?php if ($_SESSION['userType'] == 104): ?>
+            <?php if ($_SESSION['userType'] == 104 || $_SESSION['userType'] == 100): ?>
             <a class="dropdown-item" href="addCustomer.php">Add Customer</a>
             <a class="dropdown-item" href="addSupplier.php">Add Supplier</a>
-          <?php endif; ?>
             <div class="dropdown-divider"></div>
+          <?php endif; ?>
             <a class="nav-item nav-link text-center" href="logout.php"><i class="fas fa-power-off"></i> Logout</a>
           </div>
         </li>

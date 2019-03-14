@@ -11,7 +11,7 @@
 
   function fill_unit_select_box($conn){
     $output = '';
-    $query = "SELECT * FROM Customer WHERE customerID != '1'";
+    $query = "SELECT * FROM Customer WHERE customerID != '1' ORDER BY company ASC";
     $sql = mysqli_query($conn,$query);
 
     while($row = mysqli_fetch_array($sql)){
@@ -244,7 +244,7 @@
               <option value="" disabled>Select Customer</option><?php echo fill_unit_select_box($conn); ?>
             </select>
 
-            <small class="form-text text-muted">Not in the list of Customers? <a href="addCustomerToOrder.php">Click here</a></small>
+            <small class="form-text text-muted">Not in the list of Customers? <a href="addCustomerToOrder.php?prod=''">Click here</a></small>
           </div>
           <div class="form-group col-sm-4">
             <label for="date">Deadline: </label>
