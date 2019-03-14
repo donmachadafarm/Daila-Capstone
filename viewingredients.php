@@ -7,7 +7,7 @@
   if (!isset($_SESSION['userType'])){
     echo "<script>window.location='logout.php'</script>";
   }
-  
+
   if (isset($_POST["example"])) {
     $example = $_POST["example"];
   }else{
@@ -36,17 +36,23 @@
               </h1>
               <label for="chooseAlgo">Choose Forecasting Algorithm:</label>
             <form method="post">
-                <select class="form-control" id="chooseAlgo" name="example">
-                    <option value="1" <?php if($example == '1') { ?> selected <?php } ?>>Total Running Average - All Sales Recorded</option>
-                    <option value="2" <?php if($example == '2') { ?> selected <?php } ?>>Yearly Running Average - Past 1 Year</option>
-                    <option value="3" <?php if($example == '3') { ?> selected <?php } ?>>6 Month Running Average - Past 6 Months</option>
-                    <option value="4" <?php if($example == '4') { ?> selected <?php } ?>>3 Month Running Average - Past 3 Months</option>
-                    <option value="5" <?php if($example == '5') { ?> selected <?php } ?>>Seasonality - All Sales from the Month of <?php echo $thisMonthWord?></option>
-                    <option value="6" <?php if($example == '6') { ?> selected <?php } ?>>This Year's Average - All Sales from the Year of <?php echo $thisYear?></option>
-                    <option value="7" <?php if($example == '7') { ?> selected <?php } ?>>Last Year's Average - All Sales from the Year of <?php echo $lastYear?></option>
+              <div class="row">
+                <div class="col-md-5">
+                  <select class="form-control" id="chooseAlgo" name="example">
+                      <option value="1" <?php if($example == '1') { ?> selected <?php } ?>>Total Running Average - All Sales Recorded</option>
+                      <option value="2" <?php if($example == '2') { ?> selected <?php } ?>>Yearly Running Average - Past 1 Year</option>
+                      <option value="3" <?php if($example == '3') { ?> selected <?php } ?>>6 Month Running Average - Past 6 Months</option>
+                      <option value="4" <?php if($example == '4') { ?> selected <?php } ?>>3 Month Running Average - Past 3 Months</option>
+                      <option value="5" <?php if($example == '5') { ?> selected <?php } ?>>Seasonality - All Sales from the Month of <?php echo $thisMonthWord?></option>
+                      <option value="6" <?php if($example == '6') { ?> selected <?php } ?>>This Year's Average - All Sales from the Year of <?php echo $thisYear?></option>
+                      <option value="7" <?php if($example == '7') { ?> selected <?php } ?>>Last Year's Average - All Sales from the Year of <?php echo $lastYear?></option>
+                  </select>
+                </div>
+                <div class="col-md-2">
+                  <input type="submit" class="btn btn-primary" name="choose" id="submitButton" value="Submit">
+                </div>
+              </div>
 
-                </select>
-                <input type="submit" name="choose" id="submitButton" value="Submit">
             </form><br>
           </div>
       </div>
@@ -83,10 +89,10 @@
                                                                  JOIN RMIngredient ON RMIngredient.ingredientID = Ingredient.ingredientID
                                                                  JOIN RawMaterial ON RMIngredient.rawMaterialID = RawMaterial.rawMaterialID
                                                                  ORDER BY ingredient.ingredientID');
-                                                                 
+
                           // FOR WARNINGS COLLAPSE
                           echo "<button class='btn btn-warning' type='button' data-toggle='collapse' data-target='#collapseExample' aria-expanded='false' aria-controls='collapseExample'>Restock Warnings</button>";
-
+                          echo "<BR />";
                             echo "<div class='collapse' id='collapseExample'>";
                             echo "<div class='card card-body'>";
                           while($row2 = mysqli_fetch_array($result2)){
@@ -101,22 +107,26 @@
                             $count=0;
 
                             // set collapse box for notifs
-                            
+
                             foreach($products2 as $prod2){
                               $prodID2 = $prod2['pid'];
                               $ave2 = ceil(get_total_average($conn, $prodID2));
-                              
+
                               $mlt2 = get_maxlead($conn, $prodID2);
-                              
+
                               $reorderpoint2 = ($ave2*$mlt2)+100;
-                              
+
                               $recipeQuantity2 = $prod2['quantity'];
-                              
+
                               $inNeeded2 = ceil($recipeQuantity2*$reorderpoint2);
-                              
+
                               $total2 += $inNeeded2;
                             }
                             $needed2 = ceil($total2-$qty2);
+
+                            if ($needed2<0) {
+                              $needed2=0;
+                            }
                             if ($total2>$qty2){
                               echo '<div class="alert alert-warning"><strong>Warning!</strong> Restock Ingredient ';
                               echo $name2;
@@ -131,12 +141,12 @@
                               echo "</div>";
                               $count++;
                           }
-                          
+
                           }
                           echo "</div>";
                           echo "</div>";
 
-                          
+
 
                             while($row = mysqli_fetch_array($result)){
                               $id = $row['id'];
@@ -150,19 +160,22 @@
                               foreach($products as $prod){
                                 $prodID = $prod['pid'];
                                 $ave = get_total_average($conn, $prodID);
-                                
+
                                 $mlt = get_maxlead($conn, $prodID);
-                                
+
                                 $reorderpoint = ($ave*$mlt)+100;
-                                
+
                                 $recipeQuantity = $prod['quantity'];
-                                
+
                                 $inNeeded = $recipeQuantity*$reorderpoint;
-                                
+
                                 $total += $inNeeded;
                               }
                               $needed = ceil($total-$qty);
 
+                              if ($needed<0) {
+                                $needed=0;
+                              }
                                   echo '<tr>';
                                     echo '<td>';
                                       echo $name;
@@ -199,7 +212,7 @@
                                                                  JOIN RMIngredient ON RMIngredient.ingredientID = Ingredient.ingredientID
                                                                  JOIN RawMaterial ON RMIngredient.rawMaterialID = RawMaterial.rawMaterialID
                                                                  ORDER BY ingredient.ingredientID');
-                                                                 
+
                           // FOR WARNINGS COLLAPSE
                           echo "<button class='btn btn-warning' type='button' data-toggle='collapse' data-target='#collapseExample' aria-expanded='false' aria-controls='collapseExample'>Restock Warnings</button>";
 
@@ -217,22 +230,26 @@
                             $count=0;
 
                             // set collapse box for notifs
-                            
+
                             foreach($products2 as $prod2){
                               $prodID2 = $prod2['pid'];
                               $ave2 = ceil(get_total_average($conn, $prodID2));
-                              
+
                               $mlt2 = get_maxlead($conn, $prodID2);
-                              
+
                               $reorderpoint2 = ceil(($ave2*$mlt2)+100);
-                              
+
                               $recipeQuantity2 = $prod2['quantity'];
-                              
+
                               $inNeeded2 = ceil($recipeQuantity2*$reorderpoint2);
-                              
+
                               $total2 += $inNeeded2;
                             }
                             $needed2 = $total2-$qty2;
+
+                            if ($needed2<0) {
+                              $needed2=0;
+                            }
                             if ($total2>$qty2){
                               echo '<div class="alert alert-warning"><strong>Warning!</strong> Restock Ingredient ';
                               echo $name2;
@@ -254,7 +271,7 @@
                           echo "</div>";
                           echo "</div>";
 
-                          
+
 
                             while($row = mysqli_fetch_array($result)){
                               $id = $row['id'];
@@ -268,19 +285,22 @@
                               foreach($products as $prod){
                                 $prodID = $prod['pid'];
                                 $ave = ceil(get_total_average($conn, $prodID));
-                                
+
                                 $mlt = get_maxlead($conn, $prodID);
-                                
+
                                 $reorderpoint = ceil(($ave*$mlt)+100);
-                                
+
                                 $recipeQuantity = $prod['quantity'];
-                                
+
                                 $inNeeded = ceil($recipeQuantity*$reorderpoint);
-                                
+
                                 $total += $inNeeded;
                               }
                               $needed = $total-$qty;
 
+                              if ($needed<0) {
+                                $needed=0;
+                              }
                                   echo '<tr>';
                                     echo '<td>';
                                       echo $name;
@@ -317,7 +337,7 @@
                                                                  JOIN RMIngredient ON RMIngredient.ingredientID = Ingredient.ingredientID
                                                                  JOIN RawMaterial ON RMIngredient.rawMaterialID = RawMaterial.rawMaterialID
                                                                  ORDER BY ingredient.ingredientID');
-                                                                 
+
                           // FOR WARNINGS COLLAPSE
                           echo "<button class='btn btn-warning' type='button' data-toggle='collapse' data-target='#collapseExample' aria-expanded='false' aria-controls='collapseExample'>Restock Warnings</button>";
 
@@ -335,22 +355,25 @@
                             $count=0;
 
                             // set collapse box for notifs
-                            
+
                             foreach($products2 as $prod2){
                               $prodID2 = $prod2['pid'];
                               $ave2 = ceil(get_range_average($conn, $prodID2, $yearAgo, $dateNow));
-                              
+
                               $mlt2 = get_maxlead($conn, $prodID2);
-                              
+
                               $reorderpoint2 = ceil(($ave2*$mlt2)+100);
-                              
+
                               $recipeQuantity2 = $prod2['quantity'];
-                              
+
                               $inNeeded2 = ceil($recipeQuantity2*$reorderpoint2);
-                              
+
                               $total2 += $inNeeded2;
                             }
                             $needed2 = $total2-$qty2;
+                            if ($needed2 <0) {
+                              $needed2 = 0;
+                            }
                             if ($total2>$qty2){
                               echo '<div class="alert alert-warning"><strong>Warning!</strong> Restock Ingredient ';
                               echo $name2;
@@ -372,7 +395,7 @@
                           echo "</div>";
                           echo "</div>";
 
-                          
+
 
                             while($row = mysqli_fetch_array($result)){
                               $id = $row['id'];
@@ -386,18 +409,22 @@
                               foreach($products as $prod){
                                 $prodID = $prod['pid'];
                                 $ave = ceil(get_range_average($conn, $prodID, $yearAgo, $dateNow));
-                                
+
                                 $mlt = get_maxlead($conn, $prodID);
-                                
+
                                 $reorderpoint = ceil(($ave*$mlt)+100);
-                                
+
                                 $recipeQuantity = $prod['quantity'];
-                                
+
                                 $inNeeded = ceil($recipeQuantity*$reorderpoint);
-                                
+
                                 $total += $inNeeded;
                               }
                               $needed = $total-$qty;
+
+                              if ($needed<0) {
+                                $needed = 0;
+                              }
 
                                   echo '<tr>';
                                     echo '<td>';
@@ -436,7 +463,7 @@
                                                                  JOIN RMIngredient ON RMIngredient.ingredientID = Ingredient.ingredientID
                                                                  JOIN RawMaterial ON RMIngredient.rawMaterialID = RawMaterial.rawMaterialID
                                                                  ORDER BY ingredient.ingredientID');
-                                                                 
+
                           // FOR WARNINGS COLLAPSE
                           echo "<button class='btn btn-warning' type='button' data-toggle='collapse' data-target='#collapseExample' aria-expanded='false' aria-controls='collapseExample'>Restock Warnings</button>";
 
@@ -454,22 +481,26 @@
                             $count=0;
 
                             // set collapse box for notifs
-                            
+
                             foreach($products2 as $prod2){
                               $prodID2 = $prod2['pid'];
                               $ave2 = ceil(get_range_average($conn, $prodID2, $halfYearAgo, $dateNow));
-                              
+
                               $mlt2 = get_maxlead($conn, $prodID2);
-                              
+
                               $reorderpoint2 = ceil(($ave2*$mlt2)+100);
-                              
+
                               $recipeQuantity2 = $prod2['quantity'];
-                              
+
                               $inNeeded2 = ceil($recipeQuantity2*$reorderpoint2);
-                              
+
                               $total2 += $inNeeded2;
                             }
                             $needed2 = $total2-$qty2;
+
+                            if ($needed2<0) {
+                              $needed2=0;
+                            }
                             if ($total2>$qty2){
                               echo '<div class="alert alert-warning"><strong>Warning!</strong> Restock Ingredient ';
                               echo $name2;
@@ -491,7 +522,7 @@
                           echo "</div>";
                           echo "</div>";
 
-                          
+
 
                             while($row = mysqli_fetch_array($result)){
                               $id = $row['id'];
@@ -505,19 +536,22 @@
                               foreach($products as $prod){
                                 $prodID = $prod['pid'];
                                 $ave = ceil(get_range_average($conn, $prodID, $halfYearAgo, $dateNow));
-                                
+
                                 $mlt = get_maxlead($conn, $prodID);
-                                
+
                                 $reorderpoint = ceil(($ave*$mlt)+100);
-                                
+
                                 $recipeQuantity = $prod['quantity'];
-                                
+
                                 $inNeeded = ceil($recipeQuantity*$reorderpoint);
-                                
+
                                 $total += $inNeeded;
                               }
                               $needed = $total-$qty;
 
+                              if ($needed<0) {
+                                $needed=0;
+                              }
                                   echo '<tr>';
                                     echo '<td>';
                                       echo $name;
@@ -535,7 +569,7 @@
 
 
                             }
-                        } 
+                        }
                         elseif($example==4){
                           //Past 3 Months
                           $result2 = mysqli_query($conn,'SELECT DISTINCT(Ingredient.ingredientID) AS id,
@@ -554,7 +588,7 @@
                                                                  JOIN RMIngredient ON RMIngredient.ingredientID = Ingredient.ingredientID
                                                                  JOIN RawMaterial ON RMIngredient.rawMaterialID = RawMaterial.rawMaterialID
                                                                  ORDER BY ingredient.ingredientID');
-                                                                 
+
                           // FOR WARNINGS COLLAPSE
                           echo "<button class='btn btn-warning' type='button' data-toggle='collapse' data-target='#collapseExample' aria-expanded='false' aria-controls='collapseExample'>Restock Warnings</button>";
 
@@ -572,22 +606,25 @@
                             $count=0;
 
                             // set collapse box for notifs
-                            
+
                             foreach($products2 as $prod2){
                               $prodID2 = $prod2['pid'];
                               $ave2 = ceil(get_range_average($conn, $prodID2, $threeMonthsAgo, $dateNow));
-                              
+
                               $mlt2 = get_maxlead($conn, $prodID2);
-                              
+
                               $reorderpoint2 = ceil(($ave2*$mlt2)+100);
-                              
+
                               $recipeQuantity2 = $prod2['quantity'];
-                              
+
                               $inNeeded2 = ceil($recipeQuantity2*$reorderpoint2);
-                              
+
                               $total2 += $inNeeded2;
                             }
                             $needed2 = $total2-$qty2;
+                            if ($needed2<0) {
+                              $needed2=0;
+                            }
                             if ($total2>$qty2){
                               echo '<div class="alert alert-warning"><strong>Warning!</strong> Restock Ingredient ';
                               echo $name2;
@@ -609,7 +646,7 @@
                           echo "</div>";
                           echo "</div>";
 
-                          
+
 
                             while($row = mysqli_fetch_array($result)){
                               $id = $row['id'];
@@ -623,19 +660,22 @@
                               foreach($products as $prod){
                                 $prodID = $prod['pid'];
                                 $ave = ceil(get_range_average($conn, $prodID, $threeMonthsAgo, $dateNow));
-                                
+
                                 $mlt = get_maxlead($conn, $prodID);
-                                
+
                                 $reorderpoint = ceil(($ave*$mlt)+100);
-                                
+
                                 $recipeQuantity = $prod['quantity'];
-                                
+
                                 $inNeeded = ceil($recipeQuantity*$reorderpoint);
-                                
+
                                 $total += $inNeeded;
                               }
                               $needed = $total-$qty;
 
+                              if ($needed<0) {
+                                $needed=0;
+                              }
                                   echo '<tr>';
                                     echo '<td>';
                                       echo $name;
@@ -653,7 +693,7 @@
 
 
                             }
-                        } 
+                        }
                         elseif($example==5){
                           //Seasonality
                           $result2 = mysqli_query($conn,'SELECT DISTINCT(Ingredient.ingredientID) AS id,
@@ -672,7 +712,7 @@
                                                                  JOIN RMIngredient ON RMIngredient.ingredientID = Ingredient.ingredientID
                                                                  JOIN RawMaterial ON RMIngredient.rawMaterialID = RawMaterial.rawMaterialID
                                                                  ORDER BY ingredient.ingredientID');
-                                                                 
+
                           // FOR WARNINGS COLLAPSE
                           echo "<button class='btn btn-warning' type='button' data-toggle='collapse' data-target='#collapseExample' aria-expanded='false' aria-controls='collapseExample'>Restock Warnings</button>";
 
@@ -690,22 +730,25 @@
                             $count=0;
 
                             // set collapse box for notifs
-                            
+
                             foreach($products2 as $prod2){
                               $prodID2 = $prod2['pid'];
                               $ave2 = ceil(get_monthly($conn, $prodID2, $thisMonth));
-                              
+
                               $mlt2 = get_maxlead($conn, $prodID2);
-                              
+
                               $reorderpoint2 = ceil(($ave2*$mlt2)+100);
-                              
+
                               $recipeQuantity2 = $prod2['quantity'];
-                              
+
                               $inNeeded2 = ceil($recipeQuantity2*$reorderpoint2);
-                              
+
                               $total2 += $inNeeded2;
                             }
                             $needed2 = $total2-$qty2;
+                            if ($needed2<0) {
+                              $needed2=0;
+                            }
                             if ($total2>$qty2){
                               echo '<div class="alert alert-warning"><strong>Warning!</strong> Restock Ingredient ';
                               echo $name2;
@@ -727,7 +770,7 @@
                           echo "</div>";
                           echo "</div>";
 
-                          
+
 
                             while($row = mysqli_fetch_array($result)){
                               $id = $row['id'];
@@ -741,19 +784,22 @@
                               foreach($products as $prod){
                                 $prodID = $prod['pid'];
                                 $ave = ceil(get_monthly($conn, $prodID, $thisMonth));
-                                
+
                                 $mlt = get_maxlead($conn, $prodID);
-                                
+
                                 $reorderpoint = ceil(($ave*$mlt)+100);
-                                
+
                                 $recipeQuantity = $prod['quantity'];
-                                
+
                                 $inNeeded = ceil($recipeQuantity*$reorderpoint);
-                                
+
                                 $total += $inNeeded;
                               }
                               $needed = $total-$qty;
 
+                              if ($needed<0) {
+                                $needed=0;
+                              }
                                   echo '<tr>';
                                     echo '<td>';
                                       echo $name;
@@ -790,7 +836,7 @@
                                                                  JOIN RMIngredient ON RMIngredient.ingredientID = Ingredient.ingredientID
                                                                  JOIN RawMaterial ON RMIngredient.rawMaterialID = RawMaterial.rawMaterialID
                                                                  ORDER BY ingredient.ingredientID');
-                                                                 
+
                           // FOR WARNINGS COLLAPSE
                           echo "<button class='btn btn-warning' type='button' data-toggle='collapse' data-target='#collapseExample' aria-expanded='false' aria-controls='collapseExample'>Restock Warnings</button>";
 
@@ -808,22 +854,26 @@
                             $count=0;
 
                             // set collapse box for notifs
-                            
+
                             foreach($products2 as $prod2){
                               $prodID2 = $prod2['pid'];
                               $ave2 = ceil(get_yearly($conn, $prodID2, $thisYear));
-                              
+
                               $mlt2 = get_maxlead($conn, $prodID2);
-                              
+
                               $reorderpoint2 = ceil(($ave2*$mlt2)+100);
-                              
+
                               $recipeQuantity2 = $prod2['quantity'];
-                              
+
                               $inNeeded2 = ceil($recipeQuantity2*$reorderpoint2);
-                              
+
                               $total2 += $inNeeded2;
                             }
                             $needed2 = $total2-$qty2;
+
+                            if ($needed2<0) {
+                              $needed2=0;
+                            }
                             if ($total2>$qty2){
                               echo '<div class="alert alert-warning"><strong>Warning!</strong> Restock Ingredient ';
                               echo $name2;
@@ -845,7 +895,7 @@
                           echo "</div>";
                           echo "</div>";
 
-                          
+
 
                             while($row = mysqli_fetch_array($result)){
                               $id = $row['id'];
@@ -859,19 +909,22 @@
                               foreach($products as $prod){
                                 $prodID = $prod['pid'];
                                 $ave = ceil(get_yearly($conn, $prodID, $thisYear));
-                                
+
                                 $mlt = get_maxlead($conn, $prodID);
-                                
+
                                 $reorderpoint = ceil(($ave*$mlt)+100);
-                                
+
                                 $recipeQuantity = $prod['quantity'];
-                                
+
                                 $inNeeded = ceil($recipeQuantity*$reorderpoint);
-                                
+
                                 $total += $inNeeded;
                               }
                               $needed = $total-$qty;
 
+                              if ($needed <0) {
+                                $needed =0;
+                              }
                                   echo '<tr>';
                                     echo '<td>';
                                       echo $name;
@@ -908,7 +961,7 @@
                                                                  JOIN RMIngredient ON RMIngredient.ingredientID = Ingredient.ingredientID
                                                                  JOIN RawMaterial ON RMIngredient.rawMaterialID = RawMaterial.rawMaterialID
                                                                  ORDER BY ingredient.ingredientID');
-                                                                 
+
                           // FOR WARNINGS COLLAPSE
                           echo "<button class='btn btn-warning' type='button' data-toggle='collapse' data-target='#collapseExample' aria-expanded='false' aria-controls='collapseExample'>Restock Warnings</button>";
 
@@ -926,22 +979,25 @@
                             $count=0;
 
                             // set collapse box for notifs
-                            
+
                             foreach($products2 as $prod2){
                               $prodID2 = $prod2['pid'];
                               $ave2 = ceil(get_yearly($conn, $prodID2, $lastYear));
-                              
+
                               $mlt2 = get_maxlead($conn, $prodID2);
-                              
+
                               $reorderpoint2 = ceil(($ave2*$mlt2)+100);
-                              
+
                               $recipeQuantity2 = $prod2['quantity'];
-                              
+
                               $inNeeded2 = ceil($recipeQuantity2*$reorderpoint2);
-                              
+
                               $total2 += $inNeeded2;
                             }
                             $needed2 = $total2-$qty2;
+                            if ($needed2 <0) {
+                              $needed2 =0;
+                            }
                             if ($total2>$qty2){
                               echo '<div class="alert alert-warning"><strong>Warning!</strong> Restock Ingredient ';
                               echo $name2;
@@ -963,7 +1019,7 @@
                           echo "</div>";
                           echo "</div>";
 
-                          
+
 
                             while($row = mysqli_fetch_array($result)){
                               $id = $row['id'];
@@ -977,19 +1033,22 @@
                               foreach($products as $prod){
                                 $prodID = $prod['pid'];
                                 $ave = ceil(get_yearly($conn, $prodID, $lastYear));
-                                
+
                                 $mlt = get_maxlead($conn, $prodID);
-                                
+
                                 $reorderpoint = ceil(($ave*$mlt)+100);
-                                
+
                                 $recipeQuantity = $prod['quantity'];
-                                
+
                                 $inNeeded = ceil($recipeQuantity*$reorderpoint);
-                                
+
                                 $total += $inNeeded;
                               }
                               $needed = $total-$qty;
 
+                              if ($needed <0) {
+                                $needed = 0;
+                              }
                                   echo '<tr>';
                                     echo '<td>';
                                       echo $name;

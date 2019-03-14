@@ -42,8 +42,8 @@ $thisMonthWord = date('F');
                     <option value="4" <?php if($example == '4') { ?> selected <?php } ?>>3 Month Average - Past 3 Months</option>
                     <option value="5" <?php if($example == '5') { ?> selected <?php } ?>>Seasonality - All Sales from the Month of <?php echo $thisMonthWord?></option>
 
-                </select>
-                <input type="submit" name="choose" id="submitButton" value="Submit">
+                </select><br>
+                <input type="submit" class="btn btn-primary" name="choose" id="submitButton" value="Submit">
             </form><br>
         </div>
     </div>

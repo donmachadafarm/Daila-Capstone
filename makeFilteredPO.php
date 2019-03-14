@@ -25,58 +25,59 @@ $today = date("Y-m-d");
 $user = $_SESSION['userid'];
 
 if (isset($_POST['submit'])){
-  $sup = $_POST['supplier'];
-  $val = $_POST['restockQuantity'];
-  $ing = $_POST['ingredient'];
-  $date = date('M-d-Y');
-  $query = "SELECT supplier.duration AS 'duration'
-            FROM supplier 
-            WHERE supplier.company = '$sup'";
-  $result = mysqli_query($conn, $query);
-  $row = mysqli_fetch_array($result);
-  $duration = $row['duration'];
-  $deadline = date('Y-m-d', strtotime($date. ' + ' .$duration.' days'));
+      $sup = $_POST['supplier'];
+      $unit = $_POST['unit'];
+      $qty = $_POST['restockQuantity'];
+      $ing = $_POST['ingredient'];
+      $date = date('Y-m-d');
+      $total = 0;
 
-  //get wanted rawmat - ingredient
-  $rmquery = "SELECT RawMaterial.pricePerUnit as 'price',
-  RawMaterial.unitOfMeasurement as 'uom',
-  RawMaterial.rawMaterialID as 'rmid'
-  FROM RawMaterial
-  JOIN RMIngredient ON RMIngredient.rawMaterialID = RawMaterial.rawMaterialID
-  WHERE RawMaterial.supplierID = '$sup' &&  RMIngredient.ingredientID = '$ing'";
+      $duration = get_suppdur($conn,$sup);
+      $deadline = date('Y-m-d', strtotime($date. ' + ' .$duration.' days'));
 
-  $rmsql = mysqli_query($conn, $rmquery);
-  $rmrow = mysqli_fetch_array($rmsql);
+      $query = "SELECT RawMaterial.pricePerUnit,
+                       RawMaterial.unitOfMeasurement,
+                       RawMaterial.rawMaterialID
+                FROM RawMaterial
+                JOIN RMIngredient ON RMIngredient.rawMaterialID = RawMaterial.rawMaterialID
+                WHERE RawMaterial.supplierID = '$sup' &&  RMIngredient.ingredientID = '$ing'";
 
-  $total = $rmrow['price'] * $val;
-  $uom = $rmrow['uom'];
-  $rmid = $rmrow['rmid'];
+        $sql = mysqli_query($conn,$query);
 
-  // insert purchase order
-  $query2 = "INSERT into PurchaseOrder (supplierID,totalPrice,orderDate,status,deadline,createdBy) values ('{$sup}','{$total}','{$today}','Pending','{$deadline}','{$user}')";
+        $row = mysqli_fetch_array($sql);
 
-  mysqli_query($conn, $query2);
+      $total = $row['pricePerUnit'] * $qty;
 
-  // get the PO details for POItem insert
-  $query3 = "SELECT * FROM PurchaseOrder ORDER BY purchaseOrderID DESC LIMIT 1 ";
+      $uom = $row['unitOfMeasurement'];
 
-  $sql3 = mysqli_query($conn,$query3);
+      $rmid = $row['rawMaterialID'];
 
-  $row3 = mysqli_fetch_array($sql3);
+      // insert purchase order
+      $query2 = "INSERT INTO PurchaseOrder (supplierID,totalPrice,orderDate,status,deadline,createdBy)
+                  VALUES ('{$sup}','{$total}','{$today}','Pending','{$deadline}','{$user}')";
 
-  $poid = $row3['purchaseOrderID'];
+        mysqli_query($conn, $query2);
 
-$query = "INSERT INTO POItem (purchaseOrderID,rawMaterialID,quantity,subTotal,unitOfMeasurement,status)
-            VALUES('$poid','$rmid','$val','$total','$uom','Not Delivered')";
+      // get the PO details for POItem insert
+      $query3 = "SELECT * FROM PurchaseOrder ORDER BY purchaseOrderID DESC LIMIT 1 ";
 
-if(mysqli_query($conn,$query3)){
-  echo "<script>
-    alert('Purchase Order/s Added!');
-     window.location.replace('viewPurchaseOrders.php');
-        </script>";
-}else {
-  echo "<script>alert('Failed!')</script>";
-}
+      $sql3 = mysqli_query($conn,$query3);
+
+      $row3 = mysqli_fetch_array($sql3);
+
+      $poid = $row3['purchaseOrderID'];
+
+      $query = "INSERT INTO POItem (purchaseOrderID,rawMaterialID,quantity,subTotal,unitOfMeasurement,status)
+                VALUES('$poid','$rmid','$qty','$total','$uom','Not Delivered')";
+
+    if(mysqli_query($conn,$query)){
+      echo "<script>
+        alert('Purchase Order/s Added!');
+         window.location.replace('viewPurchaseOrders.php');
+            </script>";
+    }else {
+      echo "<script>alert('Failed!')</script>";
+    }
 
 }
 
@@ -100,19 +101,23 @@ if(mysqli_query($conn,$query3)){
             <div class="col-lg-8">
                 <div class="panel panel-default">
                     <div class="panel-body"><br>
-                        <form action="makeFilteredPO.php" method="POST">
+                        <form action="" method="POST">
                           <div class='row'>
-                              <div class='col'>Ingredient:</div>
-                              <div class='col'>Quantity:</div>
-                              <div class='col'>Supplier:</div>
+                              <div class='col'><b>Ingredient:</b></div>
+                              <div class='col'><b>Quantity:</b></div>
+                              <div class='col'><b>Supplier:</b></div>
                               <div class='col'></div>
                           </div>
                           <div class = 'row'>
-                          <input class='form-control' type = 'hidden' name = 'ingredient' value = <?php $ingID ?>>
-                              <div class='col'><?php echo $ingName ?></div>
-                              <input class='form-control' type = 'hidden' name = 'restockQuantity' value = <?php $restockQuantity ?>>
-                              <div class='col'><?php echo $restockQuantity?> <?php echo $unit ?>s</div>
-                              <div class='col'>
+                          <input type = 'hidden' name = 'ingredient' value ="<?php echo $ingID; ?>">
+                          <input type = "hidden" name="unit" value="<?php echo $unit ?>">
+                              <div class='col-md-3'>
+                                <input class="form-control-plaintext" type="text" name="" value="" placeholder="<?php echo $ingName; ?>" readonly>
+                              </div>
+                              <div class='col-md-3'>
+                                <input class='form-control' type = 'number' min="0" name = 'restockQuantity' value ="<?php echo $restockQuantity; ?>">
+                              </div>
+                              <div class='col-md-4'>
                                 <select class = "form-control" name = "supplier">
                                   <?php
                                     $query = "SELECT supplier.company as supplierName, supplier.supplierID as supplierID
@@ -130,10 +135,11 @@ if(mysqli_query($conn,$query3)){
 
                                 </select>
                               </div>
-                              <div class='col'> 
-                              
-                              <input type="submit" name="submit" value="Proceed" class="btn btn-success"/> 
-                              
+
+                              <div class='col-md-2'>
+
+                              <input type="submit" name="submit" value="Proceed" class="btn btn-success"/>
+
                               </div>
 
                           </div>
