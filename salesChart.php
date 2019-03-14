@@ -29,7 +29,7 @@ if (!isset($_SESSION['userType'])){
     <div class="row">
         <div class="col-lg-12" align="center">
             <h1 class="text-center" align="center"><br>
-                Sales Report
+                Product Sales Chart
             </h1>
             <h6 class="text-center">
                 Enter a Date Range
@@ -62,12 +62,12 @@ if (isset($_POST['search'])){
     echo        '</table>';
 
     $connect = mysqli_connect("localhost", "root", "", "capstone_daila");
-    $query = "SELECT product.name as name,SUM(productsales.quantity) as 'products sold' 
-                    FROM productsales 
+    $query = "SELECT product.name as name,SUM(productsales.quantity) as 'products sold'
+                    FROM productsales
                     JOIN product on productsales.productID=product.productID
                     JOIN sales on productsales.salesID=sales.salesID
                     WHERE sales.saleDate BETWEEN '$startDate' AND '$endDate'
-                    GROUP BY product.name  
+                    GROUP BY product.name
                     ORDER BY `products sold`  DESC";
     $result = mysqli_query($connect, $query);
     $query2 = "SELECT product.name as name, SUM(productsales.subTotal) as 'total sales'
@@ -75,7 +75,7 @@ if (isset($_POST['search'])){
                     JOIN product on productsales.productID=product.productID
                     JOIN sales on productsales.salesID=sales.salesID
                     WHERE sales.saleDate BETWEEN '$startDate' AND '$endDate'
-                    GROUP BY product.name  
+                    GROUP BY product.name
                     ORDER BY `total sales`  DESC";
 
     $result2 = mysqli_query($connect, $query2);

@@ -17,12 +17,12 @@
       <div class="row">
           <div class="col-lg-12">
               <h1 class="page-header jumbotron">
-                  Homepage! <?php //echo $_SESSION['userType']; ?>
+                  Homepage!
               </h1>
           </div>
       </div>
-      
-      <!-- <div class="row">
+
+      <div class="row">
         <div class="col-sm-6">
           <div class="card">
             <div class="card-body">
@@ -41,7 +41,8 @@
             </div>
           </div>
         </div>
-      </div> -->
+      </div>
+
   </div>
 </div>
 

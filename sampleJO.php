@@ -13,7 +13,7 @@
 
   function fill_unit_select_box($conn){
     $output = '';
-    $query = "SELECT * FROM Product";
+    $query = "SELECT * FROM Product ORDER BY name ASC";
     $sql = mysqli_query($conn,$query);
 
     while($row = mysqli_fetch_array($sql)){
@@ -49,7 +49,7 @@
                     <div class="table-repsonsive">
                        <table class="table table-borderless" id="item_table">
                         <tr>
-                         <th>Product</th><small class="form-text text-muted">Adding a custom product? <a href="addProduct.php">Click here</a></small><br>
+                         <th>Product</th><small class="form-text text-muted">Adding a new product? <a href="addProduct.php">Click here</a></small><br>
                          <th>Quantity</th>
                         </tr>
                         <tr>
