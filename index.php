@@ -41,7 +41,7 @@
           </div>
       </div>
 
-      <!-- <div class="row">
+      <div class="row">
         <div class="col-sm-6">
           <div class="card">
             <div class="card-body scroll">
@@ -235,7 +235,7 @@
             </div>
           </div>
         </div>
-      </div> -->
+      </div>
   </div>
 </div>
 

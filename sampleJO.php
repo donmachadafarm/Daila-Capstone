@@ -82,7 +82,7 @@
                                <div class="modal-body">
                                    <div class="text-center">
                                      <p>
-                                       <h6>Confirm Mock Job Order?</h6>
+                                       <h6>Confirm Job Order?</h6>
 
                                      </p>
                                    </div>
