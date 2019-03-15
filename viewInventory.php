@@ -35,15 +35,22 @@ $thisMonthWord = date('F');
             </h1>
             <label for="chooseAlgo">Choose Forecasting Algorithm:</label>
             <form method="post">
-                <select class="form-control" id="chooseAlgo" name="example">
-                    <option value="1" <?php if($example == '1') { ?> selected <?php } ?>>Total Average - All Sales Recorded</option>
-                    <option value="2" <?php if($example == '2') { ?> selected <?php } ?>>Yearly Average - Past 1 Year</option>
-                    <option value="3" <?php if($example == '3') { ?> selected <?php } ?>>6 Month Average - Past 6 Months</option>
-                    <option value="4" <?php if($example == '4') { ?> selected <?php } ?>>3 Month Average - Past 3 Months</option>
-                    <option value="5" <?php if($example == '5') { ?> selected <?php } ?>>Seasonality - All Sales from the Month of <?php echo $thisMonthWord?></option>
+              <div class="row">
+                <div class="col-md-5">
+                  <select class="form-control" id="chooseAlgo" name="example">
+                      <option value="1" <?php if($example == '1') { ?> selected <?php } ?>>Total Average - All Sales Recorded</option>
+                      <option value="2" <?php if($example == '2') { ?> selected <?php } ?>>Yearly Average - Past 1 Year</option>
+                      <option value="3" <?php if($example == '3') { ?> selected <?php } ?>>6 Month Average - Past 6 Months</option>
+                      <option value="4" <?php if($example == '4') { ?> selected <?php } ?>>3 Month Average - Past 3 Months</option>
+                      <option value="5" <?php if($example == '5') { ?> selected <?php } ?>>Seasonality - All Sales from the Month of <?php echo $thisMonthWord?></option>
 
-                </select><br>
-                <input type="submit" class="btn btn-primary" name="choose" id="submitButton" value="Submit">
+                  </select>
+                </div>
+                <div class="col-md-2">
+                  <input type="submit" class="btn btn-primary" name="choose" id="submitButton" value="Submit">
+                </div>
+              </div>
+
             </form><br>
         </div>
     </div>
