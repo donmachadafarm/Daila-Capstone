@@ -101,7 +101,7 @@ $thisYear = date('Y');
                     echo "<br><br>";
                     echo "<div class='collapse' id='collapseExample'>";
                     echo "<div class='card card-body'>";
-                    $count = 0;
+
                     while ($row = mysqli_fetch_array($allInventory)){
                         $id = $row['ID'];
                         $prodName = $row['productname'];
@@ -120,7 +120,6 @@ $thisYear = date('Y');
                             echo ' to ';
                             echo $reorderPoint;
                             echo '</div>';
-                            $count++;
                         }
 
                     }
@@ -138,11 +137,6 @@ $thisYear = date('Y');
                         $averageSales = get_total_average($conn, $id);
                         $reorderPoint = 100+($averageSales*$maxLeadTime);
                         $needed = $reorderPoint-$quantity;
-                        $extra = 1;
-
-                        if($needed > 100){
-                            $extra = ceil($needed * .1);
-                        }
 
                         echo '<tr>';
                         echo '<td><a href="viewIndivProduct.php?id='.$id.'">';
