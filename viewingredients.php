@@ -92,7 +92,7 @@
 
                           // FOR WARNINGS COLLAPSE
                           echo "<button class='btn btn-warning' type='button' data-toggle='collapse' data-target='#collapseExample' aria-expanded='false' aria-controls='collapseExample'>Restock Warnings</button>";
-                          echo "<BR />";
+                          echo "<br>";
                             echo "<div class='collapse' id='collapseExample'>";
                             echo "<div class='card card-body'>";
                           while($row2 = mysqli_fetch_array($result2)){

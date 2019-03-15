@@ -807,7 +807,7 @@ function get_total_average($conn, $prod){
     $query = "SELECT product.name, ROUND(AVG(productsales.quantity)) as 'Average'
                 FROM product
                 JOIN productsales on product.productID = productsales.productID
-                WHERE product.productID = $prod";
+                WHERE product.productID = $prod ";
 
     $sql = mysqli_query($conn, $query);
 

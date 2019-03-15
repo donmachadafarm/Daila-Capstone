@@ -52,14 +52,15 @@
 
                 <?php
                 if($result = mysqli_query($conn,'SELECT Supplier.company AS suppName,
-                                                     PurchaseOrder.purchaseOrderID AS id,
-                                                     PurchaseOrder.totalPrice AS price,
-                                                     PurchaseOrder.orderDate AS date,
-                                                     PurchaseOrder.deadline AS deadline,
-                                                     PurchaseOrder.status AS status
-                                                FROM PurchaseOrder
-                                                INNER JOIN Supplier ON PurchaseOrder.supplierID =Supplier.supplierID
-                                                WHERE PurchaseOrder.status <> "removed"')){
+                PurchaseOrder.purchaseOrderID AS id,
+                PurchaseOrder.totalPrice AS price,
+                PurchaseOrder.orderDate AS date,
+                PurchaseOrder.deadline AS deadline,
+                PurchaseOrder.status AS status
+           FROM PurchaseOrder
+           INNER JOIN Supplier ON PurchaseOrder.supplierID =Supplier.supplierID
+           WHERE PurchaseOrder.status <> "removed"
+           ORDER BY status DESC')){
 
 
                     while($row = mysqli_fetch_array($result)){

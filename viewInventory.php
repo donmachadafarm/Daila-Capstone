@@ -22,6 +22,8 @@ $halfYearAgo = date("Y-m-d", strtotime("-6 months"));
 $threeMonthsAgo = date("Y-m-d", strtotime("-3 months"));
 $thisMonth = date('m');
 $thisMonthWord = date('F');
+$thisYear = date('Y');
+  $lastYear = date('Y', strtotime('-1 year'))
 ?>
 
 <!-- put all the contents here  -->
@@ -35,15 +37,24 @@ $thisMonthWord = date('F');
             </h1>
             <label for="chooseAlgo">Choose Forecasting Algorithm:</label>
             <form method="post">
-                <select class="form-control" id="chooseAlgo" name="example">
-                    <option value="1" <?php if($example == '1') { ?> selected <?php } ?>>Total Average - All Sales Recorded</option>
-                    <option value="2" <?php if($example == '2') { ?> selected <?php } ?>>Yearly Average - Past 1 Year</option>
-                    <option value="3" <?php if($example == '3') { ?> selected <?php } ?>>6 Month Average - Past 6 Months</option>
-                    <option value="4" <?php if($example == '4') { ?> selected <?php } ?>>3 Month Average - Past 3 Months</option>
-                    <option value="5" <?php if($example == '5') { ?> selected <?php } ?>>Seasonality - All Sales from the Month of <?php echo $thisMonthWord?></option>
+            <div class="row">
+                <div class = "col-md-5">
+                    <select class="form-control" id="chooseAlgo" name="example">
+                        <option value="1" <?php if($example == '1') { ?> selected <?php } ?>>Total Average - All Sales Recorded</option>
+                        <option value="2" <?php if($example == '2') { ?> selected <?php } ?>>Yearly Average - Past 1 Year</option>
+                        <option value="3" <?php if($example == '3') { ?> selected <?php } ?>>6 Month Average - Past 6 Months</option>
+                        <option value="4" <?php if($example == '4') { ?> selected <?php } ?>>3 Month Average - Past 3 Months</option>
+                        <option value="5" <?php if($example == '5') { ?> selected <?php } ?>>Seasonality - All Sales from the Month of <?php echo $thisMonthWord?></option>
+                        <option value="6" <?php if($example == '6') { ?> selected <?php } ?>>This Year's Average - All Sales from the Year of <?php echo $thisYear?></option>
+                        <option value="7" <?php if($example == '7') { ?> selected <?php } ?>>Last Year's Average - All Sales from the Year of <?php echo $lastYear?></option>
 
-                </select><br>
-                <input type="submit" class="btn btn-primary" name="choose" id="submitButton" value="Submit">
+                    </select>
+                </div>
+                <div class ="col-md-2">
+                    <input type="submit" class="btn btn-primary" name="choose" id="submitButton" value="Submit">
+                </div>
+            </div>
+
             </form><br>
         </div>
     </div>
@@ -75,6 +86,22 @@ $thisMonthWord = date('F');
                                                                 GROUP BY product.name
                                                                 ");
 
+                    $allInventory2 = mysqli_query($conn, "SELECT product.name AS productname,
+                                                                product.quantity AS quantity,
+                                                                productType.name AS producttypename,
+                                                                product.productPrice,
+                                                                product.productID AS ID
+                                                                FROM product
+                                                                JOIN productType ON product.productTypeID=productType.productTypeID
+                                                                WHERE product.custom <> 1
+                                                                GROUP BY product.name
+                                                                ");
+
+                    echo "<button class='btn btn-warning' type='button' data-toggle='collapse' data-target='#collapseExample' aria-expanded='false' aria-controls='collapseExample'>Restock Warnings</button>";
+                    echo "<br><br>";
+                    echo "<div class='collapse' id='collapseExample'>";
+                    echo "<div class='card card-body'>";
+
                     while ($row = mysqli_fetch_array($allInventory)){
                         $id = $row['ID'];
                         $prodName = $row['productname'];
@@ -86,7 +113,7 @@ $thisMonthWord = date('F');
                         $averageSales = get_total_average($conn, $id);
                         $reorderPoint = 100+($averageSales*$maxLeadTime);
                         $needed = $reorderPoint-$quantity;
-
+                        
                         if ($reorderPoint>$quantity){
                             echo '<div class="alert alert-warning"><strong>Warning!</strong> Restock Product ';
                             echo $prodName;
@@ -94,6 +121,22 @@ $thisMonthWord = date('F');
                             echo $reorderPoint;
                             echo '</div>';
                         }
+
+                    }
+                    echo "</div>";
+                    echo "</div>";
+
+                    while ($row = mysqli_fetch_array($allInventory2)){
+                        $id = $row['ID'];
+                        $prodName = $row['productname'];
+                        $prodType = $row['producttypename'];
+                        $quantity = $row['quantity'];
+                        $price = $row['productPrice'];
+                        $restockingValue = 100;
+                        $maxLeadTime = get_maxlead($conn, $id);
+                        $averageSales = get_total_average($conn, $id);
+                        $reorderPoint = 100+($averageSales*$maxLeadTime);
+                        $needed = $reorderPoint-$quantity;
 
                         echo '<tr>';
                         echo '<td><a href="viewIndivProduct.php?id='.$id.'">';
@@ -115,6 +158,7 @@ $thisMonthWord = date('F');
                         echo '</tr>';
 
                     }
+
                 }
 
                 elseif ($example ==1){
@@ -129,6 +173,22 @@ $thisMonthWord = date('F');
                                                                 GROUP BY product.name
                                                                 ");
 
+                    $allInventory2 = mysqli_query($conn, "SELECT product.name AS productname,
+                                                                product.quantity AS quantity,
+                                                                productType.name AS producttypename,
+                                                                product.productPrice,
+                                                                product.productID AS ID
+                                                                FROM product
+                                                                JOIN productType ON product.productTypeID=productType.productTypeID
+                                                                WHERE product.custom <> 1
+                                                                GROUP BY product.name
+                                                                ");
+
+                    echo "<button class='btn btn-warning' type='button' data-toggle='collapse' data-target='#collapseExample' aria-expanded='false' aria-controls='collapseExample'>Restock Warnings</button>";
+                    echo "<br><br>";
+                    echo "<div class='collapse' id='collapseExample'>";
+                    echo "<div class='card card-body'>";
+
                     while ($row = mysqli_fetch_array($allInventory)){
                         $id = $row['ID'];
                         $prodName = $row['productname'];
@@ -140,7 +200,7 @@ $thisMonthWord = date('F');
                         $averageSales = get_total_average($conn, $id);
                         $reorderPoint = 100+($averageSales*$maxLeadTime);
                         $needed = $reorderPoint-$quantity;
-
+                        
                         if ($reorderPoint>$quantity){
                             echo '<div class="alert alert-warning"><strong>Warning!</strong> Restock Product ';
                             echo $prodName;
@@ -148,6 +208,22 @@ $thisMonthWord = date('F');
                             echo $reorderPoint;
                             echo '</div>';
                         }
+
+                    }
+                    echo "</div>";
+                    echo "</div>";
+
+                    while ($row = mysqli_fetch_array($allInventory2)){
+                        $id = $row['ID'];
+                        $prodName = $row['productname'];
+                        $prodType = $row['producttypename'];
+                        $quantity = $row['quantity'];
+                        $price = $row['productPrice'];
+                        $restockingValue = 100;
+                        $maxLeadTime = get_maxlead($conn, $id);
+                        $averageSales = get_total_average($conn, $id);
+                        $reorderPoint = 100+($averageSales*$maxLeadTime);
+                        $needed = $reorderPoint-$quantity;
 
                         echo '<tr>';
                         echo '<td><a href="viewIndivProduct.php?id='.$id.'">';
@@ -183,6 +259,22 @@ $thisMonthWord = date('F');
                                                                 GROUP BY product.name
                                                                 ");
 
+                    $allInventory2 = mysqli_query($conn, "SELECT product.name AS productname,
+                                                                product.quantity AS quantity,
+                                                                productType.name AS producttypename,
+                                                                product.productPrice,
+                                                                product.productID AS ID
+                                                                FROM product
+                                                                JOIN productType ON product.productTypeID=productType.productTypeID
+                                                                WHERE product.custom <> 1
+                                                                GROUP BY product.name
+                                                                ");
+
+                    echo "<button class='btn btn-warning' type='button' data-toggle='collapse' data-target='#collapseExample' aria-expanded='false' aria-controls='collapseExample'>Restock Warnings</button>";
+                    echo "<br><br>";
+                    echo "<div class='collapse' id='collapseExample'>";
+                    echo "<div class='card card-body'>";
+
                     while ($row = mysqli_fetch_array($allInventory)){
                         $id = $row['ID'];
                         $prodName = $row['productname'];
@@ -194,7 +286,7 @@ $thisMonthWord = date('F');
                         $averageSales = get_range_average($conn, $id, $yearAgo, $dateNow);
                         $reorderPoint = 100+($averageSales*$maxLeadTime);
                         $needed = $reorderPoint-$quantity;
-
+                        
                         if ($reorderPoint>$quantity){
                             echo '<div class="alert alert-warning"><strong>Warning!</strong> Restock Product ';
                             echo $prodName;
@@ -202,6 +294,22 @@ $thisMonthWord = date('F');
                             echo $reorderPoint;
                             echo '</div>';
                         }
+
+                    }
+                    echo "</div>";
+                    echo "</div>";
+
+                    while ($row = mysqli_fetch_array($allInventory2)){
+                        $id = $row['ID'];
+                        $prodName = $row['productname'];
+                        $prodType = $row['producttypename'];
+                        $quantity = $row['quantity'];
+                        $price = $row['productPrice'];
+                        $restockingValue = 100;
+                        $maxLeadTime = get_maxlead($conn, $id);
+                        $averageSales = get_range_average($conn, $id, $yearAgo, $dateNow);
+                        $reorderPoint = 100+($averageSales*$maxLeadTime);
+                        $needed = $reorderPoint-$quantity;
 
                         echo '<tr>';
                         echo '<td><a href="viewIndivProduct.php?id='.$id.'">';
@@ -237,6 +345,22 @@ $thisMonthWord = date('F');
                                                                 GROUP BY product.name
                                                                 ");
 
+                    $allInventory2 = mysqli_query($conn, "SELECT product.name AS productname,
+                                                                product.quantity AS quantity,
+                                                                productType.name AS producttypename,
+                                                                product.productPrice,
+                                                                product.productID AS ID
+                                                                FROM product
+                                                                JOIN productType ON product.productTypeID=productType.productTypeID
+                                                                WHERE product.custom <> 1
+                                                                GROUP BY product.name
+                                                                ");
+
+                    echo "<button class='btn btn-warning' type='button' data-toggle='collapse' data-target='#collapseExample' aria-expanded='false' aria-controls='collapseExample'>Restock Warnings</button>";
+                    echo "<br><br>";
+                    echo "<div class='collapse' id='collapseExample'>";
+                    echo "<div class='card card-body'>";
+
                     while ($row = mysqli_fetch_array($allInventory)){
                         $id = $row['ID'];
                         $prodName = $row['productname'];
@@ -248,7 +372,7 @@ $thisMonthWord = date('F');
                         $averageSales = get_range_average($conn, $id, $halfYearAgo, $dateNow);
                         $reorderPoint = 100+($averageSales*$maxLeadTime);
                         $needed = $reorderPoint-$quantity;
-
+                        
                         if ($reorderPoint>$quantity){
                             echo '<div class="alert alert-warning"><strong>Warning!</strong> Restock Product ';
                             echo $prodName;
@@ -256,6 +380,22 @@ $thisMonthWord = date('F');
                             echo $reorderPoint;
                             echo '</div>';
                         }
+
+                    }
+                    echo "</div>";
+                    echo "</div>";
+
+                    while ($row = mysqli_fetch_array($allInventory2)){
+                        $id = $row['ID'];
+                        $prodName = $row['productname'];
+                        $prodType = $row['producttypename'];
+                        $quantity = $row['quantity'];
+                        $price = $row['productPrice'];
+                        $restockingValue = 100;
+                        $maxLeadTime = get_maxlead($conn, $id);
+                        $averageSales = get_range_average($conn, $id, $halfYearAgo, $dateNow);
+                        $reorderPoint = 100+($averageSales*$maxLeadTime);
+                        $needed = $reorderPoint-$quantity;
 
                         echo '<tr>';
                         echo '<td><a href="viewIndivProduct.php?id='.$id.'">';
@@ -291,6 +431,22 @@ $thisMonthWord = date('F');
                                                                 GROUP BY product.name
                                                                 ");
 
+                    $allInventory2 = mysqli_query($conn, "SELECT product.name AS productname,
+                                                                product.quantity AS quantity,
+                                                                productType.name AS producttypename,
+                                                                product.productPrice,
+                                                                product.productID AS ID
+                                                                FROM product
+                                                                JOIN productType ON product.productTypeID=productType.productTypeID
+                                                                WHERE product.custom <> 1
+                                                                GROUP BY product.name
+                                                                ");
+
+                    echo "<button class='btn btn-warning' type='button' data-toggle='collapse' data-target='#collapseExample' aria-expanded='false' aria-controls='collapseExample'>Restock Warnings</button>";
+                    echo "<br><br>";
+                    echo "<div class='collapse' id='collapseExample'>";
+                    echo "<div class='card card-body'>";
+
                     while ($row = mysqli_fetch_array($allInventory)){
                         $id = $row['ID'];
                         $prodName = $row['productname'];
@@ -302,7 +458,7 @@ $thisMonthWord = date('F');
                         $averageSales = get_range_average($conn, $id, $threeMonthsAgo, $dateNow);
                         $reorderPoint = 100+($averageSales*$maxLeadTime);
                         $needed = $reorderPoint-$quantity;
-
+                        
                         if ($reorderPoint>$quantity){
                             echo '<div class="alert alert-warning"><strong>Warning!</strong> Restock Product ';
                             echo $prodName;
@@ -310,6 +466,22 @@ $thisMonthWord = date('F');
                             echo $reorderPoint;
                             echo '</div>';
                         }
+
+                    }
+                    echo "</div>";
+                    echo "</div>";
+
+                    while ($row = mysqli_fetch_array($allInventory2)){
+                        $id = $row['ID'];
+                        $prodName = $row['productname'];
+                        $prodType = $row['producttypename'];
+                        $quantity = $row['quantity'];
+                        $price = $row['productPrice'];
+                        $restockingValue = 100;
+                        $maxLeadTime = get_maxlead($conn, $id);
+                        $averageSales = get_range_average($conn, $id, $threeMonthsAgo, $dateNow);
+                        $reorderPoint = 100+($averageSales*$maxLeadTime);
+                        $needed = $reorderPoint-$quantity;
 
                         echo '<tr>';
                         echo '<td><a href="viewIndivProduct.php?id='.$id.'">';
@@ -345,6 +517,22 @@ $thisMonthWord = date('F');
                                                                 GROUP BY product.name
                                                                 ");
 
+                    $allInventory2 = mysqli_query($conn, "SELECT product.name AS productname,
+                                                                product.quantity AS quantity,
+                                                                productType.name AS producttypename,
+                                                                product.productPrice,
+                                                                product.productID AS ID
+                                                                FROM product
+                                                                JOIN productType ON product.productTypeID=productType.productTypeID
+                                                                WHERE product.custom <> 1
+                                                                GROUP BY product.name
+                                                                ");
+
+                    echo "<button class='btn btn-warning' type='button' data-toggle='collapse' data-target='#collapseExample' aria-expanded='false' aria-controls='collapseExample'>Restock Warnings</button>";
+                    echo "<br><br>";
+                    echo "<div class='collapse' id='collapseExample'>";
+                    echo "<div class='card card-body'>";
+
                     while ($row = mysqli_fetch_array($allInventory)){
                         $id = $row['ID'];
                         $prodName = $row['productname'];
@@ -356,7 +544,7 @@ $thisMonthWord = date('F');
                         $averageSales = get_monthly($conn, $id, $thisMonth);
                         $reorderPoint = 100+($averageSales*$maxLeadTime);
                         $needed = $reorderPoint-$quantity;
-
+                        
                         if ($reorderPoint>$quantity){
                             echo '<div class="alert alert-warning"><strong>Warning!</strong> Restock Product ';
                             echo $prodName;
@@ -364,6 +552,192 @@ $thisMonthWord = date('F');
                             echo $reorderPoint;
                             echo '</div>';
                         }
+
+                    }
+                    echo "</div>";
+                    echo "</div>";
+
+                    while ($row = mysqli_fetch_array($allInventory2)){
+                        $id = $row['ID'];
+                        $prodName = $row['productname'];
+                        $prodType = $row['producttypename'];
+                        $quantity = $row['quantity'];
+                        $price = $row['productPrice'];
+                        $restockingValue = 100;
+                        $maxLeadTime = get_maxlead($conn, $id);
+                        $averageSales = get_monthly($conn, $id, $thisMonth);
+                        $reorderPoint = 100+($averageSales*$maxLeadTime);
+                        $needed = $reorderPoint-$quantity;
+
+                        echo '<tr>';
+                        echo '<td><a href="viewIndivProduct.php?id='.$id.'">';
+                        echo $prodName;
+                        echo '</a></td>';
+                        echo '<td>';
+                        echo $quantity;
+                        echo '</td>';
+                        echo '<td>';
+                        echo $prodType;
+                        echo'</td>';
+                        echo '<td>';
+                        echo $price;
+                        echo'</td>';
+
+                        echo '<td class="text-center">';
+                        echo '<a href="makeJobOrder.php?ids='.$id.'&name='.$prodName.'&val='.$needed.'"><button type="button" class="btn btn-primary btn-sm">Restock</button></a> ';
+                        echo '</td>';
+                        echo '</tr>';
+
+                    }
+                }
+                elseif($example == 6){
+                    $allInventory = mysqli_query($conn, "SELECT product.name AS productname,
+                                                                product.quantity AS quantity,
+                                                                productType.name AS producttypename,
+                                                                product.productPrice,
+                                                                product.productID AS ID
+                                                                FROM product
+                                                                JOIN productType ON product.productTypeID=productType.productTypeID
+                                                                WHERE product.custom <> 1
+                                                                GROUP BY product.name
+                                                                ");
+
+                    $allInventory2 = mysqli_query($conn, "SELECT product.name AS productname,
+                                                                product.quantity AS quantity,
+                                                                productType.name AS producttypename,
+                                                                product.productPrice,
+                                                                product.productID AS ID
+                                                                FROM product
+                                                                JOIN productType ON product.productTypeID=productType.productTypeID
+                                                                WHERE product.custom <> 1
+                                                                GROUP BY product.name
+                                                                ");
+
+                    echo "<button class='btn btn-warning' type='button' data-toggle='collapse' data-target='#collapseExample' aria-expanded='false' aria-controls='collapseExample'>Restock Warnings</button>";
+                    echo "<br><br>";
+                    echo "<div class='collapse' id='collapseExample'>";
+                    echo "<div class='card card-body'>";
+
+                    while ($row = mysqli_fetch_array($allInventory)){
+                        $id = $row['ID'];
+                        $prodName = $row['productname'];
+                        $prodType = $row['producttypename'];
+                        $quantity = $row['quantity'];
+                        $price = $row['productPrice'];
+                        $restockingValue = 100;
+                        $maxLeadTime = get_maxlead($conn, $id);
+                        $averageSales = get_monthly($conn, $id, $thisMonth);
+                        $reorderPoint = 100+($averageSales*$maxLeadTime);
+                        $needed = $reorderPoint-$quantity;
+                        
+                        if ($reorderPoint>$quantity){
+                            echo '<div class="alert alert-warning"><strong>Warning!</strong> Restock Product ';
+                            echo $prodName;
+                            echo ' to ';
+                            echo $reorderPoint;
+                            echo '</div>';
+                        }
+
+                    }
+                    echo "</div>";
+                    echo "</div>";
+
+                    while ($row = mysqli_fetch_array($allInventory2)){
+                        $id = $row['ID'];
+                        $prodName = $row['productname'];
+                        $prodType = $row['producttypename'];
+                        $quantity = $row['quantity'];
+                        $price = $row['productPrice'];
+                        $restockingValue = 100;
+                        $maxLeadTime = get_maxlead($conn, $id);
+                        $averageSales = get_yearly($conn, $id, $thisYear);
+                        $reorderPoint = 100+($averageSales*$maxLeadTime);
+                        $needed = $reorderPoint-$quantity;
+
+                        echo '<tr>';
+                        echo '<td><a href="viewIndivProduct.php?id='.$id.'">';
+                        echo $prodName;
+                        echo '</a></td>';
+                        echo '<td>';
+                        echo $quantity;
+                        echo '</td>';
+                        echo '<td>';
+                        echo $prodType;
+                        echo'</td>';
+                        echo '<td>';
+                        echo $price;
+                        echo'</td>';
+
+                        echo '<td class="text-center">';
+                        echo '<a href="makeJobOrder.php?ids='.$id.'&name='.$prodName.'&val='.$needed.'"><button type="button" class="btn btn-primary btn-sm">Restock</button></a> ';
+                        echo '</td>';
+                        echo '</tr>';
+
+                    }
+                }
+                elseif($example == 7){
+                    $allInventory = mysqli_query($conn, "SELECT product.name AS productname,
+                                                                product.quantity AS quantity,
+                                                                productType.name AS producttypename,
+                                                                product.productPrice,
+                                                                product.productID AS ID
+                                                                FROM product
+                                                                JOIN productType ON product.productTypeID=productType.productTypeID
+                                                                WHERE product.custom <> 1
+                                                                GROUP BY product.name
+                                                                ");
+
+                    $allInventory2 = mysqli_query($conn, "SELECT product.name AS productname,
+                                                                product.quantity AS quantity,
+                                                                productType.name AS producttypename,
+                                                                product.productPrice,
+                                                                product.productID AS ID
+                                                                FROM product
+                                                                JOIN productType ON product.productTypeID=productType.productTypeID
+                                                                WHERE product.custom <> 1
+                                                                GROUP BY product.name
+                                                                ");
+
+                    echo "<button class='btn btn-warning' type='button' data-toggle='collapse' data-target='#collapseExample' aria-expanded='false' aria-controls='collapseExample'>Restock Warnings</button>";
+                    echo "<br><br>";
+                    echo "<div class='collapse' id='collapseExample'>";
+                    echo "<div class='card card-body'>";
+
+                    while ($row = mysqli_fetch_array($allInventory)){
+                        $id = $row['ID'];
+                        $prodName = $row['productname'];
+                        $prodType = $row['producttypename'];
+                        $quantity = $row['quantity'];
+                        $price = $row['productPrice'];
+                        $restockingValue = 100;
+                        $maxLeadTime = get_maxlead($conn, $id);
+                        $averageSales = get_monthly($conn, $id, $lastYear);
+                        $reorderPoint = 100+($averageSales*$maxLeadTime);
+                        $needed = $reorderPoint-$quantity;
+                        
+                        if ($reorderPoint>$quantity){
+                            echo '<div class="alert alert-warning"><strong>Warning!</strong> Restock Product ';
+                            echo $prodName;
+                            echo ' to ';
+                            echo $reorderPoint;
+                            echo '</div>';
+                        }
+
+                    }
+                    echo "</div>";
+                    echo "</div>";
+
+                    while ($row = mysqli_fetch_array($allInventory2)){
+                        $id = $row['ID'];
+                        $prodName = $row['productname'];
+                        $prodType = $row['producttypename'];
+                        $quantity = $row['quantity'];
+                        $price = $row['productPrice'];
+                        $restockingValue = 100;
+                        $maxLeadTime = get_maxlead($conn, $id);
+                        $averageSales = get_yearly($conn, $id, $lastYear);
+                        $reorderPoint = 100+($averageSales*$maxLeadTime);
+                        $needed = $reorderPoint-$quantity;
 
                         echo '<tr>';
                         echo '<td><a href="viewIndivProduct.php?id='.$id.'">';
