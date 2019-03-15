@@ -36,11 +36,8 @@
 
 
   if (isset($_POST['submit'])){
-      if (empty($custom)) {
-        mysqli_query($conn,"INSERT into Product (name,quantity,productTypeID,productPrice,unitOfMeasurement) values ('{$name}','{$quantity}','{$producttype}','{$prodprice}','{$uom}','{$custom}')");
-      }else {
-        mysqli_query($conn,"INSERT into Product (name,quantity,productTypeID,productPrice,unitOfMeasurement) values ('{$name}','{$quantity}','{$producttype}','{$prodprice}','{$uom}')");
-      }
+      mysqli_query($conn,"INSERT INTO Product (name,quantity,productTypeID,productPrice,unitOfMeasurement,custom)
+          VALUES ('{$name}','{$quantity}','{$producttype}','{$prodprice}','{$uom}','{$custom}')");
 
       $query="SELECT * FROM Product ORDER BY productID DESC LIMIT 1";
 

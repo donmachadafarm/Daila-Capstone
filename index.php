@@ -15,20 +15,20 @@
 //   if($_SESSION['userType']=101){  //OPERATIONS ?>
 <br><br><br>
 
-<?php 
-// }elseif($_SESSION['userType']=102){ //WAREHOUSE ?> 
+<?php
+// }elseif($_SESSION['userType']=102){ //WAREHOUSE ?>
 
 
 
-<?php 
+<?php
 // }elseif($_SESSION['userType']=103){ //PLANT ?>
 
 
-<?php 
+<?php
 // }elseif($_SESSION['userType']=100){ //KAICHO ?>
 
 
-<?php 
+<?php
 // }else{ //ADMIN ?>
 
 <div class="container">
@@ -68,7 +68,7 @@
                 $averageSales = get_total_average($conn, $id);
                 $reorderPoint = 100+($averageSales*$maxLeadTime);
                 $needed = $reorderPoint-$quantity;
-                
+
                 if ($reorderPoint>$quantity){
                     $count++;
                 }
@@ -90,8 +90,8 @@
               <?php
                 }
               ?>
-              <?php 
-              mysqli_data_seek($allInventory, 0); 
+              <?php
+              mysqli_data_seek($allInventory, 0);
               ?>
               <table class="table table-bordered table-hover" id="dataTables-example">
                 <thead>
@@ -104,7 +104,7 @@
                 </thead>
                 <tbody>
                   <?php
-                    
+
                     while ($row = mysqli_fetch_array($allInventory)){
                       $id = $row['ID'];
                       $prodName = $row['productname'];
@@ -153,7 +153,7 @@
                 $total2 = 0;
                 $unit2;
                 $inNeeded2 = 0;
-                
+
 
                 // set collapse box for notifs
 
@@ -171,8 +171,8 @@
 
                   $total2 += $inNeeded2;
                 }
-                
-                if ($total2>$qty2){ 
+
+                if ($total2>$qty2){
                   $count2 += 1;
                 }
 
@@ -229,7 +229,7 @@
                       echo $uom2;
                       echo '</td>';
                       echo '</tr>';
-                      
+
                     }
                   ?>
             </div>
