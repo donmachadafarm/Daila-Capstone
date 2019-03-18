@@ -32,7 +32,7 @@
 
         // machines used = available and hoursworked and lifetimeworked
         // check first if bakante na lahat ng machines wala ng queue
-        $query2 = "SELECT machineID FROM ProductionProcess WHERE productID = $pid";
+        $query2 = "SELECT machineID FROM ProductionProcess WHERE productID = $pid AND orderID = $ordid";
 
           $sql = mysqli_query($conn,$query2);
 
@@ -134,7 +134,7 @@
     mysqli_query($conn,$query);
 
     // adds the timesworked
-    mysqli_query($conn,"UPDATE Machine SET hoursWorked = hoursWorked + $time, lifetimeWorked = lifetimeWorked + $time WHERE machineID = $macid");
+    mysqli_query($conn,"UPDATE Machine SET hoursWorked = hoursWorked + $time, lifetimeWorked = lifetimeWorked + $time, status = 'Available' WHERE machineID = $macid");
 
 
 

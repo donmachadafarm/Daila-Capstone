@@ -888,5 +888,22 @@ function get_ingredients($conn, $ingredid){
     return $ids;
 }
 
+function get_machinename($conn,$id){
+  $query = "SELECT machine.name FROM Machine WHERE machineID = '$id'";
+
+    $sql = mysqli_query($conn,$query);
+
+    $row = mysqli_fetch_array($sql);
+
+  return $row[0];
+}
+
+function update_inventory($conn,$id,$qty){
+  $query = "UPDATE Product SET quantity = quantity+$qty WHERE productID = $id";
+
+    $sql = mysqli_query($conn,$query);
+
+}
+
 
  ?>

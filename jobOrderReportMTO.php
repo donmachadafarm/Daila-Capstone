@@ -151,7 +151,7 @@ if (!isset($_SESSION['userType'])){
                     $result2 = mysqli_query($conn, "SELECT SUM(joborder.totalPrice) AS sum
                                                     FROM joborder
                                                     WHERE joborder.type = 'Made to Order'
-                                                    AND joborder.status!='Pending for approval'");
+                                                    AND joborder.status='Finished'");
 
                     if ($count == "0"){
                         echo '<h2 class="text-center">There are no transactions yet</h2>';

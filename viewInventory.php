@@ -23,7 +23,14 @@ $threeMonthsAgo = date("Y-m-d", strtotime("-3 months"));
 $thisMonth = date('m');
 $thisMonthWord = date('F');
 $thisYear = date('Y');
-  $lastYear = date('Y', strtotime('-1 year'))
+$lastYear = date('Y', strtotime('-1 year'));
+
+if (isset($_POST['edit'])) {
+  $id = $_POST['prodid'];
+  $qty = $_POST['qty'];
+
+  update_inventory($conn,$id,$qty);
+}
 ?>
 
 <!-- put all the contents here  -->
@@ -99,7 +106,7 @@ $thisYear = date('Y');
 
                     echo "<button class='btn btn-warning' type='button' data-toggle='collapse' data-target='#collapseExample' aria-expanded='false' aria-controls='collapseExample'>Restock Warnings</button>";
                     echo "<br><br>";
-                    echo "<div class='collapse' id='collapseExample'>";
+                    echo "<div class='collapse show' id='collapseExample'>";
                     echo "<div class='card card-body'>";
                     $count = 0;
                     while ($row = mysqli_fetch_array($allInventory)){
@@ -114,11 +121,16 @@ $thisYear = date('Y');
                         $reorderPoint = 100+($averageSales*$maxLeadTime);
                         $needed = $reorderPoint-$quantity;
 
+                        if ($needed < 0) {
+                          $needed = 0;
+                        }
+
                         if ($reorderPoint>$quantity){
                             echo '<div class="alert alert-warning"><strong>Warning!</strong> Restock Product ';
                             echo $prodName;
                             echo ' to ';
                             echo $reorderPoint;
+                            echo ' need ' . $needed . ' more';
                             echo '</div>';
                             $count++;
                         }
@@ -144,6 +156,10 @@ $thisYear = date('Y');
                             $extra = ceil($needed * .1);
                         }
 
+                        if ($needed < 0) {
+                          $needed = 0;
+                        }
+
                         echo '<tr>';
                         echo '<td><a href="viewIndivProduct.php?id='.$id.'">';
                         echo $prodName;
@@ -159,11 +175,56 @@ $thisYear = date('Y');
                         echo'</td>';
 
                         echo '<td class="text-center">';
-                        echo '<a href="makeJobOrder.php?ids='.$id.'&name='.$prodName.'&val='.$needed.'"><button type="button" class="btn btn-primary btn-sm">Restock</button></a> ';
+                        echo '<a href="makeJobOrder.php?ids='.$id.'&name='.$prodName.'&val='.$needed.'"><button type="button" class="btn btn-success btn-sm">Restock</button> </a> ';
+                        if ($_SESSION['userType'] == 104 || $_SESSION['userType'] == 102) {
+                          echo "<a href='#edit".$id."' data-target='#edit".$id."'data-toggle='modal' class='btn btn-warning btn-sm' style='color:white'>
+                                  Edit
+                                  </a>";
+
+                          ?>
+                          <div id="edit<?php echo $id; ?>" class="modal fade" role="dialog">
+                              <div class="modal-dialog">
+                                  <form method="post">
+                                      <div class="modal-content">
+
+                                          <div class="modal-header">
+                                              <h4>Edit inventory</h4>
+                                              <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                          </div>
+
+                                          <div class="modal-body">
+                                              <input type="hidden" name="prodid" value="<?php echo $id; ?>">
+                                              <div class="text-center">
+                                                <p>
+                                                  <div class="row">
+                                                    <div class="col-md-4">
+                                                      <label class="col-sm-2 col-form-label">Quantity:</label>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                      <input class="form-control" type="number" name="qty" value="" placeholder="Quantity">
+                                                    </div>
+                                                  </div>
+                                                </p>
+                                              </div>
+                                              <div class="modal-footer">
+                                                  <button type="submit" name="edit" class="btn btn-primary">Continue</button>
+                                                  <button type="button" class="btn btn-default btn-outline-secondary" data-dismiss="modal">Close</button>
+                                              </div>
+                                          </div>
+                                  </form>
+                                  </div>
+                              </div>
+                          </div>
+                          <?
+                        }
+
                         echo '</td>';
                         echo '</tr>';
 
                     }
+
+
+
 
                 }
 
@@ -192,7 +253,7 @@ $thisYear = date('Y');
 
                     echo "<button class='btn btn-warning' type='button' data-toggle='collapse' data-target='#collapseExample' aria-expanded='false' aria-controls='collapseExample'>Restock Warnings</button>";
                     echo "<br><br>";
-                    echo "<div class='collapse' id='collapseExample'>";
+                    echo "<div class='collapse show' id='collapseExample'>";
                     echo "<div class='card card-body'>";
 
                     while ($row = mysqli_fetch_array($allInventory)){
@@ -207,11 +268,16 @@ $thisYear = date('Y');
                         $reorderPoint = 100+($averageSales*$maxLeadTime);
                         $needed = $reorderPoint-$quantity;
 
+                        if ($needed < 0) {
+                          $needed = 0;
+                        }
+
                         if ($reorderPoint>$quantity){
                             echo '<div class="alert alert-warning"><strong>Warning!</strong> Restock Product ';
                             echo $prodName;
                             echo ' to ';
                             echo $reorderPoint;
+                            echo ' need ' . $needed . ' more';
                             echo '</div>';
                         }
 
@@ -231,6 +297,10 @@ $thisYear = date('Y');
                         $reorderPoint = 100+($averageSales*$maxLeadTime);
                         $needed = $reorderPoint-$quantity;
 
+                        if ($needed < 0) {
+                          $needed = 0;
+                        }
+
                         echo '<tr>';
                         echo '<td><a href="viewIndivProduct.php?id='.$id.'">';
                         echo $prodName;
@@ -247,6 +317,47 @@ $thisYear = date('Y');
 
                         echo '<td class="text-center">';
                         echo '<a href="makeJobOrder.php?ids='.$id.'&name='.$prodName.'&val='.$needed.'"><button type="button" class="btn btn-primary btn-sm">Restock</button></a> ';
+                        if ($_SESSION['userType'] == 104 || $_SESSION['userType'] == 102) {
+                          echo "<a href='#edit".$id."' data-target='#edit".$id."'data-toggle='modal' class='btn btn-warning btn-sm' style='color:white'>
+                                  Edit
+                                  </a>";
+
+                          ?>
+                          <div id="edit<?php echo $id; ?>" class="modal fade" role="dialog">
+                              <div class="modal-dialog">
+                                  <form method="post">
+                                      <div class="modal-content">
+
+                                          <div class="modal-header">
+                                              <h4>Edit inventory</h4>
+                                              <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                          </div>
+
+                                          <div class="modal-body">
+                                              <input type="hidden" name="prodid" value="<?php echo $id; ?>">
+                                              <div class="text-center">
+                                                <p>
+                                                  <div class="row">
+                                                    <div class="col-md-4">
+                                                      <label class="col-sm-2 col-form-label">Quantity:</label>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                      <input class="form-control" type="number" name="qty" value="" placeholder="Quantity">
+                                                    </div>
+                                                  </div>
+                                                </p>
+                                              </div>
+                                              <div class="modal-footer">
+                                                  <button type="submit" name="edit" class="btn btn-primary">Continue</button>
+                                                  <button type="button" class="btn btn-default btn-outline-secondary" data-dismiss="modal">Close</button>
+                                              </div>
+                                          </div>
+                                  </form>
+                                  </div>
+                              </div>
+                          </div>
+                          <?
+                        }
                         echo '</td>';
                         echo '</tr>';
 
@@ -278,7 +389,7 @@ $thisYear = date('Y');
 
                     echo "<button class='btn btn-warning' type='button' data-toggle='collapse' data-target='#collapseExample' aria-expanded='false' aria-controls='collapseExample'>Restock Warnings</button>";
                     echo "<br><br>";
-                    echo "<div class='collapse' id='collapseExample'>";
+                    echo "<div class='collapse show' id='collapseExample'>";
                     echo "<div class='card card-body'>";
 
                     while ($row = mysqli_fetch_array($allInventory)){
@@ -293,11 +404,16 @@ $thisYear = date('Y');
                         $reorderPoint = 100+($averageSales*$maxLeadTime);
                         $needed = $reorderPoint-$quantity;
 
+                        if ($needed < 0) {
+                          $needed = 0;
+                        }
+
                         if ($reorderPoint>$quantity){
                             echo '<div class="alert alert-warning"><strong>Warning!</strong> Restock Product ';
                             echo $prodName;
                             echo ' to ';
                             echo $reorderPoint;
+                            echo ' need ' . $needed . ' more';
                             echo '</div>';
                         }
 
@@ -317,6 +433,10 @@ $thisYear = date('Y');
                         $reorderPoint = 100+($averageSales*$maxLeadTime);
                         $needed = $reorderPoint-$quantity;
 
+                        if ($needed < 0) {
+                          $needed = 0;
+                        }
+
                         echo '<tr>';
                         echo '<td><a href="viewIndivProduct.php?id='.$id.'">';
                         echo $prodName;
@@ -333,6 +453,47 @@ $thisYear = date('Y');
 
                         echo '<td class="text-center">';
                         echo '<a href="makeJobOrder.php?ids='.$id.'&name='.$prodName.'&val='.$needed.'"><button type="button" class="btn btn-primary btn-sm">Restock</button></a> ';
+                        if ($_SESSION['userType'] == 104 || $_SESSION['userType'] == 102) {
+                          echo "<a href='#edit".$id."' data-target='#edit".$id."'data-toggle='modal' class='btn btn-warning btn-sm' style='color:white'>
+                                  Edit
+                                  </a>";
+
+                          ?>
+                          <div id="edit<?php echo $id; ?>" class="modal fade" role="dialog">
+                              <div class="modal-dialog">
+                                  <form method="post">
+                                      <div class="modal-content">
+
+                                          <div class="modal-header">
+                                              <h4>Edit inventory</h4>
+                                              <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                          </div>
+
+                                          <div class="modal-body">
+                                              <input type="hidden" name="prodid" value="<?php echo $id; ?>">
+                                              <div class="text-center">
+                                                <p>
+                                                  <div class="row">
+                                                    <div class="col-md-4">
+                                                      <label class="col-sm-2 col-form-label">Quantity:</label>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                      <input class="form-control" type="number" name="qty" value="" placeholder="Quantity">
+                                                    </div>
+                                                  </div>
+                                                </p>
+                                              </div>
+                                              <div class="modal-footer">
+                                                  <button type="submit" name="edit" class="btn btn-primary">Continue</button>
+                                                  <button type="button" class="btn btn-default btn-outline-secondary" data-dismiss="modal">Close</button>
+                                              </div>
+                                          </div>
+                                  </form>
+                                  </div>
+                              </div>
+                          </div>
+                          <?
+                        }
                         echo '</td>';
                         echo '</tr>';
 
@@ -364,7 +525,7 @@ $thisYear = date('Y');
 
                     echo "<button class='btn btn-warning' type='button' data-toggle='collapse' data-target='#collapseExample' aria-expanded='false' aria-controls='collapseExample'>Restock Warnings</button>";
                     echo "<br><br>";
-                    echo "<div class='collapse' id='collapseExample'>";
+                    echo "<div class='collapse show' id='collapseExample'>";
                     echo "<div class='card card-body'>";
 
                     while ($row = mysqli_fetch_array($allInventory)){
@@ -379,11 +540,16 @@ $thisYear = date('Y');
                         $reorderPoint = 100+($averageSales*$maxLeadTime);
                         $needed = $reorderPoint-$quantity;
 
+                        if ($needed < 0) {
+                          $needed = 0;
+                        }
+
                         if ($reorderPoint>$quantity){
                             echo '<div class="alert alert-warning"><strong>Warning!</strong> Restock Product ';
                             echo $prodName;
                             echo ' to ';
                             echo $reorderPoint;
+                            echo ' need ' . $needed . ' more';
                             echo '</div>';
                         }
 
@@ -403,6 +569,10 @@ $thisYear = date('Y');
                         $reorderPoint = 100+($averageSales*$maxLeadTime);
                         $needed = $reorderPoint-$quantity;
 
+                        if ($needed < 0) {
+                          $needed = 0;
+                        }
+
                         echo '<tr>';
                         echo '<td><a href="viewIndivProduct.php?id='.$id.'">';
                         echo $prodName;
@@ -419,6 +589,47 @@ $thisYear = date('Y');
 
                         echo '<td class="text-center">';
                         echo '<a href="makeJobOrder.php?ids='.$id.'&name='.$prodName.'&val='.$needed.'"><button type="button" class="btn btn-primary btn-sm">Restock</button></a> ';
+                        if ($_SESSION['userType'] == 104 || $_SESSION['userType'] == 102) {
+                          echo "<a href='#edit".$id."' data-target='#edit".$id."'data-toggle='modal' class='btn btn-warning btn-sm' style='color:white'>
+                                  Edit
+                                  </a>";
+
+                          ?>
+                          <div id="edit<?php echo $id; ?>" class="modal fade" role="dialog">
+                              <div class="modal-dialog">
+                                  <form method="post">
+                                      <div class="modal-content">
+
+                                          <div class="modal-header">
+                                              <h4>Edit inventory</h4>
+                                              <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                          </div>
+
+                                          <div class="modal-body">
+                                              <input type="hidden" name="prodid" value="<?php echo $id; ?>">
+                                              <div class="text-center">
+                                                <p>
+                                                  <div class="row">
+                                                    <div class="col-md-4">
+                                                      <label class="col-sm-2 col-form-label">Quantity:</label>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                      <input class="form-control" type="number" name="qty" value="" placeholder="Quantity">
+                                                    </div>
+                                                  </div>
+                                                </p>
+                                              </div>
+                                              <div class="modal-footer">
+                                                  <button type="submit" name="edit" class="btn btn-primary">Continue</button>
+                                                  <button type="button" class="btn btn-default btn-outline-secondary" data-dismiss="modal">Close</button>
+                                              </div>
+                                          </div>
+                                  </form>
+                                  </div>
+                              </div>
+                          </div>
+                          <?
+                        }
                         echo '</td>';
                         echo '</tr>';
 
@@ -450,7 +661,7 @@ $thisYear = date('Y');
 
                     echo "<button class='btn btn-warning' type='button' data-toggle='collapse' data-target='#collapseExample' aria-expanded='false' aria-controls='collapseExample'>Restock Warnings</button>";
                     echo "<br><br>";
-                    echo "<div class='collapse' id='collapseExample'>";
+                    echo "<div class='collapse show' id='collapseExample'>";
                     echo "<div class='card card-body'>";
 
                     while ($row = mysqli_fetch_array($allInventory)){
@@ -465,11 +676,16 @@ $thisYear = date('Y');
                         $reorderPoint = 100+($averageSales*$maxLeadTime);
                         $needed = $reorderPoint-$quantity;
 
+                        if ($needed < 0) {
+                          $needed = 0;
+                        }
+
                         if ($reorderPoint>$quantity){
                             echo '<div class="alert alert-warning"><strong>Warning!</strong> Restock Product ';
                             echo $prodName;
                             echo ' to ';
                             echo $reorderPoint;
+                            echo ' need ' . $needed . ' more';
                             echo '</div>';
                         }
 
@@ -489,6 +705,10 @@ $thisYear = date('Y');
                         $reorderPoint = 100+($averageSales*$maxLeadTime);
                         $needed = $reorderPoint-$quantity;
 
+                        if ($needed < 0) {
+                          $needed = 0;
+                        }
+
                         echo '<tr>';
                         echo '<td><a href="viewIndivProduct.php?id='.$id.'">';
                         echo $prodName;
@@ -505,6 +725,47 @@ $thisYear = date('Y');
 
                         echo '<td class="text-center">';
                         echo '<a href="makeJobOrder.php?ids='.$id.'&name='.$prodName.'&val='.$needed.'"><button type="button" class="btn btn-primary btn-sm">Restock</button></a> ';
+                        if ($_SESSION['userType'] == 104 || $_SESSION['userType'] == 102) {
+                          echo "<a href='#edit".$id."' data-target='#edit".$id."'data-toggle='modal' class='btn btn-warning btn-sm' style='color:white'>
+                                  Edit
+                                  </a>";
+
+                          ?>
+                          <div id="edit<?php echo $id; ?>" class="modal fade" role="dialog">
+                              <div class="modal-dialog">
+                                  <form method="post">
+                                      <div class="modal-content">
+
+                                          <div class="modal-header">
+                                              <h4>Edit inventory</h4>
+                                              <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                          </div>
+
+                                          <div class="modal-body">
+                                              <input type="hidden" name="prodid" value="<?php echo $id; ?>">
+                                              <div class="text-center">
+                                                <p>
+                                                  <div class="row">
+                                                    <div class="col-md-4">
+                                                      <label class="col-sm-2 col-form-label">Quantity:</label>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                      <input class="form-control" type="number" name="qty" value="" placeholder="Quantity">
+                                                    </div>
+                                                  </div>
+                                                </p>
+                                              </div>
+                                              <div class="modal-footer">
+                                                  <button type="submit" name="edit" class="btn btn-primary">Continue</button>
+                                                  <button type="button" class="btn btn-default btn-outline-secondary" data-dismiss="modal">Close</button>
+                                              </div>
+                                          </div>
+                                  </form>
+                                  </div>
+                              </div>
+                          </div>
+                          <?
+                        }
                         echo '</td>';
                         echo '</tr>';
 
@@ -536,7 +797,7 @@ $thisYear = date('Y');
 
                     echo "<button class='btn btn-warning' type='button' data-toggle='collapse' data-target='#collapseExample' aria-expanded='false' aria-controls='collapseExample'>Restock Warnings</button>";
                     echo "<br><br>";
-                    echo "<div class='collapse' id='collapseExample'>";
+                    echo "<div class='collapse show' id='collapseExample'>";
                     echo "<div class='card card-body'>";
 
                     while ($row = mysqli_fetch_array($allInventory)){
@@ -551,11 +812,16 @@ $thisYear = date('Y');
                         $reorderPoint = 100+($averageSales*$maxLeadTime);
                         $needed = $reorderPoint-$quantity;
 
+                        if ($needed < 0) {
+                          $needed = 0;
+                        }
+
                         if ($reorderPoint>$quantity){
                             echo '<div class="alert alert-warning"><strong>Warning!</strong> Restock Product ';
                             echo $prodName;
                             echo ' to ';
                             echo $reorderPoint;
+                            echo ' need ' . $needed . ' more';
                             echo '</div>';
                         }
 
@@ -575,6 +841,10 @@ $thisYear = date('Y');
                         $reorderPoint = 100+($averageSales*$maxLeadTime);
                         $needed = $reorderPoint-$quantity;
 
+                        if ($needed < 0) {
+                          $needed = 0;
+                        }
+
                         echo '<tr>';
                         echo '<td><a href="viewIndivProduct.php?id='.$id.'">';
                         echo $prodName;
@@ -591,6 +861,47 @@ $thisYear = date('Y');
 
                         echo '<td class="text-center">';
                         echo '<a href="makeJobOrder.php?ids='.$id.'&name='.$prodName.'&val='.$needed.'"><button type="button" class="btn btn-primary btn-sm">Restock</button></a> ';
+                        if ($_SESSION['userType'] == 104 || $_SESSION['userType'] == 102) {
+                          echo "<a href='#edit".$id."' data-target='#edit".$id."'data-toggle='modal' class='btn btn-warning btn-sm' style='color:white'>
+                                  Edit
+                                  </a>";
+
+                          ?>
+                          <div id="edit<?php echo $id; ?>" class="modal fade" role="dialog">
+                              <div class="modal-dialog">
+                                  <form method="post">
+                                      <div class="modal-content">
+
+                                          <div class="modal-header">
+                                              <h4>Edit inventory</h4>
+                                              <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                          </div>
+
+                                          <div class="modal-body">
+                                              <input type="hidden" name="prodid" value="<?php echo $id; ?>">
+                                              <div class="text-center">
+                                                <p>
+                                                  <div class="row">
+                                                    <div class="col-md-4">
+                                                      <label class="col-sm-2 col-form-label">Quantity:</label>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                      <input class="form-control" type="number" name="qty" value="" placeholder="Quantity">
+                                                    </div>
+                                                  </div>
+                                                </p>
+                                              </div>
+                                              <div class="modal-footer">
+                                                  <button type="submit" name="edit" class="btn btn-primary">Continue</button>
+                                                  <button type="button" class="btn btn-default btn-outline-secondary" data-dismiss="modal">Close</button>
+                                              </div>
+                                          </div>
+                                  </form>
+                                  </div>
+                              </div>
+                          </div>
+                          <?
+                        }
                         echo '</td>';
                         echo '</tr>';
 
@@ -621,7 +932,7 @@ $thisYear = date('Y');
 
                     echo "<button class='btn btn-warning' type='button' data-toggle='collapse' data-target='#collapseExample' aria-expanded='false' aria-controls='collapseExample'>Restock Warnings</button>";
                     echo "<br><br>";
-                    echo "<div class='collapse' id='collapseExample'>";
+                    echo "<div class='collapse show' id='collapseExample'>";
                     echo "<div class='card card-body'>";
 
                     while ($row = mysqli_fetch_array($allInventory)){
@@ -636,11 +947,16 @@ $thisYear = date('Y');
                         $reorderPoint = 100+($averageSales*$maxLeadTime);
                         $needed = $reorderPoint-$quantity;
 
+                        if ($needed < 0) {
+                          $needed = 0;
+                        }
+
                         if ($reorderPoint>$quantity){
                             echo '<div class="alert alert-warning"><strong>Warning!</strong> Restock Product ';
                             echo $prodName;
                             echo ' to ';
                             echo $reorderPoint;
+                            echo ' need ' . $needed . ' more';
                             echo '</div>';
                         }
 
@@ -660,6 +976,10 @@ $thisYear = date('Y');
                         $reorderPoint = 100+($averageSales*$maxLeadTime);
                         $needed = $reorderPoint-$quantity;
 
+                        if ($needed < 0) {
+                          $needed = 0;
+                        }
+
                         echo '<tr>';
                         echo '<td><a href="viewIndivProduct.php?id='.$id.'">';
                         echo $prodName;
@@ -676,6 +996,47 @@ $thisYear = date('Y');
 
                         echo '<td class="text-center">';
                         echo '<a href="makeJobOrder.php?ids='.$id.'&name='.$prodName.'&val='.$needed.'"><button type="button" class="btn btn-primary btn-sm">Restock</button></a> ';
+                        if ($_SESSION['userType'] == 104 || $_SESSION['userType'] == 102) {
+                          echo "<a href='#edit".$id."' data-target='#edit".$id."'data-toggle='modal' class='btn btn-warning btn-sm' style='color:white'>
+                                  Edit
+                                  </a>";
+
+                          ?>
+                          <div id="edit<?php echo $id; ?>" class="modal fade" role="dialog">
+                              <div class="modal-dialog">
+                                  <form method="post">
+                                      <div class="modal-content">
+
+                                          <div class="modal-header">
+                                              <h4>Edit inventory</h4>
+                                              <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                          </div>
+
+                                          <div class="modal-body">
+                                              <input type="hidden" name="prodid" value="<?php echo $id; ?>">
+                                              <div class="text-center">
+                                                <p>
+                                                  <div class="row">
+                                                    <div class="col-md-4">
+                                                      <label class="col-sm-2 col-form-label">Quantity:</label>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                      <input class="form-control" type="number" name="qty" value="" placeholder="Quantity">
+                                                    </div>
+                                                  </div>
+                                                </p>
+                                              </div>
+                                              <div class="modal-footer">
+                                                  <button type="submit" name="edit" class="btn btn-primary">Continue</button>
+                                                  <button type="button" class="btn btn-default btn-outline-secondary" data-dismiss="modal">Close</button>
+                                              </div>
+                                          </div>
+                                  </form>
+                                  </div>
+                              </div>
+                          </div>
+                          <?
+                        }
                         echo '</td>';
                         echo '</tr>';
 
@@ -706,7 +1067,7 @@ $thisYear = date('Y');
 
                     echo "<button class='btn btn-warning' type='button' data-toggle='collapse' data-target='#collapseExample' aria-expanded='false' aria-controls='collapseExample'>Restock Warnings</button>";
                     echo "<br><br>";
-                    echo "<div class='collapse' id='collapseExample'>";
+                    echo "<div class='collapse show' id='collapseExample'>";
                     echo "<div class='card card-body'>";
 
                     while ($row = mysqli_fetch_array($allInventory)){
@@ -721,11 +1082,16 @@ $thisYear = date('Y');
                         $reorderPoint = 100+($averageSales*$maxLeadTime);
                         $needed = $reorderPoint-$quantity;
 
+                        if ($needed < 0) {
+                          $needed = 0;
+                        }
+
                         if ($reorderPoint>$quantity){
                             echo '<div class="alert alert-warning"><strong>Warning!</strong> Restock Product ';
                             echo $prodName;
                             echo ' to ';
                             echo $reorderPoint;
+                            echo ' need ' . $needed . ' more';
                             echo '</div>';
                         }
 
@@ -745,6 +1111,10 @@ $thisYear = date('Y');
                         $reorderPoint = 100+($averageSales*$maxLeadTime);
                         $needed = $reorderPoint-$quantity;
 
+                        if ($needed < 0) {
+                          $needed = 0;
+                        }
+
                         echo '<tr>';
                         echo '<td><a href="viewIndivProduct.php?id='.$id.'">';
                         echo $prodName;
@@ -761,6 +1131,47 @@ $thisYear = date('Y');
 
                         echo '<td class="text-center">';
                         echo '<a href="makeJobOrder.php?ids='.$id.'&name='.$prodName.'&val='.$needed.'"><button type="button" class="btn btn-primary btn-sm">Restock</button></a> ';
+                        if ($_SESSION['userType'] == 104 || $_SESSION['userType'] == 102) {
+                          echo "<a href='#edit".$id."' data-target='#edit".$id."'data-toggle='modal' class='btn btn-warning btn-sm' style='color:white'>
+                                  Edit
+                                  </a>";
+
+                          ?>
+                          <div id="edit<?php echo $id; ?>" class="modal fade" role="dialog">
+                              <div class="modal-dialog">
+                                  <form method="post">
+                                      <div class="modal-content">
+
+                                          <div class="modal-header">
+                                              <h4>Edit inventory</h4>
+                                              <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                          </div>
+
+                                          <div class="modal-body">
+                                              <input type="hidden" name="prodid" value="<?php echo $id; ?>">
+                                              <div class="text-center">
+                                                <p>
+                                                  <div class="row">
+                                                    <div class="col-md-4">
+                                                      <label class="col-sm-2 col-form-label">Quantity:</label>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                      <input class="form-control" type="number" name="qty" value="" placeholder="Quantity">
+                                                    </div>
+                                                  </div>
+                                                </p>
+                                              </div>
+                                              <div class="modal-footer">
+                                                  <button type="submit" name="edit" class="btn btn-primary">Continue</button>
+                                                  <button type="button" class="btn btn-default btn-outline-secondary" data-dismiss="modal">Close</button>
+                                              </div>
+                                          </div>
+                                  </form>
+                                  </div>
+                              </div>
+                          </div>
+                          <?
+                        }
                         echo '</td>';
                         echo '</tr>';
 

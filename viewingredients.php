@@ -94,7 +94,7 @@
                           // FOR WARNINGS COLLAPSE
                           echo "<button class='btn btn-warning' type='button' data-toggle='collapse' data-target='#collapseExample' aria-expanded='false' aria-controls='collapseExample'>Restock Warnings</button>";
                           echo "<br>";
-                            echo "<div class='collapse' id='collapseExample'>";
+                            echo "<div class='collapse show' id='collapseExample'>";
                             echo "<div class='card card-body'>";
                             $count=0;
                           while($row2 = mysqli_fetch_array($result2)){
@@ -106,7 +106,7 @@
                             $total2 = 0;
                             $unit2;
                             $inNeeded2 = 0;
-                            
+
 
                             // set collapse box for notifs
 
@@ -221,7 +221,7 @@
                           // FOR WARNINGS COLLAPSE
                           echo "<button class='btn btn-warning' type='button' data-toggle='collapse' data-target='#collapseExample' aria-expanded='false' aria-controls='collapseExample'>Restock Warnings</button>";
 
-                            echo "<div class='collapse' id='collapseExample'>";
+                            echo "<div class='collapse show' id='collapseExample'>";
                             echo "<div class='card card-body'>";
                             $count=0;
                           while($row2 = mysqli_fetch_array($result2)){
@@ -233,7 +233,7 @@
                             $total2 = 0;
                             $unit2;
                             $inNeeded2 = 0;
-                            
+
 
                             // set collapse box for notifs
 
@@ -270,7 +270,7 @@
                               echo "</div>";
                               $count++;
                           }
-                          
+
                           }
                           if($count==0){
                             echo "<h3>No Warnings to Show</h3>";
@@ -348,7 +348,7 @@
                           // FOR WARNINGS COLLAPSE
                           echo "<button class='btn btn-warning' type='button' data-toggle='collapse' data-target='#collapseExample' aria-expanded='false' aria-controls='collapseExample'>Restock Warnings</button>";
 
-                            echo "<div class='collapse' id='collapseExample'>";
+                            echo "<div class='collapse show' id='collapseExample'>";
                             echo "<div class='card card-body'>";
                             $count = 0;
                           while($row2 = mysqli_fetch_array($result2)){
@@ -360,7 +360,7 @@
                             $total2 = 0;
                             $unit2;
                             $inNeeded2 = 0;
-                            
+
 
                             // set collapse box for notifs
 
@@ -396,7 +396,7 @@
                               echo "</div>";
                               $count++;
                           }
-                          
+
                           }
                           if($count==0){
                             echo "<h3>No Warnings to Show</h3>";
@@ -476,7 +476,7 @@
                           // FOR WARNINGS COLLAPSE
                           echo "<button class='btn btn-warning' type='button' data-toggle='collapse' data-target='#collapseExample' aria-expanded='false' aria-controls='collapseExample'>Restock Warnings</button>";
 
-                            echo "<div class='collapse' id='collapseExample'>";
+                            echo "<div class='collapse show' id='collapseExample'>";
                             echo "<div class='card card-body'>";
                             $count = 0;
                           while($row2 = mysqli_fetch_array($result2)){
@@ -488,7 +488,7 @@
                             $total2 = 0;
                             $unit2;
                             $inNeeded2 = 0;
-                            
+
 
                             // set collapse box for notifs
 
@@ -525,7 +525,7 @@
                               echo "</div>";
                               $count++;
                           }
-                          
+
                           }
                           if($count==0){
                             echo "<h3>No Warnings to Show</h3>";
@@ -603,7 +603,7 @@
                           // FOR WARNINGS COLLAPSE
                           echo "<button class='btn btn-warning' type='button' data-toggle='collapse' data-target='#collapseExample' aria-expanded='false' aria-controls='collapseExample'>Restock Warnings</button>";
 
-                            echo "<div class='collapse' id='collapseExample'>";
+                            echo "<div class='collapse show' id='collapseExample'>";
                             echo "<div class='card card-body'>";
                             $count = 0;
                           while($row2 = mysqli_fetch_array($result2)){
@@ -615,7 +615,7 @@
                             $total2 = 0;
                             $unit2;
                             $inNeeded2 = 0;
-                            
+
 
                             // set collapse box for notifs
 
@@ -651,7 +651,7 @@
                               echo "</div>";
                               $count++;
                           }
-                          
+
                           }
                           if($count==0){
                             echo "<h3>No Warnings to Show</h3>";
@@ -729,7 +729,7 @@
                           // FOR WARNINGS COLLAPSE
                           echo "<button class='btn btn-warning' type='button' data-toggle='collapse' data-target='#collapseExample' aria-expanded='false' aria-controls='collapseExample'>Restock Warnings</button>";
 
-                            echo "<div class='collapse' id='collapseExample'>";
+                            echo "<div class='collapse show' id='collapseExample'>";
                             echo "<div class='card card-body'>";
                             $count = 0;
                           while($row2 = mysqli_fetch_array($result2)){
@@ -741,7 +741,7 @@
                             $total2 = 0;
                             $unit2;
                             $inNeeded2 = 0;
-                            
+
 
                             // set collapse box for notifs
 
@@ -777,7 +777,7 @@
                               echo "</div>";
                               $count++;
                           }
-                          
+
                           }
                           if($count==0){
                             echo "<h3>No Warnings to Show</h3>";
@@ -855,7 +855,7 @@
                           // FOR WARNINGS COLLAPSE
                           echo "<button class='btn btn-warning' type='button' data-toggle='collapse' data-target='#collapseExample' aria-expanded='false' aria-controls='collapseExample'>Restock Warnings</button>";
 
-                            echo "<div class='collapse' id='collapseExample'>";
+                            echo "<div class='collapse show' id='collapseExample'>";
                             echo "<div class='card card-body'>";
                             $count = 0;
                           while($row2 = mysqli_fetch_array($result2)){
@@ -867,7 +867,7 @@
                             $total2 = 0;
                             $unit2;
                             $inNeeded2 = 0;
-                            
+
 
                             // set collapse box for notifs
 
@@ -904,7 +904,7 @@
                               echo "</div>";
                               $count++;
                           }
-                          
+
                           }
                           if($count==0){
                             echo "<h3>No Warnings to Show</h3>";
@@ -982,7 +982,7 @@
                           // FOR WARNINGS COLLAPSE
                           echo "<button class='btn btn-warning' type='button' data-toggle='collapse' data-target='#collapseExample' aria-expanded='false' aria-controls='collapseExample'>Restock Warnings</button>";
 
-                            echo "<div class='collapse' id='collapseExample'>";
+                            echo "<div class='collapse show' id='collapseExample'>";
                             echo "<div class='card card-body'>";
                             $count = 0;
                           while($row2 = mysqli_fetch_array($result2)){
@@ -994,7 +994,7 @@
                             $total2 = 0;
                             $unit2;
                             $inNeeded2 = 0;
-                            
+
 
                             // set collapse box for notifs
 
@@ -1030,7 +1030,7 @@
                               echo "</div>";
                               $count++;
                           }
-                          
+
                           }
                           if($count==0){
                             echo "<h3>No Warnings to Show</h3>";

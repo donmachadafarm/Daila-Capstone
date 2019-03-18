@@ -26,13 +26,47 @@
   // approve job order conditional submit button puts the job order in production
   if(isset($_POST['approve'])){
     $id = $_POST['jo_id'];
-    $or = $_POST['or'];
-    $payment = $_POST['cost'];
 
     $query = "UPDATE `JobOrder` SET `status` = 'Incomplete' WHERE `orderID` = $id";
 
     if(mysqli_query($conn,$query)){
       echo "<script>alert('Job order products are now in production!')</script>";
+    }
+
+    // subtract ingredients per product based on Quantity
+    reduce_inventory_rawmats_production($conn,$id);
+
+    // start production
+    start_production($conn,$id);
+
+  }
+
+  if(isset($_POST['approved'])){
+    $id = $_POST['jo_id'];
+
+    $query = "UPDATE `JobOrder` SET `status` = 'Incomplete' WHERE `orderID` = $id";
+
+    if(mysqli_query($conn,$query)){
+      echo "<script>alert('Job order products are now in production!')</script>";
+    }
+
+    // subtract ingredients per product based on Quantity
+    reduce_inventory_rawmats_production($conn,$id);
+
+    // start production
+    start_production($conn,$id);
+
+  }
+
+  if(isset($_POST['pay'])){
+    $id = $_POST['jo_id'];
+    $or = $_POST['or'];
+    $payment = $_POST['cost'];
+
+    $query = "UPDATE `JobOrder` SET `status` = 'Paid' WHERE `orderID` = $id";
+
+    if(mysqli_query($conn,$query)){
+      echo "<script>alert('Job order is now paid!')</script>";
     }
 
     $q = "SELECT SUM(subtotal) FROM Receipt WHERE orderID = '$id'";
@@ -48,12 +82,6 @@
     $query = "INSERT INTO Sales (orderID,officialReceipt,saleDate,totalPrice,payment) VALUES ($id,$or,'$date',$total,$payment)";
 
       mysqli_query($conn,$query);
-
-    // subtract ingredients per product based on Quantity
-    reduce_inventory_rawmats_production($conn,$id);
-
-    // start production
-    start_production($conn,$id);
 
   }
 
@@ -94,7 +122,7 @@
                                                         JobOrder.status AS status
                                                 FROM JobOrder
                                                 INNER JOIN Customer ON JobOrder.customerID = Customer.customerID
-                                                WHERE JobOrder.status = "Pending for approval"')){
+                                                WHERE JobOrder.status = "Pending for approval" OR JobOrder.status = "Paid"')){
 
 
                     while($row = mysqli_fetch_array($result)){
@@ -131,25 +159,62 @@
                           echo'</td>';
 
                           echo '<td class="text-center">';
-                            echo '<a href="viewIndivJO.php?id='.$id.'"><button type="button" class="btn btn-primary btn-sm"><i class="fas fa-eye"></i></button></a>  ';
+                            echo '<a href="viewIndivJO.php?id='.$id.'">
+                                    <button type="button" class="btn btn-primary btn-sm">
+                                      <i class="fas fa-eye"></i>
+                                    </button></a>  ';
                             echo '<a href="#remove'.$id.'" data-target="#remove'.$id.'" data-toggle="modal"><button type="button" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button></a>';
-                            if (check_for_inventory_match($conn,$id)>0) {
-                              echo '<a href="#check'.$id.'" data-target="#check'.$id.'" data-toggle="modal">
-                                <button type="button" class="btn btn-secondary btn-sm">
-                                  <i class="fas fa-exclamation-circle"></i>
-                                </button></a>  ';
-                            } else {
-                              if ($cusid == 1) {
-                                echo '<a href="#approved'.$id.'" data-target="#approved'.$id.'" data-toggle="modal">
-                                  <button type="button" class="btn btn-success btn-sm">
-                                    <i class="fas fa-check-circle"></i>
-                                  </button></a>  ';
-                              } else {
-                                echo '<a href="#approve'.$id.'" data-target="#approve'.$id.'" data-toggle="modal">
-                                  <button type="button" class="btn btn-success btn-sm">
-                                    <i class="fas fa-check-circle"></i>
-                                  </button></a>  ';
+                            // if (check_for_inventory_match($conn,$id)>0) {
+                            //   echo '<a href="#check'.$id.'" data-target="#check'.$id.'" data-toggle="modal">
+                            //     <button type="button" class="btn btn-secondary btn-sm">
+                            //       <i class="fas fa-exclamation-circle"></i>
+                            //     </button></a>  ';
+                            // } else {
+                            //   if ($cusid == 1) {
+                            //     echo '<a href="#approved'.$id.'" data-target="#approved'.$id.'" data-toggle="modal">
+                            //       <button type="button" class="btn btn-success btn-sm">
+                            //         <i class="fas fa-check-circle"></i>
+                            //       </button></a>  ';
+                            //   } else {
+                            //     // MTO PAY FIRST BEFORE STARTING PRODUCTION
+                            //     echo '<a href="#approve'.$id.'" data-target="#approve'.$id.'" data-toggle="modal">
+                            //       <button type="button" class="btn btn-success btn-sm">
+                            //         <i class="fas fa-check-circle"></i>
+                            //       </button></a>  ';
+                            //   }
+                            // }
+                            if ($cusid == 1) {
+                              if (check_for_inventory_match($conn,$id)>0) {
+                                  echo '<a href="#check'.$id.'" data-target="#check'.$id.'" data-toggle="modal">
+                                    <button type="button" class="btn btn-secondary btn-sm">
+                                      <i class="fas fa-exclamation-circle"></i>
+                                    </button></a>  ';
+                              }else {
+                                  echo '<a href="#approved'.$id.'" data-target="#approved'.$id.'" data-toggle="modal">
+                                    <button type="button" class="btn btn-success btn-sm">
+                                      <i class="fas fa-check-circle"></i>
+                                    </button></a>  ';
                               }
+                            }else {
+                              if ($status != 'Paid') {
+                                echo '<a href="#pay'.$id.'" data-target="#pay'.$id.'" data-toggle="modal">
+                                      <button type="button" class="btn btn-secondary btn-sm">
+                                        <i class="fas fa-cart-arrow-down"></i>
+                                      </button></a>  ';
+                              }else {
+                                if (check_for_inventory_match($conn,$id)>0) {
+                                  echo '<a href="#check'.$id.'" data-target="#check'.$id.'" data-toggle="modal">
+                                    <button type="button" class="btn btn-secondary btn-sm">
+                                      <i class="fas fa-exclamation-circle"></i>
+                                    </button></a>  ';
+                                }else {
+                                  echo '<a href="#approve'.$id.'" data-target="#approve'.$id.'" data-toggle="modal">
+                                        <button type="button" class="btn btn-success btn-sm">
+                                          <i class="fas fa-check-circle"></i>
+                                        </button></a>  ';
+                                }
+                              }
+
                             }
                           echo '</td>';
 
@@ -161,7 +226,36 @@
                                 <div class="modal-content">
 
                                     <div class="modal-header">
-                                        <h4>Approve Order?</h4>
+                                        <h4>Start Production?</h4>
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    </div>
+
+                                    <div class="modal-body">
+                                        <input type="hidden" name="jo_id" value="<?php echo $id; ?>">
+                                        <div class="text-center">
+                                          <p>
+                                            <h6>Approve Order?</h6>
+                                            <br>
+                                            <h6>Note: This action will put the Job Order in production!</h6><br>
+                                          </p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="submit" name="approve" class="btn btn-primary">Continue</button>
+                                            <button type="button" class="btn btn-default btn-outline-secondary" data-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+                            </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="pay<?php echo $id; ?>" class="modal fade" role="dialog">
+                        <div class="modal-dialog">
+                            <form method="post">
+                                <div class="modal-content">
+
+                                    <div class="modal-header">
+                                        <h4>Pay Order?</h4>
                                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                                     </div>
 
@@ -179,14 +273,13 @@
                                               $cost = $row['totalPrice']/2;
                                              ?>
                                              <h6>Downpayment of <?php echo number_format($cost); ?> is required (50% dp)</h6>
-                                            <small><h6>Note: This action will put the Job Order in production!</h6><br></small>
                                             <input required type="number" name="or" value="" placeholder="OR number" class="form-control"><br>
                                             <input required type="number" name="cost" value="<?php echo $cost; ?>" placeholder="" class="form-control">
                                           </p>
 
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="submit" name="approve" class="btn btn-primary">Continue</button>
+                                            <button type="submit" name="pay" class="btn btn-primary">Continue</button>
                                             <button type="button" class="btn btn-default btn-outline-secondary" data-dismiss="modal">Close</button>
                                         </div>
                                     </div>
@@ -212,10 +305,10 @@
                                             <h6>Approve Order?</h6>
                                             <br>
                                             <h6>Note: This action will put the Job Order in production!</h6><br>
-
+                                          </p>
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="submit" name="approve" class="btn btn-primary">Continue</button>
+                                            <button type="submit" name="approved" class="btn btn-primary">Continue</button>
                                             <button type="button" class="btn btn-default btn-outline-secondary" data-dismiss="modal">Close</button>
                                         </div>
                                     </div>
@@ -283,9 +376,10 @@
                                             ?>
 
                                         <br><br>
-                                        <a href="makePurchaseOrder.php?id=<?php echo $id; ?>&lack=1" class="btn btn-secondary">Proceed to order</a>
+
                                     </div>
                                     <div class="modal-footer">
+                                        <a href="makePurchaseOrder.php?id=<?php echo $id; ?>&lack=1" class="btn btn-secondary">Proceed to order</a>
                                         <button type="button" class="btn btn-default btn-outline-secondary" data-dismiss="modal">Close</button>
                                     </div>
 

@@ -221,7 +221,7 @@
                                       </p>
 
                                       <input type="number" class="form-control" placeholder="Official Receipt" name="or" value="" required><br>
-                                      <input type="number" class="form-control" name="payment" value="<?php echo $remaining; ?>" required>
+                                      <input type="number" class="form-control" placeholder="<?php echo $remaining; ?>" name="payment" value="<?php echo $remaining; ?>" readonly>
                                 </div>
                                   <div class="modal-footer">
 
