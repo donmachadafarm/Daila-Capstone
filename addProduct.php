@@ -9,11 +9,6 @@
   }
 ?>
 
-<?php
-  // Query
-
-?>
-
 <!-- put all the contents here  -->
 
 

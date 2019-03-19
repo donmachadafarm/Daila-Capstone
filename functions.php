@@ -899,9 +899,78 @@ function get_machinename($conn,$id){
 }
 
 function update_inventory($conn,$id,$qty){
-  $query = "UPDATE Product SET quantity = quantity+$qty WHERE productID = $id";
+  $user = $_SESSION['userid'];
+  $date = date('Y-m-d');
+
+  $query = "UPDATE Product SET quantity = $qty WHERE productID = $id";
 
     $sql = mysqli_query($conn,$query);
+
+  $query = "INSERT INTO AuditTrail(productID,quantityChange,dateChange,userID)
+              VALUES('$id','$qty','$date','$user')";
+
+    $sql = mysqli_query($conn,$query);
+
+}
+
+function get_allorders($conn){
+  $first = date('Y-m-01');
+  $last  = date('Y-m-t');
+
+  $query = "SELECT count(orderID) FROM JobOrder WHERE dueDate BETWEEN '$first' AND '$last'";
+
+    $sql = mysqli_query($conn,$query);
+
+    $row = mysqli_fetch_array($sql);
+
+  return $row[0];
+
+}
+
+function get_revenue($conn){
+  $first = date('Y-m-01');
+  $last  = date('Y-m-t');
+
+  $query = "SELECT SUM(payment) FROM Sales WHERE saleDate BETWEEN '$first' AND '$last'";
+
+    $sql = mysqli_query($conn,$query);
+
+    $row = mysqli_fetch_array($sql);
+
+  return number_format($row[0]);
+
+}
+
+function get_prodsold($conn){
+  $first = date('Y-m-01');
+  $last  = date('Y-m-t');
+
+  $query = "SELECT DISTINCT SUM(ProductSales.quantity) FROM ProductSales
+              JOIN Sales ON Sales.salesID = ProductSales.salesID
+              WHERE Sales.saleDate BETWEEN '$first' AND '$last'";
+
+    $sql = mysqli_query($conn,$query);
+
+    $row = mysqli_fetch_array($sql);
+
+  return $row[0];
+}
+
+function get_delayedOrdersCount($conn){
+  $now  = date('Y-m-d');
+
+  $query = "SELECT count(*) FROM JobOrder WHERE orderDate > '$now'";
+
+    $sql = mysqli_query($conn,$query);
+
+    $row = mysqli_fetch_array($sql);
+
+  return $row[0];
+
+}
+
+function get_latestart($conn,$id){
+
 
 }
 

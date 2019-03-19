@@ -197,9 +197,9 @@
                               }
                             }else {
                               if ($status != 'Paid') {
-                                echo '<a href="#pay'.$id.'" data-target="#pay'.$id.'" data-toggle="modal">
+                                echo '<a href="#pay'.$id.'" data-target="#pay'.$id.'" data-toggle="modal" style="color: #FFFFFF;text-decoration: none;">
                                       <button type="button" class="btn btn-secondary btn-sm">
-                                        <i class="fas fa-cart-arrow-down"></i>
+                                        <i class="fas fa-money-bill-alt"></i>
                                       </button></a>  ';
                               }else {
                                 if (check_for_inventory_match($conn,$id)>0) {

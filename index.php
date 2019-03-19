@@ -1,255 +1,167 @@
 <?php include "includes/sections/header.php"; ?>
 <?php include "includes/sections/navbar.php"; ?>
 <!-- heading sections -->
-<style>
-.scroll {
-    max-height: 550px;
-    overflow-y: auto;
-}
-</style>
+
 <?php
   // checks if logged in ung user else pupunta sa logout.php to end session
   if (!isset($_SESSION['userType'])){
     echo "<script>window.location='logout.php'</script>";
   }
-//   if($_SESSION['userType']=101){  //OPERATIONS ?>
-<br><br><br>
 
-<?php
-// }elseif($_SESSION['userType']=102){ //WAREHOUSE ?>
+?>
+
+<style media="screen">
+.card {
+  overflow:hidden;
+}
+
+.card-body .rotate {
+  z-index: 8;
+  float: right;
+  height: 100%;
+}
+
+.card-body .rotate i {
+  color: rgba(20, 20, 20, 0.15);
+  position: absolute;
+  left: 0;
+  left: auto;
+  right: -10px;
+  bottom: 0;
+  display: block;
+  -webkit-transform: rotate(-44deg);
+  -moz-transform: rotate(-44deg);
+  -o-transform: rotate(-44deg);
+  -ms-transform: rotate(-44deg);
+  transform: rotate(-44deg);
+}
+</style>
+
+<!-- put all the contents here  -->
 
 
-
-<?php
-// }elseif($_SESSION['userType']=103){ //PLANT ?>
-
-
-<?php
-// }elseif($_SESSION['userType']=100){ //KAICHO ?>
-
-
-<?php
-// }else{ //ADMIN ?>
-
-<div class="container">
   <div id="page-wrapper">
-      <div class="row">
-          <div class="col-lg-12">
-              <h1 class="page-header">
-                  Homepage!
-              </h1>
-          </div>
-      </div>
+    <div class="col main pt-5 mt-1">
+      <div class="row mb-3">
 
-      <div class="row">
-        <div class="col-sm-6">
-          <div class="card">
-            <div class="card-body scroll">
-            <?php
-              $allInventory = mysqli_query($conn, "SELECT product.name AS productname,
-              product.quantity AS quantity,
-              productType.name AS producttypename,
-              product.productPrice,
-              product.productID AS ID
-              FROM product
-              JOIN productType ON product.productTypeID=productType.productTypeID
-              WHERE product.custom <> 1
-              GROUP BY product.name
-              ");
-              $count = 0;
-              while ($row = mysqli_fetch_array($allInventory)){
-                $id = $row['ID'];
-                $prodName = $row['productname'];
-                $prodType = $row['producttypename'];
-                $quantity = $row['quantity'];
-                $price = $row['productPrice'];
-                $restockingValue = 100;
-                $maxLeadTime = get_maxlead($conn, $id);
-                $averageSales = get_total_average($conn, $id);
-                $reorderPoint = 100+($averageSales*$maxLeadTime);
-                $needed = $reorderPoint-$quantity;
+      <?php if ($_SESSION['userType'] == 100 || $_SESSION['userType'] == 104): ?>
 
-                if ($reorderPoint>$quantity){
-                    $count++;
-                }
-
-            }
-            ?>
-              <h5 class="card-title">Products that need restocking<span class="badge badge-light pull-right"><?php echo $count ?></span></h5>
-              <p class="card-text">Using the default Total Running Average Forecasting Algorithm.</p>
-              <!-- <a href="viewInventory.php" class="btn btn-warning">Restock</a> -->
-              <?php
-                if($count>0){
-              ?>
-              <button id="myButton" class="btn btn-warning" >Restock<span class="badge badge-light pull-right"><?php echo $count ?></span></button>
-              <?php
-                }
-                else{
-              ?>
-              <button id="myButton" class="btn btn-primary" >Restock<span class="badge badge-light pull-right"><?php echo $count ?></span></button>
-              <?php
-                }
-              ?>
-              <?php
-              mysqli_data_seek($allInventory, 0);
-              ?>
-              <table class="table table-bordered table-hover" id="dataTables-example">
-                <thead>
-                <tr>
-                    <th>Product Name</th>
-                    <th>Quantity</th>
-                    <th>Type</th>
-                    <th>Price</th>
-                </tr>
-                </thead>
-                <tbody>
-                  <?php
-
-                    while ($row = mysqli_fetch_array($allInventory)){
-                      $id = $row['ID'];
-                      $prodName = $row['productname'];
-                      $prodType = $row['producttypename'];
-                      $quantity = $row['quantity'];
-                      $price = $row['productPrice'];
-                    echo '<tr>';
-                    echo '<td><a href="viewIndivProduct.php?id='.$id.'">';
-                    echo $prodName;
-                    echo '</a></td>';
-                    echo '<td>';
-                    echo $quantity;
-                    echo '</td>';
-                    echo '<td>';
-                    echo $prodType;
-                    echo'</td>';
-                    echo '<td>';
-                    echo $price;
-                    echo'</td>';
-                    }
-                  ?>
-                </tbody>
-              </table>
+        <div class="col-sm-3 py-4">
+            <div class="card bg-secondary text-white h-100">
+                <div class="card-body bg-secondary">
+                    <div class="rotate">
+                        <i class="fa fa-list fa-7x"></i>
+                    </div>
+                    <h6 class="text-uppercase">Orders this month</h6>
+                    <h1 class="display-6"><?php echo get_allorders($conn); ?></h1>
+                </div>
             </div>
-          </div>
         </div>
-        <div class="col-sm-6">
-          <div class="card">
-            <div class="card-body scroll">
-            <?php
-              $result2 = mysqli_query($conn,'SELECT DISTINCT(Ingredient.ingredientID) AS id,
-              Ingredient.name AS name,
-              Ingredient.quantity AS quantity,
-              RawMaterial.unitOfMeasurement AS uom
-              FROM Ingredient
-              JOIN RMIngredient ON RMIngredient.ingredientID = Ingredient.ingredientID
-              JOIN RawMaterial ON RMIngredient.rawMaterialID = RawMaterial.rawMaterialID
-              ORDER BY ingredient.ingredientID');
-              $count2=0;
-              while($row2 = mysqli_fetch_array($result2)){
-                $id2 = $row2['id'];
-                $name2 = $row2['name'];
-                $qty2 = $row2['quantity'];
-                $uom2 = $row2['uom'];
-                $products2 = get_ingredients($conn, $id2);
-                $total2 = 0;
-                $unit2;
-                $inNeeded2 = 0;
-
-
-                // set collapse box for notifs
-
-                foreach($products2 as $prod2){
-                  $prodID2 = $prod2['pid'];
-                  $ave2 = ceil(get_total_average($conn, $prodID2));
-
-                  $mlt2 = get_maxlead($conn, $prodID2);
-
-                  $reorderpoint2 = ($ave2*$mlt2)+100;
-
-                  $recipeQuantity2 = $prod2['quantity'];
-
-                  $inNeeded2 = ceil($recipeQuantity2*$reorderpoint2);
-
-                  $total2 += $inNeeded2;
-                }
-
-                if ($total2>$qty2){
-                  $count2 += 1;
-                }
-
-              }
-            ?>
-              <h5 class="card-title">Ingredients that need restocking<span class="badge badge-light pull-right"><?php echo $count2 ?></span></h5>
-              <p class="card-text">Using the default Total Running Average Forecasting Algorithm.</p>
-              <!-- <button id="myButton2" class="btn btn-primary" >Restock<span class="badge badge-light pull-right"><?php echo $count2 ?></span></button> -->
-              <?php
-                if($count2>0){
-              ?>
-              <button id="myButton2" class="btn btn-warning" >Restock<span class="badge badge-light pull-right"><?php echo $count2 ?></span></button>
-              <?php
-                }
-                else{
-              ?>
-              <button id="myButton2" class="btn btn-primary" >Restock<span class="badge badge-light pull-right"><?php echo $count2 ?></span></button>
-              <?php
-                }
-                mysqli_data_seek($result2, 0);
-              ?>
-              <table class="table table-bordered table-hover" id="dataTables-example">
-                <thead>
-                  <tr>
-                    <th>Ingredient Name</th>
-                    <th>Quantity</th>
-                    <th>Unit of Measurement</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <?php
-                    // $result2 = mysqli_query($conn,'SELECT DISTINCT(Ingredient.ingredientID) AS id,
-                    // Ingredient.name AS name,
-                    // Ingredient.quantity AS quantity,
-                    // RawMaterial.unitOfMeasurement AS uom
-                    // FROM Ingredient
-                    // JOIN RMIngredient ON RMIngredient.ingredientID = Ingredient.ingredientID
-                    // JOIN RawMaterial ON RMIngredient.rawMaterialID = RawMaterial.rawMaterialID
-                    // ORDER BY ingredient.ingredientID');
-                    $count2=0;
-                    while($row2 = mysqli_fetch_array($result2)){
-                      $name2 = $row2['name'];
-                      $qty2 = $row2['quantity'];
-                      $uom2 = $row2['uom'];
-
-                      echo '<tr>';
-                      echo '<td>';
-                      echo $name2;
-                      echo '</td>';
-                      echo '<td>';
-                      echo abs(ceil($qty2));
-                      echo '</td>';
-                      echo '<td>';
-                      echo $uom2;
-                      echo '</td>';
-                      echo '</tr>';
-
-                    }
-                  ?>
+        <div class="col-sm-3 py-4">
+            <div class="card text-white bg-secondary h-100">
+                <div class="card-body bg-secondary">
+                    <div class="rotate">
+                        <i class="fa fa-file-invoice-dollar fa-7x"></i>
+                    </div>
+                    <h6 class="text-uppercase">Revenue this month</h6>
+                    <h1 class="display-6"><?php echo get_revenue($conn); ?></h1>
+                </div>
             </div>
-          </div>
         </div>
-      </div>
+        <div class="col-sm-3 py-4">
+            <div class="card text-white bg-secondary h-100">
+                <div class="card-body bg-secondary">
+                    <div class="rotate">
+                        <i class="fa fa-share-square fa-7x"></i>
+                    </div>
+                    <h6 class="text-uppercase">Products sold</h6>
+                    <h1 class="display-6"><?php echo get_prodsold($conn); ?></h1>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-3 py-4">
+            <div class="card text-white bg-secondary h-100">
+                <div class="card-body bg-secondary">
+                    <div class="rotate">
+                        <i class="fa fa-clock fa-7x"></i>
+                    </div>
+                    <h6 class="text-uppercase">Delayed Orders</h6>
+                    <h1 class="display-6"><?php echo get_delayedOrdersCount($conn); ?></h1>
+                </div>
+            </div>
+        </div>
+
+        <hr class="style1">
+
+            <!-- 1st chart sales -->
+            <div class="col-lg-6">
+              <div class="card">
+                   <div class="card-header bg-secondary text-white">
+                       <b>Company Revenue</b>
+                   </div>
+                   <div class="card-body">
+                     <div id="first" style="width: 650px; height: 360px;"></div>
+                   </div>
+               </div>
+            </div>
+
+            <!-- 2nd chart items pinaka mabenta -->
+            <div class="col-lg-6">
+              <div class="card">
+                   <div class="card-header bg-secondary text-white">
+                       <b>Best Selling Products</b>
+                   </div>
+                   <div class="card-body">
+                     <div id="second" style="width: 650px; height: 360px;"></div>
+                   </div>
+               </div>
+            </div>
+
+
+
+
+
+      <?php endif; ?>
+
+     </div>
+    </div>
   </div>
-</div>
+  <?php
+    $query = "SELECT * FROM LIMIT 5";
 
-<!-- <?php  ?> -->
+   ?>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+      <script type="text/javascript">
+        google.charts.load("current", {packages:["corechart"]});
+        google.charts.setOnLoadCallback(drawChart);
 
-<!-- end of content -->
-<script type="text/javascript">
-    document.getElementById("myButton").onclick = function () {
-        location.href = "viewInventory.php";
-    };
+        function drawChart() {
 
-    document.getElementById("myButton2").onclick = function () {
-        location.href = "viewIngredients.php";
-    };
-</script>
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Topping');
+        data.addColumn('number', 'Slices');
+        data.addRows([
+          ['Mushrooms', 3],
+          ['Onions', 1],
+          ['Olives', 1],
+          ['Zucchini', 1],
+          ['Pepperoni', 2]
+        ]);
+
+        var barchart_options = {title:'Company Revenue per month',
+                       width:600,
+                       height:360,
+                       legend: 'none'};
+        var barchart = new google.visualization.LineChart(document.getElementById('first'));
+        barchart.draw(data, barchart_options);
+
+        var piechart_options = {title:'Best Selling Products',
+                       width:650,
+                       height:360};
+        var piechart = new google.visualization.PieChart(document.getElementById('second'));
+        piechart.draw(data, piechart_options);
+      }
+      </script>
+
 
 <?php include "includes/sections/footer.php"; ?>

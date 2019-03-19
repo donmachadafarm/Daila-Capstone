@@ -162,6 +162,56 @@
     }
   }
 
+  if(isset($_POST['delay'])){
+    $ordid = $_POST['order_id'];
+    $macid = $_POST['mach_id'];
+    $proid = $_POST['prod_id'];
+    $stats = $_POST['status'];
+    $hr = $_POST['hrs'];
+    $mn = $_POST['min'];
+    $sc = $_POST['sec'];
+
+    $time = $sc + ($hr*3600) + ($mn*60);
+
+    $qry = "SELECT timeEstimate as t FROM ProductionProcess WHERE orderID = $ordid AND machineID = $macid AND productID = $proid";
+    $sql = mysqli_query($conn,$qry);
+    $row = mysqli_fetch_array($sql);
+    $time += $row['t'];
+
+    // update the production process for that row ng specific order machine id at productid  "Ongoing" - > "Done"
+    $query = "UPDATE ProductionProcess SET status = 'Done' WHERE orderID = $ordid AND machineID = $macid AND productID = $proid AND status = 'Ongoing'";
+
+    mysqli_query($conn,$query);
+
+    // adds the timesworked
+    mysqli_query($conn,"UPDATE Machine SET hoursWorked = hoursWorked + $time, lifetimeWorked = lifetimeWorked + $time, status = 'Available' WHERE machineID = $macid");
+
+
+
+    // DONE UPDATING STATUSES FOR ONE PRODUCT PROCESS
+    // SUGGESTION : REDUCE MACHINE QUEUE AFTER UPDATE
+
+
+    // GETS THE NEXT MACHINE FOR THE SEQUENCE
+    $sql = mysqli_query($conn,"SELECT machineID FROM ProductionProcess WHERE orderID = $ordid AND productID = $proid AND status = 'Wait' ORDER BY processSequence LIMIT 1");
+
+    $row = mysqli_fetch_array($sql);
+
+    // CHECKS IF THERE IS STILL SOME MACHINE IN QUEUE FOR THE PRODUCTION PROCESS
+    if(isset($row)){
+        $query = "UPDATE ProductionProcess SET status = 'Ongoing' WHERE orderID = $ordid AND machineID = $row[0] AND productID = $proid AND status = 'Wait'";
+
+        mysqli_query($conn,$query);
+    }else {
+        $sql = mysqli_query($conn,"SELECT machineID FROM ProductionProcess WHERE orderID = $ordid AND productID = $proid AND status = 'Done' ORDER BY processSequence DESC LIMIT 1");
+
+        $row = mysqli_fetch_array($sql);
+
+        mysqli_query($conn,"UPDATE ProductionProcess SET status = 'Finish' WHERE orderID = $ordid AND machineID = $row[0] AND productID = $proid AND status = 'Done'");
+
+    }
+  }
+
 
  ?>
 
@@ -183,9 +233,8 @@
                     <th class="text-center">Process</th>
                     <th class="text-center">Order ID</th>
                     <th class="text-center">Product</th>
-                    <th class="text-center">Estimated Time</th>
-                    <!-- <th class="text-center">Start Time</th> -->
-                    <!-- <th class="text-center">End Time</th> -->
+                    <th class="text-center">Early start time</th>
+                    <th class="text-center">Late start time</th>
                     <th class="text-center">Action</th>
                 </tr>
                 </thead>
@@ -231,12 +280,21 @@
                           echo '<td class="text-center">';
                               echo seconds_datetime($row['timeEstimate']);
                           echo'</td>';
+
+                          echo '<td class="text-center">';
+                              echo get_latestart($conn,$row['orderID']);
+                          echo'</td>';
+
                           echo '<td class="text-center">';
                             if (!check_complete_proc($conn,$row['orderID'],$row['productID'])) {
                                 // finish button na mag sabi tapos na process
                                 echo '<a href="#check'.$id.'" data-target="#check'.$id.'" data-toggle="modal">
                                   <button type="button" class="btn btn-primary btn-sm">
                                     Next
+                                  </button></a>  ';
+                                echo '<a href="#delay'.$id.'" data-target="#delay'.$id.'" data-toggle="modal">
+                                  <button type="button" class="btn btn-warning btn-sm" style="color:white">
+                                    Delay
                                   </button></a>  ';
                               } else {
                                 // finish button for final add ng product
@@ -282,6 +340,49 @@
                         </div>
                     </div>
                   </div>
+
+                  <div id="delay<?php echo $id; ?>" class="modal fade" role="dialog">
+                      <div class="modal-dialog">
+                        <form method="post">
+                            <div class="modal-content">
+
+                                <div class="modal-header">
+                                    <h4>Delayed finish?</h4>
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                </div>
+
+                                <div class="modal-body">
+                                    <input type="hidden" name="order_id" value="<?php echo $row['orderID']; ?>">
+                                    <input type="hidden" name="mach_id" value="<?php echo $row['machineID']; ?>">
+                                    <input type="hidden" name="prod_id" value="<?php echo $row['productID']; ?>">
+                                    <input type="hidden" name="status" value="<?php echo $row['status']; ?>">
+                                    <div class="text-center">
+                                      <p>
+                                        <div class="row">
+                                          <div class="col-md-3">
+                                            <label class="col-form-label">Delay:</label>
+                                          </div>
+                                          <div class="col-md-3">
+                                            <input class="form-control" type="number" name="hrs" value="" placeholder="Hours" min="0" max="60">
+                                          </div>
+                                          <div class="col-md-3">
+                                            <input class="form-control" type="number" name="min" value="" placeholder="Minutes" min="0" max="60">
+                                          </div>
+                                          <div class="col-md-3">
+                                            <input class="form-control" type="number" name="sec" value="" placeholder="Seconds" min="0" max="60">
+                                          </div>
+                                        </div>
+                                      </p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="submit" name="delay" class="btn btn-primary">Continue</button>
+                                        <button type="button" class="btn btn-default btn-outline-secondary" data-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                        </form>
+                      </div>
+                  </div>
+                </div>
 
                   <div id="finish<?php echo $id; ?>" class="modal fade" role="dialog">
                       <div class="modal-dialog">

@@ -47,7 +47,7 @@
               </h1>
           </div>
       </div>
-      <a onclick="goBack()" class="btn btn-primary btn-sm float-right" style="color:white">go back</a>
+      <a href="viewJobOrders.php" class="btn btn-primary btn-sm float-right" style="color:white">go back</a>
       <div class="row">
           <div class="col-lg-12">
             <table class="table table-borderless" id="dataTables-example">
