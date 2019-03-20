@@ -157,7 +157,7 @@ include 'includes/sections/header.php';
 // $d = date("Y-m-d",strtotime("+5 days"));
 // echo calcTime($d);
 
-echo date("Y-m-d",$_SERVER['REQUEST_TIME']);
+// echo date("Y-m-d",$_SERVER['REQUEST_TIME']);
 // for ($i=0; $i < $count; $i++) {
 //   for ($j=0; $j < count($inv[$i]); $j++) {
 //     $ing = $inv[$i][$j]['ingredientid'];
@@ -187,4 +187,8 @@ echo date("Y-m-d",$_SERVER['REQUEST_TIME']);
 //}
 
 // echo check_for_inventory_match($conn,28);
+$datestr = date("Y-m-d",strtotime("+10 days"));
+
+get_timebeforedeadline($conn,$datestr);
+
 ?>

@@ -29,7 +29,7 @@ if (session_status() == PHP_SESSION_NONE) {
         margin-bottom: 20px;
         }
     body {
-          background: #fafafa;
+          background: #fff;
           color: #333333;
         }
     hr.style1{

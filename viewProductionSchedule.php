@@ -167,17 +167,6 @@
     $macid = $_POST['mach_id'];
     $proid = $_POST['prod_id'];
     $stats = $_POST['status'];
-    if (isset($_POST['hrs'])) {
-      $hr = $_POST['hrs'];
-    }
-    if (isset($_POST['min'])) {
-      $mn = $_POST['min'];
-    }
-    if (isset($_POST['sec'])) {
-      $sc = $_POST['sec'];
-    }
-
-    $time = $sc + ($hr*3600) + ($mn*60);
 
     $qry = "SELECT timeEstimate as t FROM ProductionProcess WHERE orderID = $ordid AND machineID = $macid AND productID = $proid";
     $sql = mysqli_query($conn,$qry);
@@ -239,7 +228,7 @@
                     <th class="text-center">Process</th>
                     <th class="text-center">Order ID</th>
                     <th class="text-center">Product</th>
-                    <th class="text-center">Early start time</th>
+                    <th class="text-center">Early end time</th>
                     <th class="text-center">Late start time</th>
                     <th class="text-center">Action</th>
                 </tr>
@@ -261,6 +250,8 @@
 
                     while($row = mysqli_fetch_array($result)){
                         $id = $row['productID'];
+                        $datenow = date("Y-m-d");
+                        // $datefinish =
 
                         echo '<tr>';
                           echo '<td class="text-center">';
@@ -430,10 +421,10 @@
                                         </p>
                                       </div>
                                       <label>Total Yield:</label></br>
-                                        <input type="number" name="yield" value="<?php echo round($row['quantity']); ?>" class="form-control" required>
+                                        <input type="number" name="yield" value="<?php echo round($row['quantity']+($row['quantity']*0.01)); ?>" class="form-control" required>
                                       </br>
                                       <label>Total Good:</label></br>
-                                        <input type="number" name="good" value="<?php echo round($row['quantity']); ?>" class="form-control" required>
+                                        <input type="number" name="good" value="<?php echo round($row['quantity']+($row['quantity']*0.01)); ?>" class="form-control" required>
                                       </br>
                                       <small>items less than 100 will not have 1% extra</small>
                                       <div class="modal-footer">
