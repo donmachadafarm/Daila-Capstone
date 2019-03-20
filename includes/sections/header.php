@@ -1,3 +1,15 @@
+<?php
+
+  include 'includes/plugins.php';
+  include 'functions.php';
+
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+    date_default_timezone_set('Asia/Manila');
+}
+?>
+
+
 <!DOCTYPE html>
 <html>
   <head>
@@ -43,15 +55,6 @@
     </style>
 
     <title>Daila Herbals</title>
-    <?php
 
-      include 'includes/plugins.php';
-      include 'functions.php';
-
-      session_start();
-
-      date_default_timezone_set('Asia/Manila');
-
-    ?>
   </head>
   <body>
