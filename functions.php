@@ -1224,7 +1224,7 @@ function view_prodinventory($conn){
         }
 
         echo '<tr>';
-        echo '<td><a href="viewIndivProduct.php?id='.$id.'">';
+        echo '<td><a href="viewIndivProduct.php?id='.$id.'" style="color: #000;text-decoration: none;">';
         echo $prodName;
         echo '</a></td>';
         echo '<td>';
@@ -1293,6 +1293,38 @@ function get_latestart($conn,$id){
 
 
 }
+
+function calcTime ($deadLine)
+	{
+		$timeRemaining = $deadLine - $_SERVER['REQUEST_TIME'];
+		if($timeRemaining < 0)
+		{
+		  $timeRemaining = abs($timeRemaining);
+		  $end = "ago.";
+		}
+		else if(!$timeRemaining) return 0;
+		else $end = "remaining.";
+		$timeRemaining = $timeRemaining / (60*60*24*365);	//converted into years
+		$yrs = floor($timeRemaining);						//removed the decimal part if any
+		$timeRemaining = (($timeRemaining - $yrs)*365);				//converted into days
+		$days = floor($timeRemaining);					//removed the decimal part if any
+		$timeRemaining = (($timeRemaining-$days)*24);				//converted into hrs
+		$hrs = floor($timeRemaining);						//removed the decimal part if any
+		$timeRemaining = (($timeRemaining-$hrs)*60);					//converted into mins
+		$min = floor($timeRemaining);						//removed decimals if any
+		$timeRemaining = (($timeRemaining-$min)*60);					//converted into seconds
+		$sec = floor($timeRemaining);						//removed decimals
+		$str = '';
+		if($yrs) $str = $str.$yrs." years ";			//concatnating stuff
+		if($days) $str = $str.$days." days ";
+		if($hrs) $str = $str.$hrs." hours ";
+		if($min) $str = $str.$min." minutes ";
+		if($sec) $str = $str.$sec." seconds ";
+		$str = $str.$end;
+		// echo $str;		//displaying this is optional, it returns in a string format so you cant do math here
+		return $str;
+	}
+
 
 function view_jo($conn){
   $result = mysqli_query($conn,'SELECT JobOrder.orderID AS ID,

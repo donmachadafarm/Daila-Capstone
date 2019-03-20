@@ -28,9 +28,6 @@ if (session_status() == PHP_SESSION_NONE) {
         border-radius: 3px;
         margin-bottom: 20px;
         }
-    a{
-      color: #fff;
-    }
     body {
           background: #fafafa;
           color: #333333;

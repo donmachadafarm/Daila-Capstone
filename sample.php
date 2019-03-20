@@ -148,13 +148,16 @@ include 'includes/sections/header.php';
 // while ($row = mysqli_fetch_array($sql)) {
 //   print_p($row);
 // }
+//
+// $inv = get_need_inventory3($conn,1,200);
+// // $inv = get_need_inv($conn,3,200);
+// $count = count($inv);
+//
+// print_p($inv);
+// $d = date("Y-m-d",strtotime("+5 days"));
+// echo calcTime($d);
 
-$inv = get_need_inventory3($conn,1,200);
-// $inv = get_need_inv($conn,3,200);
-$count = count($inv);
-
-print_p($inv);
-
+echo date("Y-m-d",$_SERVER['REQUEST_TIME']);
 // for ($i=0; $i < $count; $i++) {
 //   for ($j=0; $j < count($inv[$i]); $j++) {
 //     $ing = $inv[$i][$j]['ingredientid'];

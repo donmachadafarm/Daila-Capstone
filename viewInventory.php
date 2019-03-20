@@ -161,7 +161,7 @@ if (isset($_POST['edit'])) {
                         }
 
                         echo '<tr>';
-                        echo '<td><a href="viewIndivProduct.php?id='.$id.'">';
+                        echo '<td><a href="viewIndivProduct.php?id='.$id.'" style="color: #000;text-decoration: none;">';
                         echo $prodName;
                         echo '</a></td>';
                         echo '<td>';
@@ -304,7 +304,7 @@ if (isset($_POST['edit'])) {
                         }
 
                         echo '<tr>';
-                        echo '<td><a href="viewIndivProduct.php?id='.$id.'">';
+                        echo '<td><a href="viewIndivProduct.php?id='.$id.'"  style="color: #000;text-decoration: none;">';
                         echo $prodName;
                         echo '</a></td>';
                         echo '<td>';
@@ -440,7 +440,7 @@ if (isset($_POST['edit'])) {
                         }
 
                         echo '<tr>';
-                        echo '<td><a href="viewIndivProduct.php?id='.$id.'">';
+                        echo '<td><a href="viewIndivProduct.php?id='.$id.'"  style="color: #000;text-decoration: none;">';
                         echo $prodName;
                         echo '</a></td>';
                         echo '<td>';
@@ -576,7 +576,7 @@ if (isset($_POST['edit'])) {
                         }
 
                         echo '<tr>';
-                        echo '<td><a href="viewIndivProduct.php?id='.$id.'">';
+                        echo '<td><a href="viewIndivProduct.php?id='.$id.'"  style="color: #000;text-decoration: none;">';
                         echo $prodName;
                         echo '</a></td>';
                         echo '<td>';
@@ -712,7 +712,7 @@ if (isset($_POST['edit'])) {
                         }
 
                         echo '<tr>';
-                        echo '<td><a href="viewIndivProduct.php?id='.$id.'">';
+                        echo '<td><a href="viewIndivProduct.php?id='.$id.'"  style="color: #000;text-decoration: none;">';
                         echo $prodName;
                         echo '</a></td>';
                         echo '<td>';
@@ -848,7 +848,7 @@ if (isset($_POST['edit'])) {
                         }
 
                         echo '<tr>';
-                        echo '<td><a href="viewIndivProduct.php?id='.$id.'">';
+                        echo '<td><a href="viewIndivProduct.php?id='.$id.'"  style="color: #000;text-decoration: none;">';
                         echo $prodName;
                         echo '</a></td>';
                         echo '<td>';
@@ -983,7 +983,7 @@ if (isset($_POST['edit'])) {
                         }
 
                         echo '<tr>';
-                        echo '<td><a href="viewIndivProduct.php?id='.$id.'">';
+                        echo '<td><a href="viewIndivProduct.php?id='.$id.'"  style="color: #000;text-decoration: none;">';
                         echo $prodName;
                         echo '</a></td>';
                         echo '<td>';
@@ -1118,7 +1118,7 @@ if (isset($_POST['edit'])) {
                         }
 
                         echo '<tr>';
-                        echo '<td><a href="viewIndivProduct.php?id='.$id.'">';
+                        echo '<td><a href="viewIndivProduct.php?id='.$id.'"  style="color: #000;text-decoration: none;">';
                         echo $prodName;
                         echo '</a></td>';
                         echo '<td>';
