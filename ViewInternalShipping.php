@@ -69,7 +69,7 @@
                             echo $status;
                           echo'</td>';
                           echo '<td class="text-center">';
-                            echo '<a href="ViewIndivShipping.php?id='.$orderid.'"><button type="button" class="btn btn-primary btn-sm">View Details</button></a> ';
+                            echo '<a href="ViewIndivShipping.php?id='.$orderid.'"><button type="button" class="btn btn-primary btn-sm">Receive Products</button></a> ';
                           echo '</td>';
                         echo '</tr>';
                           }

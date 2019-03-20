@@ -22,7 +22,7 @@ if (!isset($_SESSION['userType'])){
     <div class="row">
         <div class="col-lg-12">
             <h1 class="text-center"><br><br>
-                Sales Report
+                Product Sales Report
             </h1>
             <h6 class="text-center">
                 Enter a Date Range

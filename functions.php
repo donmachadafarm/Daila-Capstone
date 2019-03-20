@@ -898,6 +898,16 @@ function get_machinename($conn,$id){
   return $row[0];
 }
 
+function get_processname($conn,$id){
+  $query = "SELECT name FROM processType WHERE processTypeID = '$id'";
+
+    $sql = mysqli_query($conn,$query);
+
+    $row = mysqli_fetch_array($sql);
+
+  return $row[0];
+}
+
 function update_inventory($conn,$id,$qty){
   $user = $_SESSION['userid'];
   $date = date('Y-m-d');
@@ -956,7 +966,7 @@ function get_prodsold($conn){
   return $row[0];
 }
 
-function get_delayedOrdersCount($conn){
+function get_delayedJOrdersCount($conn){
   $now  = date('Y-m-d');
 
   $query = "SELECT count(*) FROM JobOrder WHERE orderDate > '$now'";
@@ -969,10 +979,413 @@ function get_delayedOrdersCount($conn){
 
 }
 
+function get_pendingShipping($conn){
+  $query = "SELECT count(*) FROM Shipping
+              WHERE status <> 'Shipped'";
+
+    $sql = mysqli_query($conn,$query);
+
+    $row = mysqli_fetch_array($sql);
+
+  return $row[0];
+
+}
+
+function get_prodrestockcount($conn){
+      $allInventory = mysqli_query($conn, "SELECT product.name AS productname,
+                                                  product.quantity AS quantity,
+                                                  productType.name AS producttypename,
+                                                  product.productPrice,
+                                                  product.productID AS ID
+                                                  FROM product
+                                                  JOIN productType ON product.productTypeID=productType.productTypeID
+                                                  WHERE product.custom <> 1
+                                                  GROUP BY product.name
+                                                  ");
+      $count = 0;
+      while ($row = mysqli_fetch_array($allInventory)){
+          $id = $row['ID'];
+          $prodName = $row['productname'];
+          $prodType = $row['producttypename'];
+          $quantity = $row['quantity'];
+          $price = $row['productPrice'];
+          $restockingValue = 100;
+          $maxLeadTime = get_maxlead($conn, $id);
+          $averageSales = get_total_average($conn, $id);
+          $reorderPoint = 100+($averageSales*$maxLeadTime);
+
+          if ($reorderPoint>$quantity){
+              $count++;
+          }
+
+      }
+
+      return $count;
+
+}
+
+function get_ingrrestockcount($conn){
+  $result2 = mysqli_query($conn,'SELECT DISTINCT(Ingredient.ingredientID) AS id,
+                                         Ingredient.name AS name,
+                                         Ingredient.quantity AS quantity,
+                                         RawMaterial.unitOfMeasurement AS uom
+                                         FROM Ingredient
+                                         JOIN RMIngredient ON RMIngredient.ingredientID = Ingredient.ingredientID
+                                         JOIN RawMaterial ON RMIngredient.rawMaterialID = RawMaterial.rawMaterialID
+                                         ORDER BY ingredient.ingredientID');
+
+  $count=0;
+  while($row2 = mysqli_fetch_array($result2)){
+    $id2 = $row2['id'];
+    $name2 = $row2['name'];
+    $qty2 = $row2['quantity'];
+    $uom2 = $row2['uom'];
+    $products2 = get_ingredients($conn, $id2);
+    $total2 = 0;
+    $unit2;
+    $inNeeded2 = 0;
+
+
+    // set collapse box for notifs
+
+    foreach($products2 as $prod2){
+      $prodID2 = $prod2['pid'];
+      $ave2 = ceil(get_total_average($conn, $prodID2));
+
+      $mlt2 = get_maxlead($conn, $prodID2);
+
+      $reorderpoint2 = ($ave2*$mlt2)+100;
+
+      $recipeQuantity2 = $prod2['quantity'];
+
+      $inNeeded2 = ceil($recipeQuantity2*$reorderpoint2);
+
+      $total2 += $inNeeded2;
+    }
+    $needed2 = ceil($total2-$qty2);
+
+    if ($needed2<0) {
+      $needed2=0;
+    }
+    if ($total2>$qty2){
+      $count += 1;
+    }
+
+  }
+
+  return $count;
+}
+
+function get_pendingPO($conn){
+  $query = "SELECT count(*) FROM PurchaseOrder WHERE status = 'Pending'";
+
+    $sql = mysqli_query($conn,$query);
+
+    $row = mysqli_fetch_array($sql);
+
+  return $row[0];
+}
+
+function get_numberofmachinesused($conn){
+  $query = "SELECT count(*) FROM Machine WHERE status = 'Used'";
+
+    $sql = mysqli_query($conn,$query);
+
+    $row = mysqli_fetch_array($sql);
+
+  return $row[0];
+}
+
+function get_numberofmachinesrepair($conn){
+  $query = "SELECT count(*) FROM Machine WHERE status = 'Under Maintenance'";
+
+    $sql = mysqli_query($conn,$query);
+
+    $row = mysqli_fetch_array($sql);
+
+  return $row[0];
+}
+
+function view_machinesrepair($conn){
+  $query = "SELECT machine.machineID,
+                   machine.name,
+                   machine.status,
+                   machine.hoursWorked,
+                   machine.lifetimeWorked,
+                   machine.acquiredDate,
+                   processtype.name AS procname
+              FROM machine
+              INNER JOIN processtype ON machine.processTypeID = processtype.processTypeID
+              WHERE machine.status = 'Under Maintenance'";
+
+    $sql = mysqli_query($conn,$query);
+
+    while($row = mysqli_fetch_array($sql)){
+      $id = $row['machineID'];
+      $name = $row['name'];
+      $status = $row['status'];
+      $timesused = $row['hoursWorked'];
+      $acquiredDate = $row['acquiredDate'];
+      $proctype = $row['procname'];
+
+      echo '<tr>';
+        echo '<td>';
+          echo '<a href="viewEquipmentHistory.php?id='.$id.'">';
+            echo $name;
+          echo '</a>';
+        echo '</td>';
+
+        echo '<td class="text-center">';
+          echo $proctype;
+        echo'</td>';
+
+        echo '<td class="text-center">';
+          echo $status;
+        echo'</td>';
+
+        echo '<td class="text-center">';
+          echo seconds_datetime($timesused);
+        echo'</td>';
+
+      echo '</tr>';
+    }
+}
+
+function view_production($conn){
+  $query = "SELECT orderID, productID, machineID, timeEstimate, processTypeID
+              FROM ProductionProcess
+              WHERE status = 'Ongoing'";
+
+    $sql = mysqli_query($conn,$query);
+
+    while($row = mysqli_fetch_array($sql)){
+      $id = $row['orderID'];
+      $proid = $row['productID'];
+      $procid = $row['processTypeID'];
+      $machine = $row['machineID'];
+      $time = $row['timeEstimate'];
+
+      echo '<tr>';
+        echo '<td class="text-center">';
+          echo $id;
+        echo '</td>';
+
+        echo '<td class="text-center">';
+          echo get_prodname($conn,$proid);
+        echo'</td>';
+
+        echo '<td class="text-center">';
+          echo get_processname($conn,$proid);
+        echo'</td>';
+
+        echo '<td class="text-center">';
+          echo get_machinename($conn,$machine);
+        echo'</td>';
+
+        echo '<td class="text-center">';
+          echo seconds_datetime($time);
+        echo'</td>';
+
+      echo '</tr>';
+
+    }
+}
+
+function view_prodinventory($conn){
+  $allInventory2 = mysqli_query($conn, "SELECT product.name AS productname,
+                                              product.quantity AS quantity,
+                                              productType.name AS producttypename,
+                                              product.productPrice,
+                                              product.productID AS ID
+                                              FROM product
+                                              JOIN productType ON product.productTypeID=productType.productTypeID
+                                              WHERE product.custom <> 1
+                                              GROUP BY product.name");
+
+    while ($row = mysqli_fetch_array($allInventory2)){
+        $id = $row['ID'];
+        $prodName = $row['productname'];
+        $prodType = $row['producttypename'];
+        $quantity = $row['quantity'];
+        $price = $row['productPrice'];
+        $restockingValue = 100;
+        $maxLeadTime = get_maxlead($conn, $id);
+        $averageSales = get_total_average($conn, $id);
+        $reorderPoint = 100+($averageSales*$maxLeadTime);
+        $needed = $reorderPoint-$quantity;
+        $extra = 1;
+
+        if($needed > 100){
+            $extra = ceil($needed * .1);
+        }
+
+        if ($needed < 0) {
+          $needed = 0;
+        }
+
+        echo '<tr>';
+        echo '<td><a href="viewIndivProduct.php?id='.$id.'">';
+        echo $prodName;
+        echo '</a></td>';
+        echo '<td>';
+        echo $quantity;
+        echo '</td>';
+        echo '<td>';
+        echo $prodType;
+        echo'</td>';
+        echo '<td>';
+        echo $price;
+        echo'</td>';
+
+        echo '<td class="text-center">';
+        echo '<a href="makeJobOrder.php?ids='.$id.'&name='.$prodName.'&val='.$needed.'"><button type="button" class="btn btn-success btn-sm"><i class="fa fa-plus"></i></button> </a> ';
+        if ($_SESSION['userType'] == 104 || $_SESSION['userType'] == 102) {
+          echo "<a href='#edit".$id."' data-target='#edit".$id."'data-toggle='modal' class='btn btn-warning btn-sm' style='color:white'>
+                  <i class='fa fa-edit'></i>
+                  </a>";
+
+          ?>
+          <div id="edit<?php echo $id; ?>" class="modal fade" role="dialog">
+              <div class="modal-dialog">
+                  <form method="post">
+                      <div class="modal-content">
+
+                          <div class="modal-header">
+                              <h4>Edit inventory</h4>
+                              <button type="button" class="close" data-dismiss="modal">&times;</button>
+                          </div>
+
+                          <div class="modal-body">
+                              <input type="hidden" name="prodid" value="<?php echo $id; ?>">
+                              <div class="text-center">
+                                <p>
+                                  <div class="row">
+                                    <div class="col-md-6">
+                                      <!-- <label class="col-sm-2 col-form-label">Quantity:</label> -->
+                                    </div>
+                                    <div class="col-md-12">
+                                      <input class="form-control" type="number" name="qty" value="" placeholder="Quantity">
+                                    </div>
+                                  </div>
+                                </p>
+                              </div>
+                              <div class="modal-footer">
+                                  <button type="submit" name="edit" class="btn btn-primary">Continue</button>
+                                  <button type="button" class="btn btn-default btn-outline-secondary" data-dismiss="modal">Close</button>
+                              </div>
+                          </div>
+                  </form>
+                  </div>
+              </div>
+          </div>
+          <?
+        }
+
+        echo '</td>';
+        echo '</tr>';
+
+    }
+}
+
 function get_latestart($conn,$id){
 
 
 }
 
+function view_jo($conn){
+  $result = mysqli_query($conn,'SELECT JobOrder.orderID AS ID,
+                                          Customer.customerID AS custid,
+                                          Customer.company AS custname,
+                                          JobOrder.orderDate AS datereq,
+                                          JobOrder.dueDate AS duedate,
+                                          JobOrder.type AS type,
+                                          JobOrder.status AS status
+                                  FROM JobOrder
+                                  INNER JOIN Customer ON JobOrder.customerID = Customer.customerID
+                                  WHERE JobOrder.status = "Pending for approval" OR JobOrder.status = "Paid"
+                                  ORDER BY JobOrder.dueDate DESC');
+
+
+      while($row = mysqli_fetch_array($result)){
+          $id = $row['ID'];
+          $cusid = $row['custid'];
+          $name = $row['custname'];
+          $status = $row['status'];
+          $duedate = $row['duedate'];
+          $datereq = $row['datereq'];
+          $type = $row['type'];
+
+          echo '<tr>';
+
+            echo '<td class="text-center">';
+              echo $duedate;
+            echo'</td>';
+
+            echo '<td class="text-center">';
+              echo $name;
+            echo '</td>';
+
+            echo '<td class="text-center">';
+              echo $datereq;
+            echo'</td>';
+
+            echo '<td class="text-center">';
+              echo $type;
+            echo'</td>';
+
+            echo '<td class="text-center">';
+              echo $status;
+            echo'</td>';
+
+          echo '</tr>';
+        }
+}
+
+function view_po($conn){
+  $result = mysqli_query($conn,'SELECT Supplier.company AS suppName,
+              PurchaseOrder.purchaseOrderID AS id,
+              PurchaseOrder.totalPrice AS price,
+              PurchaseOrder.orderDate AS date,
+              PurchaseOrder.deadline AS deadline,
+              PurchaseOrder.status AS status
+            FROM PurchaseOrder
+            INNER JOIN Supplier ON PurchaseOrder.supplierID =Supplier.supplierID
+            WHERE PurchaseOrder.status <> "removed" AND PurchaseOrder.status <> "Completed!"
+            ORDER BY status DESC');
+
+
+      while($row = mysqli_fetch_array($result)){
+          $id = $row['id'];
+          $name = $row['suppName'];
+          $price = $row['price'];
+          $status = $row['status'];
+          $date = $row['date'];
+          $deadline = $row['deadline'];
+
+          echo '<tr>';
+
+            echo '<td class="text-center">';
+              echo $deadline;
+            echo'</td>';
+
+            echo '<td class="text-center">';
+                echo $name;
+            echo '</td>';
+
+            echo '<td class="text-right">';
+              echo number_format($price,2);
+            echo '</td>';
+
+            echo '<td class="text-center">';
+              echo $date;
+            echo'</td>';
+
+            echo '<td class="text-center">';
+              echo $status;
+            echo'</td>';
+
+          echo '</tr>';
+        }
+      }
 
  ?>

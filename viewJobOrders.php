@@ -185,12 +185,12 @@
                             // }
                             if ($cusid == 1) {
                               if (check_for_inventory_match($conn,$id)>0) {
-                                  echo '<a href="#check'.$id.'" data-target="#check'.$id.'" data-toggle="modal">
+                                  echo '<a href="#check'.$id.'" data-target="#check'.$id.'" data-toggle="modal"  style="color: #FFFFFF;text-decoration: none;">
                                     <button type="button" class="btn btn-secondary btn-sm">
                                       <i class="fas fa-exclamation-circle"></i>
                                     </button></a>  ';
                               }else {
-                                  echo '<a href="#approved'.$id.'" data-target="#approved'.$id.'" data-toggle="modal">
+                                  echo '<a href="#approved'.$id.'" data-target="#approved'.$id.'" data-toggle="modal"  style="color: #FFFFFF;text-decoration: none;">
                                     <button type="button" class="btn btn-success btn-sm">
                                       <i class="fas fa-check-circle"></i>
                                     </button></a>  ';
@@ -203,12 +203,12 @@
                                       </button></a>  ';
                               }else {
                                 if (check_for_inventory_match($conn,$id)>0) {
-                                  echo '<a href="#check'.$id.'" data-target="#check'.$id.'" data-toggle="modal">
+                                  echo '<a href="#check'.$id.'" data-target="#check'.$id.'" data-toggle="modal"  style="color: #FFFFFF;text-decoration: none;">
                                     <button type="button" class="btn btn-secondary btn-sm">
                                       <i class="fas fa-exclamation-circle"></i>
                                     </button></a>  ';
                                 }else {
-                                  echo '<a href="#approve'.$id.'" data-target="#approve'.$id.'" data-toggle="modal">
+                                  echo '<a href="#approve'.$id.'" data-target="#approve'.$id.'" data-toggle="modal"  style="color: #FFFFFF;text-decoration: none;">
                                         <button type="button" class="btn btn-success btn-sm">
                                           <i class="fas fa-check-circle"></i>
                                         </button></a>  ';
@@ -274,7 +274,7 @@
                                              ?>
                                              <h6>Downpayment of <?php echo number_format($cost); ?> is required (50% dp)</h6>
                                             <input required type="number" name="or" value="" placeholder="OR number" class="form-control"><br>
-                                            <input required type="number" name="cost" value="<?php echo $cost; ?>" placeholder="" class="form-control">
+                                            <input required type="number" name="cost" value="<?php echo ceil($cost); ?>" placeholder="" class="form-control">
                                           </p>
 
                                         </div>

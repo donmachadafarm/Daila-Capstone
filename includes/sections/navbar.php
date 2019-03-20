@@ -1,6 +1,6 @@
 <!-- navbar -->
-<nav class="nav navbar navbar-expand-lg navbar-light bg-light fixed-top">
-  <a class="navbar-brand bold" href="index.php">Daila Herbals</a>
+<nav class="nav navbar navbar-expand-lg navbar-light bg-secondary fixed-top">
+  <a class="navbar-brand text-light bold" href="index.php">Daila Herbals</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -14,7 +14,7 @@
 
       <?php if($_SESSION['userType']==104 || $_SESSION['userType']==101 || $_SESSION['userType']==102 || $_SESSION['userType']==103): ?>
       <li class="nav-item dropdown">
-        <a class="nav-link" href="#" id="navbardrop" data-toggle="dropdown">
+        <a class="nav-link text-light" href="#" id="navbardrop" data-toggle="dropdown">
           Inventory Management
         </a>
         <div class="dropdown-menu">
@@ -66,7 +66,7 @@
 
       <?php if($_SESSION['userType']==104 || $_SESSION['userType']==101 || $_SESSION['userType']==103): ?>
       <li class="nav-item dropdown">
-        <a class="nav-link" href="#" id="navbardrop" data-toggle="dropdown">
+        <a class="nav-link text-light" href="#" id="navbardrop" data-toggle="dropdown">
           Production Management
         </a>
         <div class="dropdown-menu">
@@ -100,7 +100,7 @@
 
       <?php if($_SESSION['userType'] == 103 || $_SESSION['userType']==104): ?>
       <li class="nav-item dropdown">
-        <a class="nav-link" href="#" id="navbardrop" data-toggle="dropdown">
+        <a class="nav-link text-light" href="#" id="navbardrop" data-toggle="dropdown">
           Equipment Monitoring
         </a>
         <div class="dropdown-menu">
@@ -117,7 +117,7 @@
 
       <?php if($_SESSION['userType']==104 || $_SESSION['userType']==100): ?>
       <li class="nav-item dropdown">
-        <a class="nav-link" href="#" id="navbardrop" data-toggle="dropdown">Reports</a>
+        <a class="nav-link text-light" href="#" id="navbardrop" data-toggle="dropdown">Reports</a>
         <div class="dropdown-menu">
             <h6 class="dropdown-header text-center"><b> Job Order Reports </b></h6>
             <!-- Add More Links if needed for every functionality -->
@@ -142,7 +142,7 @@
 
     <ul class="navbar-nav">
         <li class="nav-item dropdown">
-          <a class="nav-link" href="#" id="navbardrop" data-toggle="dropdown">
+          <a class="nav-link text-light" href="#" id="navbardrop" data-toggle="dropdown">
             <?php echo $_SESSION['username']; ?>
           </a>
           <div class="dropdown-menu dropdown-menu-right">

@@ -59,7 +59,7 @@
                 PurchaseOrder.status AS status
            FROM PurchaseOrder
            INNER JOIN Supplier ON PurchaseOrder.supplierID =Supplier.supplierID
-           WHERE PurchaseOrder.status <> "removed"
+           WHERE PurchaseOrder.status <> "removed" AND PurchaseOrder.status <> "Completed!"
            ORDER BY status DESC')){
 
 
@@ -75,7 +75,7 @@
                           echo '<td class="text-center">';
                             echo $deadline;
                           echo'</td>';
-                          
+
                           echo '<td class="text-center">';
                               echo $name;
                           echo '</td>';
