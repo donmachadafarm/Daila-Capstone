@@ -51,9 +51,9 @@ if (isset($_POST['edit'])) {
                         <option value="2" <?php if($example == '2') { ?> selected <?php } ?>>Yearly Average - Past 1 Year</option>
                         <option value="3" <?php if($example == '3') { ?> selected <?php } ?>>6 Month Average - Past 6 Months</option>
                         <option value="4" <?php if($example == '4') { ?> selected <?php } ?>>3 Month Average - Past 3 Months</option>
-                        <option value="5" <?php if($example == '5') { ?> selected <?php } ?>>Seasonality - All Sales from the Month of <?php echo $thisMonthWord?></option>
-                        <option value="6" <?php if($example == '6') { ?> selected <?php } ?>>This Year's Average - All Sales from the Year of <?php echo $thisYear?></option>
-                        <option value="7" <?php if($example == '7') { ?> selected <?php } ?>>Last Year's Average - All Sales from the Year of <?php echo $lastYear?></option>
+                        <option value="5" <?php if($example == '5') { ?> selected <?php } ?>>Seasonality - All Sales from the Month of <?php echo $thisMonthWord; ?></option>
+                        <option value="6" <?php if($example == '6') { ?> selected <?php } ?>>This Year's Average - All Sales from the Year of <?php echo $thisYear; ?></option>
+                        <option value="7" <?php if($example == '7') { ?> selected <?php } ?>>Last Year's Average - All Sales from the Year of <?php echo $lastYear; ?></option>
 
                     </select>
                 </div>
@@ -215,7 +215,7 @@ if (isset($_POST['edit'])) {
                                   </div>
                               </div>
                           </div>
-                          <?
+                          <?php
                         }
 
                         echo '</td>';
@@ -227,6 +227,8 @@ if (isset($_POST['edit'])) {
 
 
                 }
+
+                // end first conditional
 
                 elseif ($example ==1){
                     $allInventory = mysqli_query($conn, "SELECT product.name AS productname,
@@ -356,7 +358,7 @@ if (isset($_POST['edit'])) {
                                   </div>
                               </div>
                           </div>
-                          <?
+                          <?php
                         }
                         echo '</td>';
                         echo '</tr>';
@@ -492,7 +494,7 @@ if (isset($_POST['edit'])) {
                                   </div>
                               </div>
                           </div>
-                          <?
+                          <?php
                         }
                         echo '</td>';
                         echo '</tr>';
@@ -628,7 +630,7 @@ if (isset($_POST['edit'])) {
                                   </div>
                               </div>
                           </div>
-                          <?
+                          <?php
                         }
                         echo '</td>';
                         echo '</tr>';
@@ -764,7 +766,7 @@ if (isset($_POST['edit'])) {
                                   </div>
                               </div>
                           </div>
-                          <?
+                          <?php
                         }
                         echo '</td>';
                         echo '</tr>';
@@ -900,7 +902,7 @@ if (isset($_POST['edit'])) {
                                   </div>
                               </div>
                           </div>
-                          <?
+                          <?php
                         }
                         echo '</td>';
                         echo '</tr>';
@@ -1035,7 +1037,7 @@ if (isset($_POST['edit'])) {
                                   </div>
                               </div>
                           </div>
-                          <?
+                          <?php
                         }
                         echo '</td>';
                         echo '</tr>';
@@ -1170,7 +1172,7 @@ if (isset($_POST['edit'])) {
                                   </div>
                               </div>
                           </div>
-                          <?
+                          <?php
                         }
                         echo '</td>';
                         echo '</tr>';
