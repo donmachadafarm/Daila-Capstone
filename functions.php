@@ -1386,6 +1386,6 @@ function view_po($conn){
 
           echo '</tr>';
         }
-      }
+    }
 
  ?>
