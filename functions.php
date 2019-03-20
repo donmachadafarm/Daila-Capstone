@@ -1278,7 +1278,7 @@ function view_prodinventory($conn){
                   </div>
               </div>
           </div>
-          <?
+          <?php
         }
 
         echo '</td>';
