@@ -188,7 +188,7 @@ include 'includes/sections/header.php';
 
 // echo check_for_inventory_match($conn,28);
 $datestr = date("Y-m-d",strtotime("+10 days"));
-
+echo $datestr."<Br />";
 get_timebeforedeadline($conn,$datestr);
 
 ?>

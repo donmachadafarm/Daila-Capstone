@@ -225,7 +225,7 @@
                 <tr>
                     <th class="text-center">Due Date</th>
                     <th class="text-center">Machine</th>
-                    <th class="text-center">Process</th>
+                    <!-- <th class="text-center">Process</th> -->
                     <th class="text-center">Order ID</th>
                     <th class="text-center">Product</th>
                     <th class="text-center">Early end time</th>
@@ -250,20 +250,17 @@
 
                     while($row = mysqli_fetch_array($result)){
                         $id = $row['productID'];
-                        $datenow = date("Y-m-d");
-                        // $datefinish =
+                        $deadline = $row['dueDate'];
+                        $timeest = $row['timeEstimate'];
+
 
                         echo '<tr>';
                           echo '<td class="text-center">';
-                              echo $row['dueDate'];
+                              echo date("F-d-Y",strtotime($deadline));
                           echo '</td>';
 
                           echo '<td class="text-center">';
                               echo $row['name'];
-                          echo '</td>';
-
-                          echo '<td class="text-center">';
-                              echo $row['ptname'];
                           echo '</td>';
 
                           echo '<td class="text-center">';
@@ -275,23 +272,23 @@
                           echo'</td>';
 
                           echo '<td class="text-center">';
-                              echo seconds_datetime($row['timeEstimate']);
+                              echo date("F-d-Y h:i A",strtotime("+$timeest seconds"));
                           echo'</td>';
 
                           echo '<td class="text-center">';
-                              echo get_latestart($conn,$row['orderID']);
+                              echo get_timebeforedeadline($conn,$deadline);
                           echo'</td>';
 
                           echo '<td class="text-center">';
                             if (!check_complete_proc($conn,$row['orderID'],$row['productID'])) {
                                 // finish button na mag sabi tapos na process
                                 echo '<a href="#check'.$id.'" data-target="#check'.$id.'" data-toggle="modal">
-                                  <button type="button" class="btn btn-primary btn-sm">
+                                  <button type="button" class="btn btn-secondary btn-sm">
                                     Next
                                   </button></a>  ';
                                 echo '<a href="#delay'.$id.'" data-target="#delay'.$id.'" data-toggle="modal">
                                   <button type="button" class="btn btn-warning btn-sm" style="color:white">
-                                    Delay
+                                    Report Delay
                                   </button></a>  ';
                               } else {
                                 // finish button for final add ng product
@@ -359,14 +356,11 @@
                                           <div class="col-md-3">
                                             <label class="col-form-label">Delay:</label>
                                           </div>
-                                          <div class="col-md-3">
-                                            <input class="form-control" type="number" name="hrs" value="" placeholder="Hours" min="0" max="60">
-                                          </div>
-                                          <div class="col-md-3">
-                                            <input class="form-control" type="number" name="min" value="" placeholder="Minutes" min="0" max="60">
-                                          </div>
-                                          <div class="col-md-3">
-                                            <input class="form-control" type="number" name="sec" value="" placeholder="Seconds" min="0" max="60">
+                                          <div class="col-md-5">
+                                            <div class="input-group bootstrap-timepicker timepicker">
+                                                <input id="timepicker1" type="text" class="form-control input-small">
+                                                <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
+                                            </div>
                                           </div>
                                         </div>
                                       </p>
@@ -450,6 +444,10 @@
 
     </div>
 </div>
+
+<script type="text/javascript">
+  $('#timepicker1').timepicker();
+</script>
 
 
 <!-- end of content -->

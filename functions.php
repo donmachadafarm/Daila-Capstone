@@ -908,7 +908,7 @@ function get_processname($conn,$id){
   return $row[0];
 }
 
-function update_inventory($conn,$id,$qty){
+function update_inventory($conn,$id,$qty,$remarks){
   $user = $_SESSION['userid'];
   $date = date('Y-m-d');
 
@@ -916,8 +916,8 @@ function update_inventory($conn,$id,$qty){
 
     $sql = mysqli_query($conn,$query);
 
-  $query = "INSERT INTO AuditTrail(productID,quantityChange,dateChange,userID)
-              VALUES('$id','$qty','$date','$user')";
+  $query = "INSERT INTO AuditTrail(productID,quantityChange,dateChange,userID,remarks)
+              VALUES('$id','$qty','$date','$user','$remarks')";
 
     $sql = mysqli_query($conn,$query);
 
@@ -1307,7 +1307,7 @@ function get_timebeforedeadline($conn,$datestr){
   $diff-=$hours*$secondsPerHour;
   $minutes=round($diff/60);
 
-  echo "$days days $hours hours $minutes minutes remaining";
+  echo date("F-d-Y",strtotime("+$days days +$hours hours +$minutes minutes"));
 }
 
 function view_jo($conn){

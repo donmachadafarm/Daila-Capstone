@@ -22,7 +22,7 @@
   $thisMonthWord = date('F');
   $thisYear = date('Y');
   $lastYear = date('Y', strtotime('-1 year'));
-  
+
 
 ?>
 
@@ -130,17 +130,11 @@
                               $needed2=0;
                             }
                             if ($total2>$qty2){
-                              echo '<div class="alert alert-warning"><strong>Warning!</strong> Restock Ingredient ';
-                              echo $name2;
-                              echo " to ";
-                              echo $total2;
-                              echo ". Need ";
+                              echo "<div class='alert alert-warning'><strong>Warning!</strong> order ";
                               echo ceil($needed2);
-                              echo " ";
-                              echo $uom2;
-                              echo "s more. ";
-                              echo '<a href="makeFilteredPO.php?ids='.$id2.='&val='.$needed2.'&unit='.$uom2.'">Restock</a>';
-                              echo "</div>";
+                              echo " of ";
+                              echo $name2;
+                              echo " to maintain optimal quantity </div>";
                               $count += 1;
                           }
 
@@ -257,17 +251,11 @@
                               $needed2=0;
                             }
                             if ($total2>$qty2){
-                              echo '<div class="alert alert-warning"><strong>Warning!</strong> Restock Ingredient ';
-                              echo $name2;
-                              echo " to ";
-                              echo ceil($total2);
-                              echo ". Need ";
+                              echo "<div class='alert alert-warning'><strong>Warning!</strong> order ";
                               echo ceil($needed2);
-                              echo " ";
-                              echo $uom2;
-                              echo "s more. ";
-                              echo '<a href="makeFilteredPO.php?ids='.$id2.='&val='.ceil($needed2).'&unit='.$uom2.'">Restock</a>';
-                              echo "</div>";
+                              echo " of ";
+                              echo $name2;
+                              echo " to maintain optimal quantity </div>";
                               $count++;
                           }
 
@@ -383,17 +371,11 @@
                               $needed2 = 0;
                             }
                             if ($total2>$qty2){
-                              echo '<div class="alert alert-warning"><strong>Warning!</strong> Restock Ingredient ';
-                              echo $name2;
-                              echo " to ";
-                              echo ceil($total2);
-                              echo ". Need ";
+                              echo "<div class='alert alert-warning'><strong>Warning!</strong> order ";
                               echo ceil($needed2);
-                              echo " ";
-                              echo $uom2;
-                              echo "s more. ";
-                              echo '<a href="makeFilteredPO.php?ids='.$id2.='&val='.ceil($needed2).'&unit='.$uom2.'">Restock</a>';
-                              echo "</div>";
+                              echo " of ";
+                              echo $name2;
+                              echo " to maintain optimal quantity </div>";
                               $count++;
                           }
 
@@ -512,17 +494,11 @@
                               $needed2=0;
                             }
                             if ($total2>$qty2){
-                              echo '<div class="alert alert-warning"><strong>Warning!</strong> Restock Ingredient ';
-                              echo $name2;
-                              echo " to ";
-                              echo ceil($total2);
-                              echo ". Need ";
+                              echo "<div class='alert alert-warning'><strong>Warning!</strong> order ";
                               echo ceil($needed2);
-                              echo " ";
-                              echo $uom2;
-                              echo "s more. ";
-                              echo '<a href="makeFilteredPO.php?ids='.$id2.='&val='.ceil($needed2).'&unit='.$uom2.'">Restock</a>';
-                              echo "</div>";
+                              echo " of ";
+                              echo $name2;
+                              echo " to maintain optimal quantity </div>";
                               $count++;
                           }
 
@@ -638,17 +614,11 @@
                               $needed2=0;
                             }
                             if ($total2>$qty2){
-                              echo '<div class="alert alert-warning"><strong>Warning!</strong> Restock Ingredient ';
-                              echo $name2;
-                              echo " to ";
-                              echo ceil($total2);
-                              echo ". Need ";
+                              echo "<div class='alert alert-warning'><strong>Warning!</strong> order ";
                               echo ceil($needed2);
-                              echo " ";
-                              echo $uom2;
-                              echo "s more. ";
-                              echo '<a href="makeFilteredPO.php?ids='.$id2.='&val='.ceil($needed2).'&unit='.$uom2.'">Restock</a>';
-                              echo "</div>";
+                              echo " of ";
+                              echo $name2;
+                              echo " to maintain optimal quantity </div>";
                               $count++;
                           }
 
@@ -764,17 +734,11 @@
                               $needed2=0;
                             }
                             if ($total2>$qty2){
-                              echo '<div class="alert alert-warning"><strong>Warning!</strong> Restock Ingredient ';
-                              echo $name2;
-                              echo " to ";
-                              echo ceil($total2);
-                              echo ". Need ";
+                              echo "<div class='alert alert-warning'><strong>Warning!</strong> order ";
                               echo ceil($needed2);
-                              echo " ";
-                              echo $uom2;
-                              echo "s more. ";
-                              echo '<a href="makeFilteredPO.php?ids='.$id2.='&val='.ceil($needed2).'&unit='.$uom2.'">Restock</a>';
-                              echo "</div>";
+                              echo " of ";
+                              echo $name2;
+                              echo " to maintain optimal quantity </div>";
                               $count++;
                           }
 
@@ -891,17 +855,11 @@
                               $needed2=0;
                             }
                             if ($total2>$qty2){
-                              echo '<div class="alert alert-warning"><strong>Warning!</strong> Restock Ingredient ';
-                              echo $name2;
-                              echo " to ";
-                              echo ceil($total2);
-                              echo ". Need ";
+                              echo "<div class='alert alert-warning'><strong>Warning!</strong> order ";
                               echo ceil($needed2);
-                              echo " ";
-                              echo $uom2;
-                              echo "s more. ";
-                              echo '<a href="makeFilteredPO.php?ids='.$id2.='&val='.ceil($needed2).'&unit='.$uom2.'">Restock</a>';
-                              echo "</div>";
+                              echo " of ";
+                              echo $name2;
+                              echo " to maintain optimal quantity </div>";
                               $count++;
                           }
 
@@ -1017,17 +975,11 @@
                               $needed2 =0;
                             }
                             if ($total2>$qty2){
-                              echo '<div class="alert alert-warning"><strong>Warning!</strong> Restock Ingredient ';
-                              echo $name2;
-                              echo " to ";
-                              echo ceil($total2);
-                              echo ". Need ";
+                              echo "<div class='alert alert-warning'><strong>Warning!</strong> order ";
                               echo ceil($needed2);
-                              echo " ";
-                              echo $uom2;
-                              echo "s more. ";
-                              echo '<a href="makeFilteredPO.php?ids='.$id2.='&val='.ceil($needed2).'&unit='.$uom2.'">Restock</a>';
-                              echo "</div>";
+                              echo " of ";
+                              echo $name2;
+                              echo " to maintain optimal quantity </div>";
                               $count++;
                           }
 

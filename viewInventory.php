@@ -28,8 +28,9 @@ $lastYear = date('Y', strtotime('-1 year'));
 if (isset($_POST['edit'])) {
   $id = $_POST['prodid'];
   $qty = $_POST['qty'];
+  $remarks = $_POST['remarks'];
 
-  update_inventory($conn,$id,$qty);
+  update_inventory($conn,$id,$qty,$remarks);
 }
 ?>
 
@@ -126,12 +127,11 @@ if (isset($_POST['edit'])) {
                         }
 
                         if ($reorderPoint>$quantity){
-                            echo '<div class="alert alert-warning"><strong>Warning!</strong> Restock Product ';
+                            echo "<div class='alert alert-warning'><strong>Warning!</strong> order ";
+                            echo $needed;
+                            echo " of ";
                             echo $prodName;
-                            echo ' to ';
-                            echo $reorderPoint;
-                            echo ' need ' . $needed . ' more';
-                            echo '</div>';
+                            echo " to maintain optimal quantity </div>";
                             $count++;
                         }
 
@@ -178,7 +178,7 @@ if (isset($_POST['edit'])) {
                         echo '<a href="makeJobOrder.php?ids='.$id.'&name='.$prodName.'&val='.$needed.'"><button type="button" class="btn btn-success btn-sm">Restock</button> </a> ';
                         if ($_SESSION['userType'] == 104 || $_SESSION['userType'] == 102) {
                           echo "<a href='#edit".$id."' data-target='#edit".$id."'data-toggle='modal' class='btn btn-warning btn-sm' style='color:white'>
-                                  Edit
+                                  Phyiscal Count
                                   </a>";
 
                           ?>
@@ -202,6 +202,14 @@ if (isset($_POST['edit'])) {
                                                     </div>
                                                     <div class="col-md-6">
                                                       <input class="form-control" type="number" name="qty" value="" placeholder="Quantity">
+                                                    </div>
+                                                  </div><br>
+                                                  <div class="row">
+                                                    <div class="col-md-4">
+                                                      <label class="col-sm-2 col-form-label">Remarks:</label>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                      <textarea name="remarks" rows="3" cols="40" class="form-control"></textarea>
                                                     </div>
                                                   </div>
                                                 </p>
@@ -275,12 +283,11 @@ if (isset($_POST['edit'])) {
                         }
 
                         if ($reorderPoint>$quantity){
-                            echo '<div class="alert alert-warning"><strong>Warning!</strong> Restock Product ';
-                            echo $prodName;
-                            echo ' to ';
-                            echo $reorderPoint;
-                            echo ' need ' . $needed . ' more';
-                            echo '</div>';
+                          echo "<div class='alert alert-warning'><strong>Warning!</strong> order ";
+                          echo $needed;
+                          echo " of ";
+                          echo $prodName;
+                          echo " to maintain optimal quantity </div>";
                         }
 
                     }
@@ -321,7 +328,7 @@ if (isset($_POST['edit'])) {
                         echo '<a href="makeJobOrder.php?ids='.$id.'&name='.$prodName.'&val='.$needed.'"><button type="button" class="btn btn-primary btn-sm">Restock</button></a> ';
                         if ($_SESSION['userType'] == 104 || $_SESSION['userType'] == 102) {
                           echo "<a href='#edit".$id."' data-target='#edit".$id."'data-toggle='modal' class='btn btn-warning btn-sm' style='color:white'>
-                                  Edit
+                                  Phyiscal Count
                                   </a>";
 
                           ?>
@@ -345,6 +352,14 @@ if (isset($_POST['edit'])) {
                                                     </div>
                                                     <div class="col-md-6">
                                                       <input class="form-control" type="number" name="qty" value="" placeholder="Quantity">
+                                                    </div>
+                                                  </div><br>
+                                                  <div class="row">
+                                                    <div class="col-md-4">
+                                                      <label class="col-sm-2 col-form-label">Remarks:</label>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                      <textarea name="remarks" rows="3" cols="40" class="form-control"></textarea>
                                                     </div>
                                                   </div>
                                                 </p>
@@ -411,12 +426,11 @@ if (isset($_POST['edit'])) {
                         }
 
                         if ($reorderPoint>$quantity){
-                            echo '<div class="alert alert-warning"><strong>Warning!</strong> Restock Product ';
-                            echo $prodName;
-                            echo ' to ';
-                            echo $reorderPoint;
-                            echo ' need ' . $needed . ' more';
-                            echo '</div>';
+                          echo "<div class='alert alert-warning'><strong>Warning!</strong> order ";
+                          echo $needed;
+                          echo " of ";
+                          echo $prodName;
+                          echo " to maintain optimal quantity </div>";
                         }
 
                     }
@@ -457,7 +471,7 @@ if (isset($_POST['edit'])) {
                         echo '<a href="makeJobOrder.php?ids='.$id.'&name='.$prodName.'&val='.$needed.'"><button type="button" class="btn btn-primary btn-sm">Restock</button></a> ';
                         if ($_SESSION['userType'] == 104 || $_SESSION['userType'] == 102) {
                           echo "<a href='#edit".$id."' data-target='#edit".$id."'data-toggle='modal' class='btn btn-warning btn-sm' style='color:white'>
-                                  Edit
+                                  Phyiscal Count
                                   </a>";
 
                           ?>
@@ -481,6 +495,14 @@ if (isset($_POST['edit'])) {
                                                     </div>
                                                     <div class="col-md-6">
                                                       <input class="form-control" type="number" name="qty" value="" placeholder="Quantity">
+                                                    </div>
+                                                  </div><br>
+                                                  <div class="row">
+                                                    <div class="col-md-4">
+                                                      <label class="col-sm-2 col-form-label">Remarks:</label>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                      <textarea name="remarks" rows="3" cols="40" class="form-control"></textarea>
                                                     </div>
                                                   </div>
                                                 </p>
@@ -547,12 +569,11 @@ if (isset($_POST['edit'])) {
                         }
 
                         if ($reorderPoint>$quantity){
-                            echo '<div class="alert alert-warning"><strong>Warning!</strong> Restock Product ';
-                            echo $prodName;
-                            echo ' to ';
-                            echo $reorderPoint;
-                            echo ' need ' . $needed . ' more';
-                            echo '</div>';
+                          echo "<div class='alert alert-warning'><strong>Warning!</strong> order ";
+                          echo $needed;
+                          echo " of ";
+                          echo $prodName;
+                          echo " to maintain optimal quantity </div>";
                         }
 
                     }
@@ -593,7 +614,7 @@ if (isset($_POST['edit'])) {
                         echo '<a href="makeJobOrder.php?ids='.$id.'&name='.$prodName.'&val='.$needed.'"><button type="button" class="btn btn-primary btn-sm">Restock</button></a> ';
                         if ($_SESSION['userType'] == 104 || $_SESSION['userType'] == 102) {
                           echo "<a href='#edit".$id."' data-target='#edit".$id."'data-toggle='modal' class='btn btn-warning btn-sm' style='color:white'>
-                                  Edit
+                                  Phyiscal Count
                                   </a>";
 
                           ?>
@@ -617,6 +638,14 @@ if (isset($_POST['edit'])) {
                                                     </div>
                                                     <div class="col-md-6">
                                                       <input class="form-control" type="number" name="qty" value="" placeholder="Quantity">
+                                                    </div>
+                                                  </div><br>
+                                                  <div class="row">
+                                                    <div class="col-md-4">
+                                                      <label class="col-sm-2 col-form-label">Remarks:</label>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                      <textarea name="remarks" rows="3" cols="40" class="form-control"></textarea>
                                                     </div>
                                                   </div>
                                                 </p>
@@ -683,12 +712,11 @@ if (isset($_POST['edit'])) {
                         }
 
                         if ($reorderPoint>$quantity){
-                            echo '<div class="alert alert-warning"><strong>Warning!</strong> Restock Product ';
-                            echo $prodName;
-                            echo ' to ';
-                            echo $reorderPoint;
-                            echo ' need ' . $needed . ' more';
-                            echo '</div>';
+                          echo "<div class='alert alert-warning'><strong>Warning!</strong> order ";
+                          echo $needed;
+                          echo " of ";
+                          echo $prodName;
+                          echo " to maintain optimal quantity </div>";
                         }
 
                     }
@@ -729,7 +757,7 @@ if (isset($_POST['edit'])) {
                         echo '<a href="makeJobOrder.php?ids='.$id.'&name='.$prodName.'&val='.$needed.'"><button type="button" class="btn btn-primary btn-sm">Restock</button></a> ';
                         if ($_SESSION['userType'] == 104 || $_SESSION['userType'] == 102) {
                           echo "<a href='#edit".$id."' data-target='#edit".$id."'data-toggle='modal' class='btn btn-warning btn-sm' style='color:white'>
-                                  Edit
+                                  Phyiscal Count
                                   </a>";
 
                           ?>
@@ -753,6 +781,14 @@ if (isset($_POST['edit'])) {
                                                     </div>
                                                     <div class="col-md-6">
                                                       <input class="form-control" type="number" name="qty" value="" placeholder="Quantity">
+                                                    </div>
+                                                  </div><br>
+                                                  <div class="row">
+                                                    <div class="col-md-4">
+                                                      <label class="col-sm-2 col-form-label">Remarks:</label>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                      <textarea name="remarks" rows="3" cols="40" class="form-control"></textarea>
                                                     </div>
                                                   </div>
                                                 </p>
@@ -819,12 +855,11 @@ if (isset($_POST['edit'])) {
                         }
 
                         if ($reorderPoint>$quantity){
-                            echo '<div class="alert alert-warning"><strong>Warning!</strong> Restock Product ';
-                            echo $prodName;
-                            echo ' to ';
-                            echo $reorderPoint;
-                            echo ' need ' . $needed . ' more';
-                            echo '</div>';
+                          echo "<div class='alert alert-warning'><strong>Warning!</strong> order ";
+                          echo $needed;
+                          echo " of ";
+                          echo $prodName;
+                          echo " to maintain optimal quantity </div>";
                         }
 
                     }
@@ -865,7 +900,7 @@ if (isset($_POST['edit'])) {
                         echo '<a href="makeJobOrder.php?ids='.$id.'&name='.$prodName.'&val='.$needed.'"><button type="button" class="btn btn-primary btn-sm">Restock</button></a> ';
                         if ($_SESSION['userType'] == 104 || $_SESSION['userType'] == 102) {
                           echo "<a href='#edit".$id."' data-target='#edit".$id."'data-toggle='modal' class='btn btn-warning btn-sm' style='color:white'>
-                                  Edit
+                                  Phyiscal Count
                                   </a>";
 
                           ?>
@@ -889,6 +924,14 @@ if (isset($_POST['edit'])) {
                                                     </div>
                                                     <div class="col-md-6">
                                                       <input class="form-control" type="number" name="qty" value="" placeholder="Quantity">
+                                                    </div>
+                                                  </div><br>
+                                                  <div class="row">
+                                                    <div class="col-md-4">
+                                                      <label class="col-sm-2 col-form-label">Remarks:</label>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                      <textarea name="remarks" rows="3" cols="40" class="form-control"></textarea>
                                                     </div>
                                                   </div>
                                                 </p>
@@ -954,12 +997,11 @@ if (isset($_POST['edit'])) {
                         }
 
                         if ($reorderPoint>$quantity){
-                            echo '<div class="alert alert-warning"><strong>Warning!</strong> Restock Product ';
-                            echo $prodName;
-                            echo ' to ';
-                            echo $reorderPoint;
-                            echo ' need ' . $needed . ' more';
-                            echo '</div>';
+                          echo "<div class='alert alert-warning'><strong>Warning!</strong> order ";
+                          echo $needed;
+                          echo " of ";
+                          echo $prodName;
+                          echo " to maintain optimal quantity </div>";
                         }
 
                     }
@@ -1000,7 +1042,7 @@ if (isset($_POST['edit'])) {
                         echo '<a href="makeJobOrder.php?ids='.$id.'&name='.$prodName.'&val='.$needed.'"><button type="button" class="btn btn-primary btn-sm">Restock</button></a> ';
                         if ($_SESSION['userType'] == 104 || $_SESSION['userType'] == 102) {
                           echo "<a href='#edit".$id."' data-target='#edit".$id."'data-toggle='modal' class='btn btn-warning btn-sm' style='color:white'>
-                                  Edit
+                                  Phyiscal Count
                                   </a>";
 
                           ?>
@@ -1024,6 +1066,14 @@ if (isset($_POST['edit'])) {
                                                     </div>
                                                     <div class="col-md-6">
                                                       <input class="form-control" type="number" name="qty" value="" placeholder="Quantity">
+                                                    </div>
+                                                  </div><br>
+                                                  <div class="row">
+                                                    <div class="col-md-4">
+                                                      <label class="col-sm-2 col-form-label">Remarks:</label>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                      <textarea name="remarks" rows="3" cols="40" class="form-control"></textarea>
                                                     </div>
                                                   </div>
                                                 </p>
@@ -1089,12 +1139,11 @@ if (isset($_POST['edit'])) {
                         }
 
                         if ($reorderPoint>$quantity){
-                            echo '<div class="alert alert-warning"><strong>Warning!</strong> Restock Product ';
-                            echo $prodName;
-                            echo ' to ';
-                            echo $reorderPoint;
-                            echo ' need ' . $needed . ' more';
-                            echo '</div>';
+                          echo "<div class='alert alert-warning'><strong>Warning!</strong> order ";
+                          echo $needed;
+                          echo " of ";
+                          echo $prodName;
+                          echo " to maintain optimal quantity </div>";
                         }
 
                     }
@@ -1135,7 +1184,7 @@ if (isset($_POST['edit'])) {
                         echo '<a href="makeJobOrder.php?ids='.$id.'&name='.$prodName.'&val='.$needed.'"><button type="button" class="btn btn-primary btn-sm">Restock</button></a> ';
                         if ($_SESSION['userType'] == 104 || $_SESSION['userType'] == 102) {
                           echo "<a href='#edit".$id."' data-target='#edit".$id."'data-toggle='modal' class='btn btn-warning btn-sm' style='color:white'>
-                                  Edit
+                                  Phyiscal Count
                                   </a>";
 
                           ?>
@@ -1159,6 +1208,14 @@ if (isset($_POST['edit'])) {
                                                     </div>
                                                     <div class="col-md-6">
                                                       <input class="form-control" type="number" name="qty" value="" placeholder="Quantity">
+                                                    </div>
+                                                  </div><br>
+                                                  <div class="row">
+                                                    <div class="col-md-4">
+                                                      <label class="col-sm-2 col-form-label">Remarks:</label>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                      <textarea name="remarks" rows="3" cols="40" class="form-control"></textarea>
                                                     </div>
                                                   </div>
                                                 </p>
