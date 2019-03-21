@@ -353,13 +353,23 @@
                                     <div class="text-center">
                                       <p>
                                         <div class="row">
-                                          <div class="col-md-3">
+                                          <div class="col-md-2">
                                             <label class="col-form-label">Delay:</label>
                                           </div>
                                           <div class="col-md-5">
                                             <div class="input-group bootstrap-timepicker timepicker">
-                                                <input id="timepicker1" type="text" class="form-control input-small">
-                                                <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
+                                                <input type="date" name="date" class="form-control" max="<?php echo date('Y-m-d'); ?>">
+                                                <div class="input-group-append">
+                                                  <div class="input-group-text"><i class="fas fa-calendar"></i></div>
+                                                </div>
+                                            </div>
+                                          </div>
+                                          <div class="col-md-5">
+                                            <div class="input-group bootstrap-timepicker timepicker">
+                                                <input name="time" id="timepicker1" type="text" class="form-control input-small">
+                                                <div class="input-group-append">
+                                                  <div class="input-group-text"><i class="fas fa-clock"></i></div>
+                                                </div>
                                             </div>
                                           </div>
                                         </div>

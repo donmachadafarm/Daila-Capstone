@@ -17,15 +17,9 @@ if (!isset($_SESSION['userType'])){
 }
 ?>
 
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Daila Herbals | Sales Report</title>
-</head>
-<body>
-<br />
 
 <div class="container">
+  <br>
     <div class="row">
         <div class="col-lg-12" align="center">
             <h1 class="text-center" align="center"><br>
@@ -41,7 +35,7 @@ if (!isset($_SESSION['userType'])){
             </form>
         </div>
     </div>
-</div>
+    <div class="row">
 
 <?php
 if (isset($_POST['search'])){
@@ -56,13 +50,14 @@ if (isset($_POST['search'])){
 
     echo        '<table class="columns" align="center">';
     echo            '<tr>';
-    echo                '<td><div id="piechart" style="width: 750px; height: 350px;border: 1px solid #ccc"></div></td>';
-    echo                '<td><div id="piechart2" style="width: 750px; height: 350px;border: 1px solid #ccc"></div></td>';
+    echo                '<td><div id="piechart" style="width: 450px; height: 350px;border: 1px solid #ccc"></div></td>';
+    echo                '<td><div id="piechart2" style="width: 450px; height: 350px;border: 1px solid #ccc"></div></td>';
     echo            '</tr>';
     echo        '</table>';
 
     $connect = mysqli_connect("localhost", "root", "", "capstone_daila");
-    $query = "SELECT product.name as name,SUM(productsales.quantity) as 'products sold'
+    $query = "SELECT product.name as name,
+                     SUM(productsales.quantity) as 'products sold'
                     FROM productsales
                     JOIN product on productsales.productID=product.productID
                     JOIN sales on productsales.salesID=sales.salesID
@@ -83,10 +78,48 @@ if (isset($_POST['search'])){
 }
 else{
 
+   $endDate = date("Y-m-d");
+   $startDate = date("Y-m-d",strtotime("-7 days"));
+
+  echo '<h2 class="text-center">Transactions between ';
+  echo $startDate;
+  echo ' and ';
+  echo $endDate;
+  echo '</h2><br>';
+
+  echo        '<table class="columns" align="center">';
+  echo            '<tr>';
+  echo                '<td><div id="piechart" style="width: 450px; height: 350px;border: 1px solid #ccc"></div></td>';
+  echo                '<td><div id="piechart2" style="width: 450px; height: 350px;border: 1px solid #ccc"></div></td>';
+  echo            '</tr>';
+  echo        '</table>';
+
+  $connect = mysqli_connect("localhost", "root", "", "capstone_daila");
+  $query = "SELECT product.name as name,SUM(productsales.quantity) as 'products sold'
+                  FROM productsales
+                  JOIN product on productsales.productID=product.productID
+                  JOIN sales on productsales.salesID=sales.salesID
+                  WHERE sales.saleDate BETWEEN '$startDate' AND '$endDate'
+                  GROUP BY product.name
+                  ORDER BY `products sold`  DESC";
+  $result = mysqli_query($connect, $query);
+  $query2 = "SELECT product.name as name, SUM(productsales.subTotal) as 'total sales'
+                  FROM productsales
+                  JOIN product on productsales.productID=product.productID
+                  JOIN sales on productsales.salesID=sales.salesID
+                  WHERE sales.saleDate BETWEEN '$startDate' AND '$endDate'
+                  GROUP BY product.name
+                  ORDER BY `total sales`  DESC";
+
+  $result2 = mysqli_query($connect, $query2);
+
+
 }
 ?>
 
+</div>
 
+</div>
 </body>
 </html>
 

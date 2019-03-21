@@ -348,8 +348,7 @@ function get_need_inventory3($conn,$prodid,$qty){
                   JOIN RMIngredient ON RMIngredient.ingredientID = Ingredient.ingredientID
                   JOIN RawMaterial ON RawMaterial.rawMaterialID = RMIngredient.rawMaterialID
                   JOIN Supplier ON RawMaterial.supplierID = Supplier.supplierID
-                  WHERE Recipe.productID = $prodid AND Recipe.quantity*$qty > Ingredient.quantity
-                  LIMIT $count";
+                  WHERE Recipe.productID = $prodid AND Recipe.quantity*$qty > Ingredient.quantity";
 
         $sql1 = mysqli_query($conn,$query1);
 
@@ -365,12 +364,14 @@ function get_need_inventory3($conn,$prodid,$qty){
           $ingquant = $rowed['NeededIngredientQuantity'];
           $currinvq = $rowed['CurrentInventoryQuantity'];
           $uom = $rowed['uom'];
+          $lack = $ingquant - $currinvq;
 
           $needstock[$i]['productid'] = $prodakid;
           $needstock[$i]['ingredientid'] = $ingredid;
           $needstock[$i]['ingname'] = $ingrenam;
           $needstock[$i]['supid'] = $supplyid;
           $needstock[$i]['needqty'] = $ingquant;
+          $needstock[$i]['lacking'] = $lack;
           $needstock[$i]['uom'] = $uom;
 
         }
@@ -378,6 +379,17 @@ function get_need_inventory3($conn,$prodid,$qty){
 
 
     return $needstock;
+}
+
+function get_username($conn,$id){
+  $query = "SELECT givenName FROM User WHERE userID = '$id'";
+
+    $sql = mysqli_query($conn,$query);
+
+    $row = mysqli_fetch_array($sql);
+
+  return $row[0];
+
 }
 
 function get_suppname($conn,$id){

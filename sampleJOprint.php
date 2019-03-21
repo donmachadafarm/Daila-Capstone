@@ -191,7 +191,7 @@
                     echo "<b>" . get_prodname($conn,$inv[0]['productid']) . "</b><br />";
                     foreach ($inv as $key => $value) {
                       $daysArr[] = get_suppdur($conn,$inv[$key]['supid']);
-                      echo "<div style='text-indent: 20px'><b>Need: " . $inv[$key]['ingname'] . "</b> - " . number_format($inv[$key]['needqty']) ." " .$inv[$key]['uom']. "</div>";
+                      echo "<div style='text-indent: 20px'><b>Need: " . $inv[$key]['ingname'] . "</b> - " . number_format($inv[$key]['lacking']) ." " .$inv[$key]['uom']. "</div>";
                       echo "<div style='text-indent: 30px'>Supplier: ". get_suppname($conn,$inv[$key]['supid']) . " (Estimated Delivery - " . get_suppdur($conn,$inv[$key]['supid']) . " Days)</div>";
                     }
                   echo "</div>";

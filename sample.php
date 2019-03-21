@@ -187,8 +187,38 @@ include 'includes/sections/header.php';
 //}
 
 // echo check_for_inventory_match($conn,28);
-$datestr = date("Y-m-d",strtotime("+10 days"));
-echo $datestr."<Br />";
-get_timebeforedeadline($conn,$datestr);
-
+// $datestr = date("Y-m-d",strtotime("+10 days"));
+// echo $datestr."<Br />";
+// get_timebeforedeadline($conn,$datestr);
+if (isset($_POST['go'])) {
+  echo $_POST['time']."<br />";
+  $t = $_POST['time'];
+  $tq = strtotime($t);
+  $tw = time();
+  $tr = $tq-$tw;
+  echo $tr."<br />";
+  echo date("H:i",$tr);
+}
 ?>
+<form class="" method="post">
+
+<div class="row">
+  <div class="col-md-2">
+    <label class="col-form-label">Delay:</label>
+  </div>
+  <div class="col-md-5">
+    <div class="input-group bootstrap-timepicker timepicker">
+        <input name="time" id="timepicker1" type="text" class="form-control input-small">
+        <div class="input-group-append">
+          <div class="input-group-text"><i class="fas fa-clock"></i></div>
+        </div>
+    </div>
+  </div>
+  <input type="submit" name="go" value="yea">
+</div>
+
+</form>
+
+<script type="text/javascript">
+  $('#timepicker1').timepicker();
+</script>
