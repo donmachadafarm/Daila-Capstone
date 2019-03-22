@@ -168,6 +168,7 @@
     $proid = $_POST['prod_id'];
     $stats = $_POST['status'];
 
+
     $qry = "SELECT timeEstimate as t FROM ProductionProcess WHERE orderID = $ordid AND machineID = $macid AND productID = $proid";
     $sql = mysqli_query($conn,$qry);
     $row = mysqli_fetch_array($sql);
@@ -358,7 +359,7 @@
                                           </div>
                                           <div class="col-md-5">
                                             <div class="input-group bootstrap-timepicker timepicker">
-                                                <input type="date" name="date" class="form-control" max="<?php echo date('Y-m-d'); ?>">
+                                                <input type="date" name="date" class="form-control" value="<?php echo date('Y-m-d'); ?>" max="<?php echo date('Y-m-d'); ?>">
                                                 <div class="input-group-append">
                                                   <div class="input-group-text"><i class="fas fa-calendar"></i></div>
                                                 </div>
@@ -456,7 +457,12 @@
 </div>
 
 <script type="text/javascript">
-  $('#timepicker1').timepicker();
+  $('#timepicker1').timepicker({
+      minuteStep: 1,
+      showSeconds: true,
+      showMeridian: true,
+      defaultTime: 'current'
+  });
 </script>
 
 

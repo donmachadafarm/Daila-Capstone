@@ -191,34 +191,39 @@ include 'includes/sections/header.php';
 // echo $datestr."<Br />";
 // get_timebeforedeadline($conn,$datestr);
 if (isset($_POST['go'])) {
-  echo $_POST['time']."<br />";
+  $now = new DateTime("now");
   $t = $_POST['time'];
-  $tq = strtotime($t);
-  $tw = time();
-  $tr = $tq-$tw;
-  echo $tr."<br />";
-  echo date("H:i",$tr);
-}
-?>
-<form class="" method="post">
+  $d = $_POST['date'];
+  // echo $_POST['time']."<br />";
+  // echo $_POST['date']."<br />";
+  $com = date("Y-m-d H:i:s",strtotime("$d $t"));
+  $com = new DateTime($com);
 
-<div class="row">
-  <div class="col-md-2">
-    <label class="col-form-label">Delay:</label>
-  </div>
-  <div class="col-md-5">
+  $diff = $com->diff($now);
+
+  // print $diff->format("%H %I %S");
+}
+$dead = date("Y-m-d H:i",strtotime("+5 days +5 hours"));
+
+echo $dead;
+?>
+<!-- <form class="" method="post">
+  <input type="date" name="date" max="<?php echo date('Y-m-d'); ?>">
     <div class="input-group bootstrap-timepicker timepicker">
-        <input name="time" id="timepicker1" type="text" class="form-control input-small">
-        <div class="input-group-append">
-          <div class="input-group-text"><i class="fas fa-clock"></i></div>
-        </div>
+        <input name="time" id="timepicker1" type="text">
     </div>
-  </div>
+
   <input type="submit" name="go" value="yea">
 </div>
 
-</form>
+</form> -->
 
+<?php //echo get_timebeforedeadline($conn,$t); ?>
 <script type="text/javascript">
-  $('#timepicker1').timepicker();
+  $('#timepicker1').timepicker({
+      minuteStep: 1,
+      showSeconds: true,
+      showMeridian: false,
+      defaultTime: 'current'
+  });
 </script>

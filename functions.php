@@ -166,7 +166,10 @@ function datetime_seconds($time){
 
 // seconds to date time
 function seconds_datetime($seconds){
-  return gmdate("H:i:s",$seconds);
+  // return gmdate("H:i:s",$seconds);
+  $dt1 = new DateTime("@0");
+  $dt2 = new DateTime("@$seconds");
+  return $dt1->diff($dt2)->format('%a day/s, %h hours, %i minutes and %s seconds');
 }
 
 // count recursive
@@ -785,6 +788,7 @@ function get_prodqty($conn,$prod){
   return $row[0];
 
 }
+
 function get_prodname($conn,$prod){
   $query = "SELECT name FROM Product WHERE productID = $prod";
 
@@ -1319,7 +1323,7 @@ function get_timebeforedeadline($conn,$datestr){
   $diff-=$hours*$secondsPerHour;
   $minutes=round($diff/60);
 
-  echo date("F-d-Y",strtotime("+$days days +$hours hours +$minutes minutes"));
+  echo date("F-d-Y H:i",strtotime("+$days days +$hours hours +$minutes minutes"));
 }
 
 function view_jo($conn){

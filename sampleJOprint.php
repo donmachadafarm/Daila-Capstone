@@ -176,11 +176,12 @@
 
             <br>
             <p><b>Total Production Time:</b> <?php echo seconds_datetime($sum); ?></p>
-            <hr class="style1">
+
 
             <?php
 
             if ($checker>0) {
+              echo "<hr class='style1'>";
               echo "<h5>Lacking Ingredients on the following:</h5>";
               foreach ($prod as $key => $value) {
                 $qty = $quantity[$key];
