@@ -54,6 +54,8 @@
         }
 
     }
+
+    $deadline = get_duedate($conn,$prodid,$restockQuantity);
 ?>
 
 <!-- put all the contents here  -->
@@ -82,10 +84,7 @@
                             <input type="number" name="quantity" value="<?php echo round($restockQuantity); ?>" class="form-control" required>
                           </br>
                           <label>Due Date:</label></br>
-                            <input type="date" id="txtDate" name="deadline" class="form-control" required>
-                          </br>
-                          <label>Remarks:</label>
-                            <textarea class="form-control" rows="3" name="remarks"></textarea>
+                            <input type="date" id="txtDate" value="<?php echo $deadline; ?>" name="deadline" class="form-control" required>
                           </br>
                         </p>
                     <input type="submit" name="submit" value="Add Job Order" class="btn btn-success"/></div>

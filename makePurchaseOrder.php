@@ -175,7 +175,7 @@ if (isset($_POST['submit'])){
                               echo "</div>";
 
                               echo "<div class='col'>";
-                                echo ceil($need);
+                                echo ceil($need)-1;
                                 echo "<input class='form-control' name ='qty[]' value = '". ceil($need) ."' type='hidden'>";
                               echo "</div>";
 

@@ -156,6 +156,9 @@
                   $checker++;
                 }
 
+                $sum+= get_currqueuecount($conn);
+
+
              ?>
 
 
@@ -208,9 +211,9 @@
 
             $query = "SELECT SUM(timeEstimate) FROM ProductionProcess";
 
-            $sql = mysqli_query($conn,$query);
+              $sql = mysqli_query($conn,$query);
 
-            $row = mysqli_fetch_array($sql);
+              $row = mysqli_fetch_array($sql);
 
             $time+=$row[0];
 
@@ -230,7 +233,7 @@
                   <p><b>Packaging & Delivery Time: 5 Days </b></p>
               </div>
               <div class="col">
-                  <p><b class="pull-right">Estimated delivery Date: <?php echo date("M/d/Y",$date); ?></b></p>
+                  <p><b class="pull-right">Estimated delivery Date: <?php echo date("M/d/Y h:i:s A",$date); ?></b></p>
               </div>
             </div>
             <hr class="style1">

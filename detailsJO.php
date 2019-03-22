@@ -29,7 +29,7 @@ if (!isset($_SESSION['userType'])){
                 joborder.dueDate AS dd,
                 joborder.totalPrice AS TOTAL,
                 joborder.remarks
-                
+
                 FROM joborder
                 JOIN customer on joborder.customerID=customer.customerID
                 WHERE joborder.orderID=$id";
@@ -149,7 +149,7 @@ if (!isset($_SESSION['userType'])){
         </div>
 
         <div class="col text-center">
-            <a href="jobOrderReportMTO.php" class="btn btn-primary btn-sm">Back</a>
+            <button type="button" class="btn btn-primary" onclick="goBack()" name="button">Back</button>
         </div>
 
         <div class="col text-center">
@@ -157,5 +157,3 @@ if (!isset($_SESSION['userType'])){
     </div>
 
 </div>
-
-

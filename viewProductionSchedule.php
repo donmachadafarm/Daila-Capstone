@@ -111,10 +111,6 @@
               alert('Products are now for Shipping!');
                   </script>";
               // window.location.replace('viewProductionSchedule.php');
-
-
-
-
   }
 
   if(isset($_POST['check'])){
@@ -426,10 +422,20 @@
                                         </p>
                                       </div>
                                       <label>Total Yield:</label></br>
-                                        <input type="number" name="yield" value="<?php echo round($row['quantity']+($row['quantity']*0.01)); ?>" class="form-control" required>
+                                        <input type="number" name="yield" value="
+                                            <?php if ($row['quantity']<100) {
+                                              echo round($row['quantity']);
+                                            }else {
+                                              echo round($row['quantity']+($row['quantity']*0.01));
+                                            } ?>" class="form-control" required>
                                       </br>
                                       <label>Total Good:</label></br>
-                                        <input type="number" name="good" value="<?php echo round($row['quantity']+($row['quantity']*0.01)); ?>" class="form-control" required>
+                                        <input type="number" name="good" value="
+                                            <?php if ($row['quantity']<100) {
+                                              echo round($row['quantity']);
+                                            }else {
+                                              echo round($row['quantity']+($row['quantity']*0.01));
+                                            } ?>" class="form-control" required>
                                       </br>
                                       <small>items less than 100 will not have 1% extra</small>
                                       <div class="modal-footer">

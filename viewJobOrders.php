@@ -367,7 +367,7 @@
                                                       echo "$ingname";
                                                     echo "</div>";
                                                     echo "<div class='col text-center'>";
-                                                      echo ceil($need);
+                                                      echo ceil($need)-1;
                                                     echo "</div>";
                                                   echo "</div>";
                                                 }
