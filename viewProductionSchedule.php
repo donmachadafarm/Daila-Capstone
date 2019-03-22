@@ -125,7 +125,7 @@
     $time = $row['t'];
 
     // update the production process for that row ng specific order machine id at productid  "Ongoing" - > "Done"
-    $query = "UPDATE ProductionProcess SET status = 'Done' WHERE orderID = $ordid AND machineID = $macid AND productID = $proid AND status = 'Ongoing'";
+    $query = "UPDATE ProductionProcess SET status = 'Done',machineQueue = machineQueue - 1 WHERE orderID = $ordid AND machineID = $macid AND productID = $proid AND status = 'Ongoing'";
 
     mysqli_query($conn,$query);
 
