@@ -197,17 +197,23 @@ if (isset($_POST['go'])) {
   // echo $_POST['time']."<br />";
   // echo $_POST['date']."<br />";
   $com = date("Y-m-d H:i:s",strtotime("$d $t"));
-  $com = new DateTime($com);
+  $after = new DateTime($com);
 
-  $diff = $com->diff($now);
+  $diff = $after->diff($now);
 
-  // print $diff->format("%H %I %S");
+  print $diff->format("%H %I %S");
+
+  $new = $diff->format("%H %I %S");
+
+  echo "<br>".datetime_seconds($new);
+
+
 }
-$dead = date("Y-m-d H:i",strtotime("+5 days +5 hours"));
+// $dead = date("Y-m-d H:i",strtotime("+5 days +5 hours"));
 
-echo $dead;
+// echo $dead;
 ?>
-<!-- <form class="" method="post">
+<form class="" method="post">
   <input type="date" name="date" max="<?php echo date('Y-m-d'); ?>">
     <div class="input-group bootstrap-timepicker timepicker">
         <input name="time" id="timepicker1" type="text">
@@ -216,7 +222,7 @@ echo $dead;
   <input type="submit" name="go" value="yea">
 </div>
 
-</form> -->
+</form>
 
 <?php //echo get_timebeforedeadline($conn,$t); ?>
 <script type="text/javascript">

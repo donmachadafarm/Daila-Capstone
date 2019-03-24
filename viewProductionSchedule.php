@@ -227,7 +227,11 @@
                     <th class="text-center">Product</th>
                     <th class="text-center">Early end time</th>
                     <th class="text-center">Late start time</th>
-                    <th class="text-center">Action</th>
+                    <?php if ($_SESSION['userType'] == '103' || $_SESSION['userType'] == '104'): ?>
+                      <th class="text-center">Action</th>
+                    <?php endif; ?>
+
+
                 </tr>
                 </thead>
                 <tbody>
@@ -273,9 +277,10 @@
                           echo'</td>';
 
                           echo '<td class="text-center">';
-                              echo get_timebeforedeadline($conn,$deadline);
+                              echo get_timebeforedeadline($conn,$deadline,$timeest);
                           echo'</td>';
 
+                    if ($_SESSION['userType'] == '103' || $_SESSION['userType'] == '104') {
                           echo '<td class="text-center">';
                             if (!check_complete_proc($conn,$row['orderID'],$row['productID'])) {
                                 // finish button na mag sabi tapos na process
@@ -295,6 +300,7 @@
                                   </button></a>  ';
                               }
                           echo '</td>';
+                        }
 
                         echo '</tr>';
                     ?>
@@ -411,31 +417,15 @@
                                         <p>
                                           <h5>Finished production for <strong><?php echo $row['name']; ?>?</strong></h5>
                                           <br>
-                                          <h5>Order needs: <?php
-                                                  if ($row['quantity']<100) {
-                                                    echo round($row['quantity']);
-                                                  }else {
-                                                    echo round($row['quantity']+($row['quantity']*0.01));
-                                                  }
-                                                            ?>
+                                          <h5>Order needs: <?php if ($row['quantity']<100) { echo round($row['quantity']); }else { echo round($row['quantity']+($row['quantity']*0.01));} ?>
                                           </h5>
                                         </p>
                                       </div>
                                       <label>Total Yield:</label></br>
-                                        <input type="number" name="yield" value="
-                                            <?php if ($row['quantity']<100) {
-                                              echo round($row['quantity']);
-                                            }else {
-                                              echo round($row['quantity']+($row['quantity']*0.01));
-                                            } ?>" class="form-control" required>
+                                        <input type="number" name="yield" value="<?php if ($row['quantity']<100) { echo round($row['quantity']); }else {echo round($row['quantity']+($row['quantity']*0.01)); } ?>" class="form-control" required>
                                       </br>
                                       <label>Total Good:</label></br>
-                                        <input type="number" name="good" value="
-                                            <?php if ($row['quantity']<100) {
-                                              echo round($row['quantity']);
-                                            }else {
-                                              echo round($row['quantity']+($row['quantity']*0.01));
-                                            } ?>" class="form-control" required>
+                                        <input type="number" name="good" value="<?php if ($row['quantity']<100) { echo round($row['quantity']); }else {echo round($row['quantity']+($row['quantity']*0.01)); } ?>" class="form-control" required>
                                       </br>
                                       <small>items less than 100 will not have 1% extra</small>
                                       <div class="modal-footer">

@@ -209,8 +209,7 @@ if (isset($_POST['edit'])) {
                                                       <label class="col-sm-2 col-form-label">Remarks:</label>
                                                     </div>
                                                     <div class="col-md-6">
-                                                      <textarea name="remarks" rows="3" cols="40" class="form-control"></textarea>
-                                                    </div>
+                                                      <textarea name="remarks" rows="3" cols="40" class="form-control" required></textarea>                                                    </div>
                                                   </div>
                                                 </p>
                                               </div>
@@ -359,8 +358,7 @@ if (isset($_POST['edit'])) {
                                                       <label class="col-sm-2 col-form-label">Remarks:</label>
                                                     </div>
                                                     <div class="col-md-6">
-                                                      <textarea name="remarks" rows="3" cols="40" class="form-control"></textarea>
-                                                    </div>
+                                                      <textarea name="remarks" rows="3" cols="40" class="form-control" required></textarea>                                                    </div>
                                                   </div>
                                                 </p>
                                               </div>
@@ -502,8 +500,7 @@ if (isset($_POST['edit'])) {
                                                       <label class="col-sm-2 col-form-label">Remarks:</label>
                                                     </div>
                                                     <div class="col-md-6">
-                                                      <textarea name="remarks" rows="3" cols="40" class="form-control"></textarea>
-                                                    </div>
+                                                      <textarea name="remarks" rows="3" cols="40" class="form-control" required></textarea>                                                    </div>
                                                   </div>
                                                 </p>
                                               </div>
@@ -645,8 +642,7 @@ if (isset($_POST['edit'])) {
                                                       <label class="col-sm-2 col-form-label">Remarks:</label>
                                                     </div>
                                                     <div class="col-md-6">
-                                                      <textarea name="remarks" rows="3" cols="40" class="form-control"></textarea>
-                                                    </div>
+                                                      <textarea name="remarks" rows="3" cols="40" class="form-control" required></textarea>                                                    </div>
                                                   </div>
                                                 </p>
                                               </div>
@@ -788,8 +784,7 @@ if (isset($_POST['edit'])) {
                                                       <label class="col-sm-2 col-form-label">Remarks:</label>
                                                     </div>
                                                     <div class="col-md-6">
-                                                      <textarea name="remarks" rows="3" cols="40" class="form-control"></textarea>
-                                                    </div>
+                                                      <textarea name="remarks" rows="3" cols="40" class="form-control" required></textarea>                                                    </div>
                                                   </div>
                                                 </p>
                                               </div>
@@ -931,8 +926,7 @@ if (isset($_POST['edit'])) {
                                                       <label class="col-sm-2 col-form-label">Remarks:</label>
                                                     </div>
                                                     <div class="col-md-6">
-                                                      <textarea name="remarks" rows="3" cols="40" class="form-control"></textarea>
-                                                    </div>
+                                                      <textarea name="remarks" rows="3" cols="40" class="form-control" required></textarea>                                                    </div>
                                                   </div>
                                                 </p>
                                               </div>
@@ -1073,8 +1067,7 @@ if (isset($_POST['edit'])) {
                                                       <label class="col-sm-2 col-form-label">Remarks:</label>
                                                     </div>
                                                     <div class="col-md-6">
-                                                      <textarea name="remarks" rows="3" cols="40" class="form-control"></textarea>
-                                                    </div>
+                                                      <textarea name="remarks" rows="3" cols="40" class="form-control" required></textarea>                                                    </div>
                                                   </div>
                                                 </p>
                                               </div>
@@ -1215,8 +1208,7 @@ if (isset($_POST['edit'])) {
                                                       <label class="col-sm-2 col-form-label">Remarks:</label>
                                                     </div>
                                                     <div class="col-md-6">
-                                                      <textarea name="remarks" rows="3" cols="40" class="form-control"></textarea>
-                                                    </div>
+                                                      <textarea name="remarks" rows="3" cols="40" class="form-control" required></textarea>                                                    </div>
                                                   </div>
                                                 </p>
                                               </div>

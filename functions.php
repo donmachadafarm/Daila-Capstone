@@ -1333,20 +1333,8 @@ function view_prodinventory($conn){
 }
 
 
-function get_timebeforedeadline($conn,$datestr){
-  $date=strtotime($datestr);//Converted to a PHP date (a second count)
-
-  //Calculate difference
-  $diff=$date-time();//time returns current time in seconds
-  $secondsPerHour=60*60;
-  $secondsPerDay=60*60*24;
-  $days=floor($diff/$secondsPerDay);
-  $diff-=$days*$secondsPerDay;
-  $hours=floor($diff/$secondsPerHour);
-  $diff-=$hours*$secondsPerHour;
-  $minutes=round($diff/60);
-
-  echo date("F-d-Y H:i",strtotime("+$days days +$hours hours +$minutes minutes"));
+function get_timebeforedeadline($conn,$dl,$sec){
+  return date("Y-m-d h:i:s",strtotime($dl) - $sec);
 }
 
 function view_jo($conn){
