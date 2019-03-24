@@ -834,6 +834,24 @@ function get_range_average($conn, $prod, $start, $end){
 
     return $aveSales;
 }
+function get_weighted_average($conn, $prod, $month, $year, $weight){
+  $query = "SELECT product.name, AVG(productsales.quantity) as 'Average', sales.saleDate as 'Date'
+              FROM product
+              JOIN productsales on product.productID = productsales.productID
+              JOIN sales on productsales.salesID = sales.salesID
+              WHERE product.productID = '$prod'
+              AND MONTH(sales.saleDate) = '$month'
+              AND YEAR(sales.saleDate) = '$year'";
+
+  $sql = mysqli_query($conn, $query);
+
+  $row = mysqli_fetch_array($sql);
+
+  $total = $row['Average'];
+  $weightedTotal = ($row['Average']*$weight)/100;
+
+  return $weightedTotal;
+}
 //get sales of specific year
 function get_yearly($conn, $prod, $year){
   $query = "SELECT product.name, AVG(productsales.quantity) as 'Average'

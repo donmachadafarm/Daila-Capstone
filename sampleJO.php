@@ -45,7 +45,6 @@
               <div class="col-lg-12">
                 <div class="panel panel-default">
                   <div class="panel-body">
-
                     <div class="table-repsonsive">
                        <table class="table table-borderless" id="item_table">
                         <tr>
@@ -58,11 +57,11 @@
                           <td><button type="button" name="add" class="btn btn-success btn-sm add">+</button></td>
                         </tr>
                        </table>
-                     </div>
-
+                    </div>
                   </div>
                 </div>
-               </div>
+              </div>
+            
                <div class="col-lg-12">
                  <div align="center">
                   <a href="#confirm" data-target="#confirm" data-toggle="modal"><button type="button" class="btn btn-success">Submit</button></a>
