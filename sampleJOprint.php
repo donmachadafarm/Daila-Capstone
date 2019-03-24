@@ -156,6 +156,9 @@
                   $checker++;
                 }
 
+                $sum+= get_currqueuecount($conn);
+
+
              ?>
 
 
@@ -176,11 +179,12 @@
 
             <br>
             <p><b>Total Production Time:</b> <?php echo seconds_datetime($sum); ?></p>
-            <hr class="style1">
+
 
             <?php
 
             if ($checker>0) {
+              echo "<hr class='style1'>";
               echo "<h5>Lacking Ingredients on the following:</h5>";
               foreach ($prod as $key => $value) {
                 $qty = $quantity[$key];
@@ -191,7 +195,7 @@
                     echo "<b>" . get_prodname($conn,$inv[0]['productid']) . "</b><br />";
                     foreach ($inv as $key => $value) {
                       $daysArr[] = get_suppdur($conn,$inv[$key]['supid']);
-                      echo "<div style='text-indent: 20px'><b>Need: " . $inv[$key]['ingname'] . "</b> - " . number_format($inv[$key]['needqty']) ." " .$inv[$key]['uom']. "</div>";
+                      echo "<div style='text-indent: 20px'><b>Need: " . $inv[$key]['ingname'] . "</b> - " . number_format($inv[$key]['lacking']) ." " .$inv[$key]['uom']. "</div>";
                       echo "<div style='text-indent: 30px'>Supplier: ". get_suppname($conn,$inv[$key]['supid']) . " (Estimated Delivery - " . get_suppdur($conn,$inv[$key]['supid']) . " Days)</div>";
                     }
                   echo "</div>";
@@ -207,9 +211,9 @@
 
             $query = "SELECT SUM(timeEstimate) FROM ProductionProcess";
 
-            $sql = mysqli_query($conn,$query);
+              $sql = mysqli_query($conn,$query);
 
-            $row = mysqli_fetch_array($sql);
+              $row = mysqli_fetch_array($sql);
 
             $time+=$row[0];
 
@@ -229,7 +233,7 @@
                   <p><b>Packaging & Delivery Time: 5 Days </b></p>
               </div>
               <div class="col">
-                  <p><b class="pull-right">Estimated delivery Date: <?php echo date("M/d/Y",$date); ?></b></p>
+                  <p><b class="pull-right">Estimated delivery Date: <?php echo date("M/d/Y h:i:s A",$date); ?></b></p>
               </div>
             </div>
             <hr class="style1">

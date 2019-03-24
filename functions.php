@@ -138,8 +138,13 @@ function check_for_inventory_match($conn,$orderid){
 
       $sql1 = mysqli_query($conn,$query1);
 
-      if (mysqli_num_rows($sql1)) {
-        $invgreat++;
+      // if (mysqli_num_rows($sql1)) {
+      //   $invgreat++;
+      // }
+      while ($r = mysqli_fetch_array($sql1)) {
+        if ($r['NeededIngredientQuantity'] > $r['CurrentInventoryQuantity']) {
+          $invgreat++;
+        }
       }
 
 
@@ -166,7 +171,10 @@ function datetime_seconds($time){
 
 // seconds to date time
 function seconds_datetime($seconds){
-  return gmdate("H:i:s",$seconds);
+  // return gmdate("H:i:s",$seconds);
+  $dt1 = new DateTime("@0");
+  $dt2 = new DateTime("@$seconds");
+  return $dt1->diff($dt2)->format('%a day/s, %h hours, %i minutes and %s seconds');
 }
 
 // count recursive
@@ -213,7 +221,7 @@ function get_need_inventory($conn,$orderid){
           $ingredid = $rowed['Ingredientid'];
           $oriingid = $rowed['IndivNeedINGQTY'];
           $ingquant = $rowed['NeededIngredientQuantity'];
-          $currinvq = $rowed['CurrentInventoryQuantity'];
+          $currinvq = ceil($rowed['CurrentInventoryQuantity']);
 
           if ($currinvq < $ingquant) {
             // echo $ingquant."<br />";
@@ -348,36 +356,94 @@ function get_need_inventory3($conn,$prodid,$qty){
                   JOIN RMIngredient ON RMIngredient.ingredientID = Ingredient.ingredientID
                   JOIN RawMaterial ON RawMaterial.rawMaterialID = RMIngredient.rawMaterialID
                   JOIN Supplier ON RawMaterial.supplierID = Supplier.supplierID
-                  WHERE Recipe.productID = $prodid AND Recipe.quantity*$qty > Ingredient.quantity
-                  LIMIT $count";
+                  WHERE Recipe.productID = $prodid AND Recipe.quantity*$qty > Ingredient.quantity";
 
         $sql1 = mysqli_query($conn,$query1);
 
-        for ($i=0; $i < mysqli_num_rows($sql1); $i++) {
-          $rowed = mysqli_fetch_array($sql1);
-          // print_p($rowed);
+          for ($i=0; $i < mysqli_num_rows($sql1); $i++) {
+            $rowed = mysqli_fetch_array($sql1);
+            // print_p($rowed);
 
-          $prodakid = $rowed['ProductID'];
-          $ingredid = $rowed['Ingredientid'];
-          $ingrenam = $rowed['ingname'];
-          $supplyid = $rowed['supid'];
-          $oriingid = $rowed['IndivNeedINGQTY'];
-          $ingquant = $rowed['NeededIngredientQuantity'];
-          $currinvq = $rowed['CurrentInventoryQuantity'];
-          $uom = $rowed['uom'];
+            $prodakid = $rowed['ProductID'];
+            $ingredid = $rowed['Ingredientid'];
+            $ingrenam = $rowed['ingname'];
+            $supplyid = $rowed['supid'];
+            $oriingid = $rowed['IndivNeedINGQTY'];
+            $ingquant = $rowed['NeededIngredientQuantity'];
+            $currinvq = $rowed['CurrentInventoryQuantity'];
+            $uom = $rowed['uom'];
+            $lack = $ingquant - $currinvq;
 
-          $needstock[$i]['productid'] = $prodakid;
-          $needstock[$i]['ingredientid'] = $ingredid;
-          $needstock[$i]['ingname'] = $ingrenam;
-          $needstock[$i]['supid'] = $supplyid;
-          $needstock[$i]['needqty'] = $ingquant;
-          $needstock[$i]['uom'] = $uom;
+            $needstock[$i]['productid'] = $prodakid;
+            $needstock[$i]['ingredientid'] = $ingredid;
+            $needstock[$i]['ingname'] = $ingrenam;
+            $needstock[$i]['supid'] = $supplyid;
+            $needstock[$i]['needqty'] = $ingquant;
+            $needstock[$i]['lacking'] = $lack;
+            $needstock[$i]['uom'] = $uom;
 
-        }
-
-
+          }
 
     return $needstock;
+}
+
+
+function get_duedate($conn,$id,$qty){
+  $query = "SELECT SUM(timeNeed) FROM ProductProcess WHERE productID = '$id'";
+
+    $sql = mysqli_query($conn,$query);
+
+    $row = mysqli_fetch_array($sql);
+
+  $time = $row[0];
+
+  $days=0;
+
+  $daysArr = array();
+
+  $time+=get_currqueuecount($conn);
+
+  $days+=5;
+
+  $inv = get_need_inventory3($conn,$id,$qty);
+
+  foreach ($inv as $key => $value) {
+    $daysArr[] = get_suppdur($conn,$inv[$key]['supid']);
+  }
+
+  if (!empty($daysArr)) {
+    $days+=max($daysArr);
+  }
+
+  $deadline = date("Y-m-d",strtotime("+".$days."days +".$time."seconds"));
+
+  return $deadline;
+
+}
+
+function get_currqueuecount($conn){
+  $query = "SELECT SUM(timeEstimate) FROM ProductionProcess
+              WHERE status = 'Ongoing' OR status = 'Wait'";
+
+    $sql = mysqli_query($conn,$query);
+
+    $row = mysqli_fetch_array($sql);
+
+  return $row[0];
+
+
+
+}
+
+function get_username($conn,$id){
+  $query = "SELECT givenName FROM User WHERE userID = '$id'";
+
+    $sql = mysqli_query($conn,$query);
+
+    $row = mysqli_fetch_array($sql);
+
+  return $row[0];
+
 }
 
 function get_suppname($conn,$id){
@@ -586,30 +652,6 @@ function start_production($conn,$orderid){
 
                 mysqli_query($conn,$qry4);
 
-          // $sql = mysqli_query($conn,"SELECT JobOrder.dueDate
-          //                             FROM JobOrder
-          //                             JOIN ProductionProcess ON JobOrder.orderID = ProductionProcess.orderID
-          //                             WHERE ProductionProcess.processTypeID = $cont[$j] AND ProductionProcess.machineID = $queuedmach");
-          //
-          // // store sa array
-          // $deadlines = array();
-          // while ($row = mysqli_fetch_array($sql)) {
-          //   array_push($deadlines,$row[0]);
-          //  }
-          //
-          // // sortsort
-          //  function date_sort($a, $b) {
-          //      return strtotime($a) - strtotime($b);
-          //  }
-          //  usort($deadlines, "date_sort");
-          //
-          // // finding the closest date sa array ng deadlines
-          //  echo find_closest_today($deadlines,date('Y-m-d'));
-          //
-          //  $qr = "UPDATE ProductionProcess SET machineQueue = machineQueue + 1 WHERE machineQueue >= $newqueue ORDER BY machineQueue DESC";
-          //
-          //      mysqli_query($conn,$qr);
-
         }
       }
     }
@@ -773,6 +815,7 @@ function get_prodqty($conn,$prod){
   return $row[0];
 
 }
+
 function get_prodname($conn,$prod){
   $query = "SELECT name FROM Product WHERE productID = $prod";
 
@@ -926,7 +969,7 @@ function get_processname($conn,$id){
   return $row[0];
 }
 
-function update_inventory($conn,$id,$qty){
+function update_inventory($conn,$id,$qty,$remarks){
   $user = $_SESSION['userid'];
   $date = date('Y-m-d');
 
@@ -934,8 +977,8 @@ function update_inventory($conn,$id,$qty){
 
     $sql = mysqli_query($conn,$query);
 
-  $query = "INSERT INTO AuditTrail(productID,quantityChange,dateChange,userID)
-              VALUES('$id','$qty','$date','$user')";
+  $query = "INSERT INTO AuditTrail(productID,quantityChange,dateChange,userID,remarks)
+              VALUES('$id','$qty','$date','$user','$remarks')";
 
     $sql = mysqli_query($conn,$query);
 
@@ -1242,7 +1285,7 @@ function view_prodinventory($conn){
         }
 
         echo '<tr>';
-        echo '<td><a href="viewIndivProduct.php?id='.$id.'">';
+        echo '<td><a href="viewIndivProduct.php?id='.$id.'" style="color: #000;text-decoration: none;">';
         echo $prodName;
         echo '</a></td>';
         echo '<td>';
@@ -1307,9 +1350,9 @@ function view_prodinventory($conn){
     }
 }
 
-function get_latestart($conn,$id){
 
-
+function get_timebeforedeadline($conn,$dl,$sec){
+  return date("Y-m-d h:i:s",strtotime($dl) - $sec);
 }
 
 function view_jo($conn){

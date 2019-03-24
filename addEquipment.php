@@ -57,7 +57,7 @@ if (isset($_POST['submit'])){
                                     <input type="text" name="name" class="form-control" required>
                                     </br>
                                     <label>Date Acquired:</label></br>
-                                    <input type="date" name="date" class="form-control" required>
+                                    <input type="date" name="date" max="<?php echo date("Y-m-d"); ?>" class="form-control" required>
                                     </br>
                                     <label>Product Process:</label></br>
                                       <select class="form-control" name="process" required>

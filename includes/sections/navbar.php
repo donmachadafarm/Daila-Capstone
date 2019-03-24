@@ -135,6 +135,9 @@
             <div class="dropdown-divider"></div>
             <h6 class="dropdown-header text-center"><b> Machine Report </b></h6>
             <a class="dropdown-item text-center" href="viewMachineReport.php">Historical Machine Report</a>
+            <div class="dropdown-divider"></div>
+            <h6 class="dropdown-header text-center"><b> Audit Trail Report </b></h6>
+            <a class="dropdown-item text-center" href="viewAuditTrail.php">Historical Audit Trail</a>
         </div>
       </li>
       <?php endif; ?>

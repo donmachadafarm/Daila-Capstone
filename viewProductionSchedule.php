@@ -111,10 +111,6 @@
               alert('Products are now for Shipping!');
                   </script>";
               // window.location.replace('viewProductionSchedule.php');
-
-
-
-
   }
 
   if(isset($_POST['check'])){
@@ -129,7 +125,7 @@
     $time = $row['t'];
 
     // update the production process for that row ng specific order machine id at productid  "Ongoing" - > "Done"
-    $query = "UPDATE ProductionProcess SET status = 'Done' WHERE orderID = $ordid AND machineID = $macid AND productID = $proid AND status = 'Ongoing'";
+    $query = "UPDATE ProductionProcess SET status = 'Done',machineQueue = machineQueue - 1 WHERE orderID = $ordid AND machineID = $macid AND productID = $proid AND status = 'Ongoing'";
 
     mysqli_query($conn,$query);
 
@@ -167,17 +163,7 @@
     $macid = $_POST['mach_id'];
     $proid = $_POST['prod_id'];
     $stats = $_POST['status'];
-    if (isset($_POST['hrs'])) {
-      $hr = $_POST['hrs'];
-    }
-    if (isset($_POST['min'])) {
-      $mn = $_POST['min'];
-    }
-    if (isset($_POST['sec'])) {
-      $sc = $_POST['sec'];
-    }
 
-    $time = $sc + ($hr*3600) + ($mn*60);
 
     $qry = "SELECT timeEstimate as t FROM ProductionProcess WHERE orderID = $ordid AND machineID = $macid AND productID = $proid";
     $sql = mysqli_query($conn,$qry);
@@ -236,12 +222,16 @@
                 <tr>
                     <th class="text-center">Due Date</th>
                     <th class="text-center">Machine</th>
-                    <th class="text-center">Process</th>
+                    <!-- <th class="text-center">Process</th> -->
                     <th class="text-center">Order ID</th>
                     <th class="text-center">Product</th>
-                    <th class="text-center">Early start time</th>
+                    <th class="text-center">Early end time</th>
                     <th class="text-center">Late start time</th>
-                    <th class="text-center">Action</th>
+                    <?php if ($_SESSION['userType'] == '103' || $_SESSION['userType'] == '104'): ?>
+                      <th class="text-center">Action</th>
+                    <?php endif; ?>
+
+
                 </tr>
                 </thead>
                 <tbody>
@@ -261,18 +251,17 @@
 
                     while($row = mysqli_fetch_array($result)){
                         $id = $row['productID'];
+                        $deadline = $row['dueDate'];
+                        $timeest = $row['timeEstimate'];
+
 
                         echo '<tr>';
                           echo '<td class="text-center">';
-                              echo $row['dueDate'];
+                              echo date("F-d-Y",strtotime($deadline));
                           echo '</td>';
 
                           echo '<td class="text-center">';
                               echo $row['name'];
-                          echo '</td>';
-
-                          echo '<td class="text-center">';
-                              echo $row['ptname'];
                           echo '</td>';
 
                           echo '<td class="text-center">';
@@ -284,23 +273,24 @@
                           echo'</td>';
 
                           echo '<td class="text-center">';
-                              echo seconds_datetime($row['timeEstimate']);
+                              echo date("F-d-Y h:i A",strtotime("+$timeest seconds"));
                           echo'</td>';
 
                           echo '<td class="text-center">';
-                              echo get_latestart($conn,$row['orderID']);
+                              echo get_timebeforedeadline($conn,$deadline,$timeest);
                           echo'</td>';
 
+                    if ($_SESSION['userType'] == '103' || $_SESSION['userType'] == '104') {
                           echo '<td class="text-center">';
                             if (!check_complete_proc($conn,$row['orderID'],$row['productID'])) {
                                 // finish button na mag sabi tapos na process
                                 echo '<a href="#check'.$id.'" data-target="#check'.$id.'" data-toggle="modal">
-                                  <button type="button" class="btn btn-primary btn-sm">
+                                  <button type="button" class="btn btn-secondary btn-sm">
                                     Next
                                   </button></a>  ';
                                 echo '<a href="#delay'.$id.'" data-target="#delay'.$id.'" data-toggle="modal">
                                   <button type="button" class="btn btn-warning btn-sm" style="color:white">
-                                    Delay
+                                    Report Delay
                                   </button></a>  ';
                               } else {
                                 // finish button for final add ng product
@@ -310,6 +300,7 @@
                                   </button></a>  ';
                               }
                           echo '</td>';
+                        }
 
                         echo '</tr>';
                     ?>
@@ -365,17 +356,24 @@
                                     <div class="text-center">
                                       <p>
                                         <div class="row">
-                                          <div class="col-md-3">
+                                          <div class="col-md-2">
                                             <label class="col-form-label">Delay:</label>
                                           </div>
-                                          <div class="col-md-3">
-                                            <input class="form-control" type="number" name="hrs" value="" placeholder="Hours" min="0" max="60">
+                                          <div class="col-md-5">
+                                            <div class="input-group bootstrap-timepicker timepicker">
+                                                <input type="date" name="date" class="form-control" value="<?php echo date('Y-m-d'); ?>" max="<?php echo date('Y-m-d'); ?>">
+                                                <div class="input-group-append">
+                                                  <div class="input-group-text"><i class="fas fa-calendar"></i></div>
+                                                </div>
+                                            </div>
                                           </div>
-                                          <div class="col-md-3">
-                                            <input class="form-control" type="number" name="min" value="" placeholder="Minutes" min="0" max="60">
-                                          </div>
-                                          <div class="col-md-3">
-                                            <input class="form-control" type="number" name="sec" value="" placeholder="Seconds" min="0" max="60">
+                                          <div class="col-md-5">
+                                            <div class="input-group bootstrap-timepicker timepicker">
+                                                <input name="time" id="timepicker1" type="text" class="form-control input-small">
+                                                <div class="input-group-append">
+                                                  <div class="input-group-text"><i class="fas fa-clock"></i></div>
+                                                </div>
+                                            </div>
                                           </div>
                                         </div>
                                       </p>
@@ -419,21 +417,15 @@
                                         <p>
                                           <h5>Finished production for <strong><?php echo $row['name']; ?>?</strong></h5>
                                           <br>
-                                          <h5>Order needs: <?php
-                                                  if ($row['quantity']<100) {
-                                                    echo round($row['quantity']);
-                                                  }else {
-                                                    echo round($row['quantity']+($row['quantity']*0.01));
-                                                  }
-                                                            ?>
+                                          <h5>Order needs: <?php if ($row['quantity']<100) { echo round($row['quantity']); }else { echo round($row['quantity']+($row['quantity']*0.01));} ?>
                                           </h5>
                                         </p>
                                       </div>
                                       <label>Total Yield:</label></br>
-                                        <input type="number" name="yield" value="<?php echo round($row['quantity']); ?>" class="form-control" required>
+                                        <input type="number" name="yield" value="<?php if ($row['quantity']<100) { echo round($row['quantity']); }else {echo round($row['quantity']+($row['quantity']*0.01)); } ?>" class="form-control" required>
                                       </br>
                                       <label>Total Good:</label></br>
-                                        <input type="number" name="good" value="<?php echo round($row['quantity']); ?>" class="form-control" required>
+                                        <input type="number" name="good" value="<?php if ($row['quantity']<100) { echo round($row['quantity']); }else {echo round($row['quantity']+($row['quantity']*0.01)); } ?>" class="form-control" required>
                                       </br>
                                       <small>items less than 100 will not have 1% extra</small>
                                       <div class="modal-footer">
@@ -459,6 +451,15 @@
 
     </div>
 </div>
+
+<script type="text/javascript">
+  $('#timepicker1').timepicker({
+      minuteStep: 1,
+      showSeconds: true,
+      showMeridian: true,
+      defaultTime: 'current'
+  });
+</script>
 
 
 <!-- end of content -->

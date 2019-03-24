@@ -18,6 +18,10 @@
 ?>
 
 <style media="screen">
+a {
+  color: #000;
+  text-decoration: none;
+}
 .card {
   overflow:hidden;
 }
@@ -25,7 +29,7 @@
 .card-body .rotate {
   z-index: 8;
   float: right;
-  height: 100%;
+  height: 10%;
 }
 
 .card-body .rotate i {
@@ -54,7 +58,7 @@
       <?php if ($_SESSION['userType'] == 100): ?>
 
         <div class="col-sm-3 py-4">
-            <div class="card bg-secondary text-white h-100">
+            <div class="card bg-secondary text-white h-30">
                 <div class="card-body bg-secondary">
                     <div class="rotate">
                         <i class="fa fa-list fa-7x"></i>
@@ -65,7 +69,7 @@
             </div>
         </div>
         <div class="col-sm-3 py-4">
-            <div class="card text-white bg-secondary h-100">
+            <div class="card text-white bg-secondary h-30">
                 <div class="card-body bg-secondary">
                     <div class="rotate">
                         <i class="fa fa-file-invoice-dollar fa-7x"></i>
@@ -76,7 +80,7 @@
             </div>
         </div>
         <div class="col-sm-3 py-4">
-            <div class="card text-white bg-secondary h-100">
+            <div class="card text-white bg-secondary h-30">
                 <div class="card-body bg-secondary">
                     <div class="rotate">
                         <i class="fa fa-share-square fa-7x"></i>
@@ -87,7 +91,7 @@
             </div>
         </div>
         <div class="col-sm-3 py-4">
-            <div class="card text-white bg-secondary h-100">
+            <div class="card text-white bg-secondary h-30">
                 <div class="card-body bg-secondary">
                     <div class="rotate">
                         <i class="fa fa-clock fa-7x"></i>
@@ -129,7 +133,7 @@
       <?php if ($_SESSION['userType'] == 101): ?>
 
         <div class="col-sm-3 py-4">
-            <div class="card bg-secondary text-white h-100">
+            <div class="card bg-secondary text-white h-30">
                 <div class="card-body bg-secondary">
                     <div class="rotate">
                         <i class="fa fa-archive fa-7x"></i>
@@ -140,7 +144,7 @@
             </div>
         </div>
         <div class="col-sm-3 py-4">
-            <div class="card text-white bg-secondary h-100">
+            <div class="card text-white bg-secondary h-30">
                 <div class="card-body bg-secondary">
                     <div class="rotate">
                         <i class="fa fa-laptop-medical fa-7x"></i>
@@ -151,7 +155,7 @@
             </div>
         </div>
         <div class="col-sm-3 py-4">
-            <div class="card text-white bg-secondary h-100">
+            <div class="card text-white bg-secondary h-30">
                 <div class="card-body bg-secondary">
                     <div class="rotate">
                         <i class="fa fa-share-square fa-7x"></i>
@@ -162,7 +166,7 @@
             </div>
         </div>
         <div class="col-sm-3 py-4">
-            <div class="card text-white bg-secondary h-100">
+            <div class="card text-white bg-secondary h-30">
                 <div class="card-body bg-secondary">
                     <div class="rotate">
                         <i class="fa fa-clock fa-7x"></i>
@@ -224,7 +228,7 @@
       <?php if ($_SESSION['userType'] == 102): ?>
 
         <div class="col-sm-4 py-4">
-            <div class="card bg-secondary text-white h-100">
+            <div class="card bg-secondary text-white h-30">
                 <div class="card-body bg-secondary">
                     <div class="rotate">
                         <i class="fa fa-archive fa-7x"></i>
@@ -235,7 +239,7 @@
             </div>
         </div>
         <div class="col-sm-4 py-4">
-            <div class="card text-white bg-secondary h-100">
+            <div class="card text-white bg-secondary h-30">
                 <div class="card-body bg-secondary">
                     <div class="rotate">
                         <i class="fa fa-laptop-medical fa-7x"></i>
@@ -246,7 +250,7 @@
             </div>
         </div>
         <div class="col-sm-4 py-4">
-            <div class="card text-white bg-secondary h-100">
+            <div class="card text-white bg-secondary h-30">
                 <div class="card-body bg-secondary">
                     <div class="rotate">
                         <i class="fa fa-list-alt fa-7x"></i>
@@ -257,7 +261,7 @@
             </div>
         </div>
         <!-- <div class="col-sm-3 py-4">
-            <div class="card text-white bg-secondary h-100">
+            <div class="card text-white bg-secondary h-30">
                 <div class="card-body bg-secondary">
                     <div class="rotate">
                         <i class="fa fa-clock fa-7x"></i>
@@ -319,7 +323,7 @@
       <?php if ($_SESSION['userType'] == 103): ?>
 
         <div class="col-sm-6 py-4">
-            <div class="card bg-secondary text-white h-100">
+            <div class="card bg-secondary text-white h-30">
                 <div class="card-body bg-secondary">
                     <div class="rotate">
                         <i class="fa fa-cogs fa-7x"></i>
@@ -330,7 +334,7 @@
             </div>
         </div>
         <div class="col-sm-6 py-4">
-            <div class="card text-white bg-secondary h-100">
+            <div class="card text-white bg-secondary h-30">
                 <div class="card-body bg-secondary">
                     <div class="rotate">
                         <i class="fa fa-wrench fa-7x"></i>
@@ -339,7 +343,9 @@
                     <h1 class="display-6"><?php echo get_numberofmachinesrepair($conn); ?></h1>
                 </div>
             </div>
-        </div
+        </div>
+
+
             <!--  -->
             <div class="col-lg-6">
               <div class="card">

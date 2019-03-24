@@ -80,7 +80,7 @@ if (!isset($_SESSION['userType'])){
                                 echo '</td>';
 
                                 echo '<td class="text-center">';
-                                    echo $cost;
+                                    echo number_format($cost);
                                 echo '</td>';
 
                                 echo '<td class="text-center">';

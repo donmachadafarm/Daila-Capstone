@@ -148,13 +148,16 @@ include 'includes/sections/header.php';
 // while ($row = mysqli_fetch_array($sql)) {
 //   print_p($row);
 // }
+//
+// $inv = get_need_inventory3($conn,1,200);
+// // $inv = get_need_inv($conn,3,200);
+// $count = count($inv);
+//
+// print_p($inv);
+// $d = date("Y-m-d",strtotime("+5 days"));
+// echo calcTime($d);
 
-$inv = get_need_inventory3($conn,1,200);
-// $inv = get_need_inv($conn,3,200);
-$count = count($inv);
-
-print_p($inv);
-
+// echo date("Y-m-d",$_SERVER['REQUEST_TIME']);
 // for ($i=0; $i < $count; $i++) {
 //   for ($j=0; $j < count($inv[$i]); $j++) {
 //     $ing = $inv[$i][$j]['ingredientid'];
@@ -184,4 +187,49 @@ print_p($inv);
 //}
 
 // echo check_for_inventory_match($conn,28);
+// $datestr = date("Y-m-d",strtotime("+10 days"));
+// echo $datestr."<Br />";
+// get_timebeforedeadline($conn,$datestr);
+if (isset($_POST['go'])) {
+  $now = new DateTime("now");
+  $t = $_POST['time'];
+  $d = $_POST['date'];
+  // echo $_POST['time']."<br />";
+  // echo $_POST['date']."<br />";
+  $com = date("Y-m-d H:i:s",strtotime("$d $t"));
+  $after = new DateTime($com);
+
+  $diff = $after->diff($now);
+
+  print $diff->format("%H %I %S");
+
+  $new = $diff->format("%H %I %S");
+
+  echo "<br>".datetime_seconds($new);
+
+
+}
+// $dead = date("Y-m-d H:i",strtotime("+5 days +5 hours"));
+
+// echo $dead;
 ?>
+<form class="" method="post">
+  <input type="date" name="date" max="<?php echo date('Y-m-d'); ?>">
+    <div class="input-group bootstrap-timepicker timepicker">
+        <input name="time" id="timepicker1" type="text">
+    </div>
+
+  <input type="submit" name="go" value="yea">
+</div>
+
+</form>
+
+<?php //echo get_timebeforedeadline($conn,$t); ?>
+<script type="text/javascript">
+  $('#timepicker1').timepicker({
+      minuteStep: 1,
+      showSeconds: true,
+      showMeridian: false,
+      defaultTime: 'current'
+  });
+</script>

@@ -351,7 +351,7 @@
                                                   $pro = $inv[$i][$j]['productid'];
                                                   $nid = $inv[$i][$j]['needquantityforPO'];
 
-                                                  $need = $nid - $cur;
+                                                  $need = ($nid-$cur);
 
                                                   $sql = mysqli_query($conn,"SELECT * FROM Product WHERE productID = $pro");
                                                   $row = mysqli_fetch_array($sql);
@@ -367,7 +367,12 @@
                                                       echo "$ingname";
                                                     echo "</div>";
                                                     echo "<div class='col text-center'>";
-                                                      echo ceil($need);
+														if($cur <=0){
+															echo ceil($need-1);														
+														}
+														else{
+															echo round($need);
+														}
                                                     echo "</div>";
                                                   echo "</div>";
                                                 }
