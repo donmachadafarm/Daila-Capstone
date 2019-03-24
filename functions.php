@@ -221,7 +221,7 @@ function get_need_inventory($conn,$orderid){
           $ingredid = $rowed['Ingredientid'];
           $oriingid = $rowed['IndivNeedINGQTY'];
           $ingquant = $rowed['NeededIngredientQuantity'];
-          $currinvq = $rowed['CurrentInventoryQuantity'];
+          $currinvq = ceil($rowed['CurrentInventoryQuantity']);
 
           if ($currinvq < $ingquant) {
             // echo $ingquant."<br />";
