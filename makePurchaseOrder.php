@@ -161,7 +161,7 @@ if (isset($_POST['submit'])){
                             $pro = $inv[$i][$j]['productid'];
                             $nid = $inv[$i][$j]['needquantityforPO'];
 
-                            $need = $nid - $cur;
+                            $need = ($nid-$cur);
 
                             echo "<div class='row'>";
                               echo "<input class='form-control' type = 'hidden' name = 'orderid' value = '".$id."'>";
@@ -175,8 +175,13 @@ if (isset($_POST['submit'])){
                               echo "</div>";
 
                               echo "<div class='col'>";
-                                echo ceil($need)-1;
-                                echo "<input class='form-control' name ='qty[]' value = '". ceil($need) ."' type='hidden'>";
+                                if($cur <=0){
+															echo ceil($need-1);														
+														}
+														else{
+															echo round($need);
+														}
+                                echo "<input class='form-control' name ='qty[]' value = '". ($need) ."' type='hidden'>";
                               echo "</div>";
 
                               echo "<div class='col'>";
