@@ -29,7 +29,7 @@ if (!isset($_SESSION['userType'])){
             </h6>
             <form method="post" class="text-center">
                 <input type="date" id="txtDateMax" name="startDate">
-                <input type="date" id="endPicker" name="endDate"><br>
+                <input type="date" max="<?php echo date("Y-m-d"); ?>" name="endDate"><br>
                 <input type="submit" name="search">
             </form>
             <h5 class="text-center">*Click on the ID number for more details*</h5>
@@ -187,8 +187,8 @@ if (!isset($_SESSION['userType'])){
                         echo '<div class="container">';
                         echo '<div class="row">';
                         echo '<div class="col-lg-12">';
-                        echo '<h4 class="text-right">Total Revenue: ';
-                        echo number_format($sum, 2);
+                        //echo '<h4 class="text-right">Total Revenue: ';
+                        //echo number_format($sum, 2);
                         echo '</h4>';
                         echo '</div>';
                         echo '</div>';

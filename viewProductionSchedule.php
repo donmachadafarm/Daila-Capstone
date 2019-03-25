@@ -343,11 +343,11 @@
                                 // finish button na mag sabi tapos na process
                                 echo '<a href="#check'.$id.'" data-target="#check'.$id.'" data-toggle="modal">
                                   <button type="button" class="btn btn-secondary btn-sm">
-                                    Next
+                                    <i class="fas fa-arrow-right"></i>
                                   </button></a>  ';
                                 echo '<a href="#delay'.$id.'" data-target="#delay'.$id.'" data-toggle="modal">
                                   <button type="button" class="btn btn-warning btn-sm" style="color:white">
-                                    Report Delay
+                                    <i class="fas fa-clock"></i>
                                   </button></a>  ';
                               } else {
                                 // finish button for final add ng product

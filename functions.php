@@ -988,7 +988,7 @@ function get_allorders($conn){
   $first = date('Y-m-01');
   $last  = date('Y-m-t');
 
-  $query = "SELECT count(orderID) FROM JobOrder WHERE dueDate BETWEEN '$first' AND '$last'";
+  $query = "SELECT count(orderID) FROM JobOrder WHERE orderDate BETWEEN '$first' AND '$last'";
 
     $sql = mysqli_query($conn,$query);
 
@@ -1024,7 +1024,7 @@ function get_prodsold($conn){
 
     $row = mysqli_fetch_array($sql);
 
-  return $row[0];
+      echo $row[0];
 }
 
 function get_delayedJOrdersCount($conn){

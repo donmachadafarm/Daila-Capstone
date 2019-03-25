@@ -368,11 +368,11 @@
                                                       echo "$ingname";
                                                     echo "</div>";
                                                     echo "<div class='col text-center'>";
-														if($cur <0){
-															echo ceil($need-1);														
+														if($cur<0){
+															echo ceil($need-1);
 														}
 														else{
-															echo round($need);
+															echo ceil($need);
 														}
                                                     echo "</div>";
                                                   echo "</div>";

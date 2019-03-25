@@ -175,13 +175,13 @@ if (isset($_POST['submit'])){
                               echo "</div>";
 
                               echo "<div class='col'>";
-                                if($cur <=0){
-															echo ceil($need-1);														
+                                if($cur <0){
+															echo ceil($need-1);
 														}
 														else{
-															echo round($need);
+															echo ceil($need);
 														}
-                                echo "<input class='form-control' name ='qty[]' value = '". ($need) ."' type='hidden'>";
+                                echo "<input class='form-control' name ='qty[]' value = '". ceil($need) ."' type='hidden'>";
                               echo "</div>";
 
                               echo "<div class='col'>";

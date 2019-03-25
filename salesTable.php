@@ -29,7 +29,7 @@ if (!isset($_SESSION['userType'])){
             </h6>
             <form method="post" class="text-center">
                 <input type="date" id="txtDateMax" name="startDate">
-                <input type="date" id="endPicker" name="endDate"><br>
+                <input type="date" max="<?php echo date("Y-m-d"); ?>" name="endDate"><br>
                 <input type="submit" name="search">
             </form>
         </div>
