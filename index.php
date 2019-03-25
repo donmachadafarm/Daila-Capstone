@@ -105,7 +105,7 @@ a {
         <div class="spacer5"></div>
 
             <!-- 1st chart sales -->
-            <div class="col-lg-6">
+            <!-- <div class="col-lg-6">
               <div class="card">
                    <div class="card-header bg-secondary text-white">
                        <b>Company Revenue</b>
@@ -114,7 +114,7 @@ a {
                      <div id="first" style="width: 650px; height: 360px;"></div>
                    </div>
                </div>
-            </div>
+            </div> -->
 
             <!-- 2nd chart items pinaka mabenta -->
             <div class="col-lg-6">
@@ -399,7 +399,7 @@ a {
   <?php
 
     // ADMIN AND PRESIDENT QUERIES
-    $first = date("Y-m-d",strtotime("-5 Month"));
+    $first = date("Y-m-d",strtotime("-5 Months"));
     $last = date("Y-m-d");
 
     $query = "SELECT DISTINCT SUM(ProductSales.quantity) AS qty,

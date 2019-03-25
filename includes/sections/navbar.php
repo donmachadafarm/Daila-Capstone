@@ -80,7 +80,9 @@
           <?php if($_SESSION['userType']==103 || $_SESSION['userType']==104 || $_SESSION['userType']==101): ?>
           <h6 class="dropdown-header text-center"><b> Production </b></h6>
             <a class="dropdown-item text-center" href="viewProductionSchedule.php">Production Schedule</a>
+            <?php if($_SESSION['userType']==104 || $_SESSION['userType']==101): ?>
             <a class="dropdown-item text-center" href="viewInternalShipping.php">View Internal Shipping</a>
+          <?php endif; ?>
           <div class="dropdown-divider"></div>
           <?php endif; ?>
           <?php if($_SESSION['userType']==104 || $_SESSION['userType']==101): ?>

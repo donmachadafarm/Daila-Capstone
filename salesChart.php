@@ -82,9 +82,9 @@ else{
    $startDate = date("Y-m-d",strtotime("-7 days"));
 
   echo '<h2 class="text-center">Transactions between ';
-  echo $startDate;
+  echo date("F d Y",strtotime("-7 days"));;
   echo ' and ';
-  echo $endDate;
+  echo date("F d Y");
   echo '</h2><br>';
 
   echo        '<table class="columns" align="center">';
