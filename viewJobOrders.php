@@ -342,8 +342,9 @@
                                             <?php
                                               $inv = get_need_inventory2($conn,$id);
                                               $count = count($inv);
-
-                                              // print_p($inv);
+											//print_p($inv);
+                                             // print_p($inv);
+											  
                                               for ($i=0; $i < $count; $i++) {
                                                 for ($j=0; $j < count($inv[$i]); $j++) {
                                                   $ing = $inv[$i][$j]['ingredientid'];
@@ -367,7 +368,7 @@
                                                       echo "$ingname";
                                                     echo "</div>";
                                                     echo "<div class='col text-center'>";
-														if($cur <=0){
+														if($cur <0){
 															echo ceil($need-1);														
 														}
 														else{

@@ -301,7 +301,7 @@ function get_need_inventory2($conn,$orderid){
                   round(Recipe.quantity*$recipeqty) AS NeededIngredientQuantity
             FROM `Recipe`
             JOIN Ingredient ON Ingredient.ingredientID = Recipe.ingredientID
-            WHERE Recipe.productID = $prodarr[$j] AND round(Recipe.quantity*$recipeqty) > Ingredient.quantity";
+            WHERE Recipe.productID = $prodarr[$j] AND Recipe.quantity*$recipeqty > Ingredient.quantity";
 
     $sql1 = mysqli_query($conn,$query1);
 
