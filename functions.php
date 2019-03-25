@@ -1352,7 +1352,7 @@ function view_prodinventory($conn){
 
 
 function get_timebeforedeadline($conn,$dl,$sec){
-  return date("Y-m-d h:i:s",strtotime($dl) - $sec);
+  return date("Y-m-d h:i:s",strtotime($dl) - $sec - 432000);
 }
 
 function view_jo($conn){

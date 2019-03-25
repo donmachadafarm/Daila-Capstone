@@ -19,10 +19,8 @@
     $ordid = $_POST['orderID'];
     $datef = date('Y-m-d H:i:s');
 
-
-
     /*
-        next lines are for adding into inventory finished status for production
+        next lines are for adding into shipping
     */
 
 
@@ -132,11 +130,32 @@
     // adds the timesworked
     mysqli_query($conn,"UPDATE Machine SET hoursWorked = hoursWorked + $time, lifetimeWorked = lifetimeWorked + $time, status = 'Available' WHERE machineID = $macid");
 
+    // readjust the queue
+    $query = "SELECT * FROM ProductionProcess WHERE processSequence = 1 AND status = 'Wait' ORDER BY machineQueue DESC LIMIT 1";
 
+      $sql = mysqli_query($conn,$query);
 
-    // DONE UPDATING STATUSES FOR ONE PRODUCT PROCESS
-    // SUGGESTION : REDUCE MACHINE QUEUE AFTER UPDATE
+      $row = mysqli_fetch_array($sql);
 
+    $nextorder = $row['orderID'];
+    $pid = $row['productID'];
+
+    if(mysqli_num_rows($sql)>0){
+        // query for first process set status = 'ongoing'
+      $query = "UPDATE ProductionProcess SET status = 'Ongoing' WHERE orderID = $nextorder AND productID = $pid AND processSequence = 1";
+
+        mysqli_query($conn,$query);
+
+      $sq = mysqli_query($conn,"SELECT machineID FROM ProductionProcess WHERE productID = $pid AND orderID = $nextorder");
+
+      while ($row = mysqli_fetch_array($sq)) {
+        $maid = $row['machineID'];
+        $query = "UPDATE Machine SET status = 'Used' WHERE machineID = $maid";
+
+        mysqli_query($conn,$query);
+      }
+
+    }
 
     // GETS THE NEXT MACHINE FOR THE SEQUENCE
     $sql = mysqli_query($conn,"SELECT machineID FROM ProductionProcess WHERE orderID = $ordid AND productID = $proid AND status = 'Wait' ORDER BY processSequence LIMIT 1");
@@ -163,12 +182,24 @@
     $macid = $_POST['mach_id'];
     $proid = $_POST['prod_id'];
     $stats = $_POST['status'];
+    $date = $_POST['date'];
+    $t = $_POST['time'];
+    $deadline = $_POST['deadline'];
 
+    $delay = date("Y-m-d H:i:s",strtotime("$date $t"));
+
+    $datestart = new DateTime($deadline);
+    $dateend = new DateTime($delay);
+
+    $datediff = $datestart->diff($dateend);
+
+    $diffinsec = $datediff->format("%S");
 
     $qry = "SELECT timeEstimate as t FROM ProductionProcess WHERE orderID = $ordid AND machineID = $macid AND productID = $proid";
     $sql = mysqli_query($conn,$qry);
     $row = mysqli_fetch_array($sql);
-    $time += $row['t'];
+    $time = $row['t'];
+    $time+=$diffinsec;
 
     // update the production process for that row ng specific order machine id at productid  "Ongoing" - > "Done"
     $query = "UPDATE ProductionProcess SET status = 'Done' WHERE orderID = $ordid AND machineID = $macid AND productID = $proid AND status = 'Ongoing'";
@@ -179,9 +210,35 @@
     mysqli_query($conn,"UPDATE Machine SET hoursWorked = hoursWorked + $time, lifetimeWorked = lifetimeWorked + $time, status = 'Available' WHERE machineID = $macid");
 
 
-
     // DONE UPDATING STATUSES FOR ONE PRODUCT PROCESS
     // SUGGESTION : REDUCE MACHINE QUEUE AFTER UPDATE
+
+    // readjust the queue
+    $query = "SELECT * FROM ProductionProcess WHERE processSequence = 1 AND status = 'Wait' ORDER BY machineQueue DESC LIMIT 1";
+
+      $sql = mysqli_query($conn,$query);
+
+      $row = mysqli_fetch_array($sql);
+
+    $nextorder = $row['orderID'];
+    $pid = $row['productID'];
+
+    if(mysqli_num_rows($sql)>0){
+        // query for first process set status = 'ongoing'
+      $query = "UPDATE ProductionProcess SET status = 'Ongoing' WHERE orderID = $nextorder AND productID = $pid AND processSequence = 1";
+
+        mysqli_query($conn,$query);
+
+      $sq = mysqli_query($conn,"SELECT machineID FROM ProductionProcess WHERE productID = $pid AND orderID = $nextorder");
+
+      while ($row = mysqli_fetch_array($sq)) {
+        $maid = $row['machineID'];
+        $query = "UPDATE Machine SET status = 'Used' WHERE machineID = $maid";
+
+        mysqli_query($conn,$query);
+      }
+
+    }
 
 
     // GETS THE NEXT MACHINE FOR THE SEQUENCE
@@ -353,6 +410,8 @@
                                     <input type="hidden" name="mach_id" value="<?php echo $row['machineID']; ?>">
                                     <input type="hidden" name="prod_id" value="<?php echo $row['productID']; ?>">
                                     <input type="hidden" name="status" value="<?php echo $row['status']; ?>">
+                                    <input type="hidden" name="deadline" value="<?php echo $row['dueDate']; ?>">
+
                                     <div class="text-center">
                                       <p>
                                         <div class="row">
@@ -417,12 +476,12 @@
                                         <p>
                                           <h5>Finished production for <strong><?php echo $row['name']; ?>?</strong></h5>
                                           <br>
-                                          <h5>Order needs: <?php if ($row['quantity']<100) { echo round($row['quantity']); }else { echo round($row['quantity']+($row['quantity']*0.01));} ?>
+                                          <h5>Order needs: <?php echo round($row['quantity']); ?>
                                           </h5>
                                         </p>
                                       </div>
                                       <label>Total Yield:</label></br>
-                                        <input type="number" name="yield" value="<?php if ($row['quantity']<100) { echo round($row['quantity']); }else {echo round($row['quantity']+($row['quantity']*0.01)); } ?>" class="form-control" required>
+                                        <input type="number" name="yield" value="<?php if ($row['quantity']<100) { echo round($row['quantity']); }else {echo round($row['quantity']+($row['quantity']*0.01)); } ?>" class="form-control" readonly>
                                       </br>
                                       <label>Total Good:</label></br>
                                         <input type="number" name="good" value="<?php if ($row['quantity']<100) { echo round($row['quantity']); }else {echo round($row['quantity']+($row['quantity']*0.01)); } ?>" class="form-control" required>
