@@ -53,7 +53,8 @@ if (!isset($_SESSION['userType'])){
                 <tr>
                     <th>Change Date</th>
                     <th>Product</th>
-                    <th>Actual Physical Count</th>
+                    <th>Starting Count</th>
+                    <th>Ending Count</th>
                     <th>Remarks</th>
                     <th>user</th>
                 </tr>
@@ -72,6 +73,7 @@ if (!isset($_SESSION['userType'])){
                             $date = $row['dateChange'];
                             $prod = $row['productID'];
                             $cont = $row['quantityChange'];
+                            $old = $row['oldQuantity'];
                             $remk = $row['remarks'];
                             $user = $row['userID'];
 
@@ -84,6 +86,10 @@ if (!isset($_SESSION['userType'])){
 
                                 echo '<td class="text-center">';
                                     echo get_prodname($conn,$prod);
+                                echo '</td>';
+
+                                echo '<td class="text-center">';
+                                    echo $old;
                                 echo '</td>';
 
                                 echo '<td class="text-center">';
@@ -109,6 +115,7 @@ if (!isset($_SESSION['userType'])){
                           $date = $row['dateChange'];
                           $prod = $row['productID'];
                           $cont = $row['quantityChange'];
+                          $old = $row['oldQuantity'];
                           $remk = $row['remarks'];
                           $user = $row['userID'];
 
@@ -121,6 +128,10 @@ if (!isset($_SESSION['userType'])){
 
                               echo '<td class="text-center">';
                                   echo get_prodname($conn,$prod);
+                              echo '</td>';
+
+                              echo '<td class="text-center">';
+                                  echo $old;
                               echo '</td>';
 
                               echo '<td class="text-center">';

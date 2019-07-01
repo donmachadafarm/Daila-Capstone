@@ -169,7 +169,7 @@ if (!isset($_SESSION['userType'])){
                             echo $name;
                             echo '</td>';
 
-                            echo '<td class="text-center">';
+                            echo '<td class="text-right">';
                             echo number_format($totalPrice, 2);
                             echo '</td>';
 

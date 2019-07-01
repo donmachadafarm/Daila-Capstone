@@ -973,12 +973,20 @@ function update_inventory($conn,$id,$qty,$remarks){
   $user = $_SESSION['userid'];
   $date = date('Y-m-d');
 
+  $query = "SELECT quantity From Product WHERE productID = $id";
+
+    $sql = mysqli_query($conn,$query);
+
+    $row = mysqli_fetch_array($sql);
+
+    $oldqty = $row[0];
+
   $query = "UPDATE Product SET quantity = $qty WHERE productID = $id";
 
     $sql = mysqli_query($conn,$query);
 
-  $query = "INSERT INTO AuditTrail(productID,quantityChange,dateChange,userID,remarks)
-              VALUES('$id','$qty','$date','$user','$remarks')";
+  $query = "INSERT INTO AuditTrail(productID,oldQuantity,quantityChange,dateChange,userID,remarks)
+              VALUES('$id','$oldqty','$qty','$date','$user','$remarks')";
 
     $sql = mysqli_query($conn,$query);
 

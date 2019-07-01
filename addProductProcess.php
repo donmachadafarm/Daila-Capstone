@@ -86,8 +86,8 @@
                         <tr>
                           <td><input type="hidden" class="form-control" name="sequence[]" value="1" />1</td>
                           <td><select name="process[]" class="form-control item_unit" required><option value="" disabled>Select Process</option><?php echo fill_process_select_box($conn); ?></select></td>
-                          <td><input type="number" name="timemin[]" class="form-control" placeholder="0" value="0" required></td>
-                          <td><input type="number" name="timesec[]" class="form-control" placeholder="0" required></td>
+                          <td><input type="number" max="59" min="0" name="timemin[]" class="form-control" placeholder="0" value="0" required></td>
+                          <td><input type="number" max="59" min="0" name="timesec[]" class="form-control" placeholder="0" required></td>
                           <td><button type="button" name="add" class="btn btn-success btn-sm add">+</button></td>
                         </tr>
                        </table>
@@ -144,8 +144,8 @@
       html += '<tr>';
       html += '<td><input type="hidden" name="sequence[]" value="'+count+'" />'+count+'</td>';
       html += '<td><select name="process[]" class="form-control item_unit" required><option value="" disabled>Select Process</option><?php echo fill_process_select_box($conn); ?></select></td>';
-      html += '<td><input type="number" name="timemin[]" class="form-control" placeholder="0" value="0" required></td>';
-      html += '<td><input type="number" name="timesec[]" class="form-control" placeholder="0" required></td>';
+      html += '<td><input type="number" max="59" min="0" name="timemin[]" class="form-control" placeholder="0" value="0" required></td>';
+      html += '<td><input type="number" max="59" min="0" name="timesec[]" class="form-control" placeholder="0" required></td>';
       html += '<td><button type="button" name="remove" class="btn btn-danger btn-sm remove">x</button></td></tr>';
       $('#item_table').append(html);
      });

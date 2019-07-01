@@ -229,9 +229,9 @@
              ?>
 
             <div class="row">
-              <div class="col">
+              <!-- <div class="col">
                   <p><b>Packaging & Delivery Time: 5 Days </b></p>
-              </div>
+              </div> -->
               <div class="col">
                   <p><b class="pull-right">Estimated delivery Date: <?php echo date("M/d/Y h:i:s A",$date); ?></b></p>
               </div>
