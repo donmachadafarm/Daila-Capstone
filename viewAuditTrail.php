@@ -51,7 +51,7 @@ if (!isset($_SESSION['userType'])){
             <table class="table table-bordered table-hover" id="dataTables-example">
                 <thead>
                 <tr>
-                    <th>Change Date</th>
+                    <th>Date Checked</th>
                     <th>Product</th>
                     <th>Starting Count</th>
                     <th>Ending Count</th>
