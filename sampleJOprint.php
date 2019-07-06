@@ -21,14 +21,21 @@
     return $output;
   }
 
+  $customer = $_POST['customer'];
+  // $deadline = $_POST['deadline'];
+
   //main submit conditional
   if (isset($_POST['proceed'])) {
     $prod = $_POST['prod'];
     $quantity = $_POST['quantity'];
 
+
     $customer = $_POST['customer'];
     $deadline = $_POST['deadline'];
+    // $customer = $_GET['customer'];
+    // $deadline = $_GET['deadline'];
     $date = date("Y-m-d");
+
     $user = $_SESSION['userid'];
     $type = "Made to Order";
     $status = "Pending for approval";
@@ -98,7 +105,7 @@
                   <div class="text-left">
                     <div class="row">
                       <div class="col">
-                        Job Order
+                        Job Order for <?php echo get_customerName($conn,$customer); ?>
                       </div>
                       <div class="col-sm-2">
 
@@ -240,25 +247,29 @@
 
           </div>
       </div><br>
+      <input type="hidden" name="customer" value="<?php echo $customer; ?>">
 
-        <div class="form-row">
-          <div class="form-group col-sm-6">
-            <label for="customer">Customer:</label>
-            <select id="customer" class="form-control" name="customer">
-              <option value="" disabled>Select Customer</option><?php echo fill_unit_select_box($conn); ?>
-            </select>
+         <div class="form-row">
 
-            <small class="form-text text-muted">Not in the list of Customers? <a href="addCustomerToOrder.php?prod=''">Click here</a></small>
+          <div class="form-group row">
+            <label class="col-sm-4 col-form-label">Deadline: </label>
+            <div class="col-sm-8">
+              <input id="date" class="form-control" type="date" min="<?php echo date("Y-m-d",$date); ?>" required name="deadline" value="<?php echo date("Y-m-d",$date); ?>">
+            </div>
           </div>
-          <div class="form-group col-sm-4">
-            <label for="date">Deadline: </label>
-            <input id="date" class="form-control" type="date" min="<?php echo date("Y-m-d",$date); ?>" required name="deadline" value="<?php echo date("Y-m-d",$date); ?>">
+
+          <div class="form-group row">
+            <label class="col-sm-2 col-form-label"></label>
+            <div class="col-sm-8 right">
+              <input type="submit" class="btn btn-primary pull-right" name="proceed" value="Proceed to order"><br>
+            </div>
           </div>
+
         </div>
         <br>
 
           <div class="col">
-            <input type="submit" class="btn btn-primary pull-right" name="proceed" value="Proceed to order">
+
           </div>
 
 

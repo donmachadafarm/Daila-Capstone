@@ -446,6 +446,16 @@ function get_username($conn,$id){
 
 }
 
+function get_customerName($conn,$id){
+  $query = "SELECT company FROM customer WHERE customerID = '$id'";
+
+    $sql = mysqli_query($conn,$query);
+
+    $row = mysqli_fetch_array($sql);
+
+  return $row[0];
+}
+
 function get_suppname($conn,$id){
     $query = "SELECT * FROM Supplier WHERE supplieriD = '$id'";
 

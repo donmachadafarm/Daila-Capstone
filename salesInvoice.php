@@ -70,7 +70,7 @@
 
         $str = '';
         for ($i=0; $i < $counter; $i++) {
-          $str = $str . " " . get_prodname($conn,$prodn[$i]). " ";
+          $str = $str . "" . get_prodname($conn,$prodn[$i]). " ";
         }
         echo "<script>alert('Invoice invalid not enough $str');</script>";
 
