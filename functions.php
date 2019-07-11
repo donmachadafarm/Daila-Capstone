@@ -836,6 +836,17 @@ function get_prodname($conn,$prod){
   return $row[0];
 
 }
+
+function get_prodPrice($conn,$prod){
+  $query = "SELECT productPrice FROM Product WHERE productID = $prod";
+
+  $sql = mysqli_query($conn,$query);
+
+  $row = mysqli_fetch_array($sql);
+
+  return $row[0];
+}
+
 //gets the max lead time of a raw material of a product
 function get_maxlead($conn, $prod){
     $leadTime = 0;
