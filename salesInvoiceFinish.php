@@ -17,8 +17,9 @@
 
   if (isset($_POST['submit'])){
       $total = $_POST['total'];
+      $or = $_POST['or'];
 
-      $query = "INSERT INTO Sales (saleDate,totalPrice) VALUES ('$date',$total)";
+      $query = "INSERT INTO Sales (officialReceipt,saleDate,totalPrice,payment) VALUES ('$or','$date','$total','$total')";
 
         mysqli_query($conn,$query);
 
@@ -91,16 +92,19 @@
                   <div class="panel-body">
 
                     <div class="table-repsonsive">
-                       <table class="table table-hover" id="item_table">
-                        <tr>
-                         <th>Product</th>
-                         <th>Quantity</th>
-                         <th>Note</th>
-                        </tr>
+                       <table class="table table-hover table-bordered " id="item_table">
+                         <thead class="">
+                          <tr>
+                           <th>Product</th>
+                           <th>Note</th>
+                           <th>Quantity</th>
+                           <th>Unit Price</th>
+                           <th>Subtotal</th>
+                          </tr>
+                        </thead>
                         <?php foreach ($prodid as $key => $value): ?>
                           <tr>
                             <td><?php echo get_prodname($conn,$value); ?></td>
-                            <td><?php echo $prodqt[$key]; ?></td>
                             <td>
                               <?php if ($prodqt[$key]>get_prodqty($conn,$value)): ?>
                                 <?php echo "Not enough products!"; ?>
@@ -108,6 +112,9 @@
                                 <?php echo "Available"; ?>
                               <?php endif; ?>
                             </td>
+                            <td><?php echo $prodqt[$key]; ?></td>
+                            <td class="text-right"><?php echo number_format(get_prodPrice($conn,$value)); ?></td>
+                            <td class="text-right"><?php echo number_format($prodqt[$key]*get_prodPrice($conn,$value)); ?></td>
                           </tr>
                         <?php endforeach; ?>
                        </table>
@@ -118,7 +125,7 @@
 
                <div class="col-lg-12">
                  <div class="panel panel-default">
-                   <div class="panel-body">
+                   <div class="panel-body text-right">
                      <?php
                       $total = 0;
                       foreach ($prodid as $key => $value) {
@@ -156,7 +163,17 @@
                                <div class="modal-body">
                                    <div class="text-center">
                                      <p>
-                                       <h6>Finalize Invoice?</h6>
+                                       <h4>Finalize Invoice?</h4>
+                                       <br>
+
+                                       <div class="form-group row">
+                                         <label class="col-sm-2 col-form-label">OR #: </label>
+                                         <div class="col-sm-10">
+                                           <input required type="number" name="or" value="" placeholder="" class="form-control"><br>
+                                           <input type="hidden" name="totalprice" value="<?php echo $total; ?>">
+                                         </div>
+                                       </div>
+
 
                                      </p>
                                    </div>

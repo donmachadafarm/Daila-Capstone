@@ -206,14 +206,13 @@
 
                <div class="col-lg-12">
                  <div align="center">
-                  <a href="#confirm" data-target="#confirm" data-toggle="modal">
-                    <button type="button" class="btn btn-success">Submit</button>
-                  </a>
+                    <!-- <button type="button" class="btn btn-success">Submit</button> -->
+                    <input type="submit" id="submit" name="submit" class="btn btn-success" value="Confirm" />
                  </div>
                </div>
 
                <!-- // modal -->
-               <div id="confirm" class="modal fade" role="dialog">
+               <!-- <div id="confirm" class="modal fade" role="dialog">
                    <div class="modal-dialog">
                            <div class="modal-content">
 
@@ -236,7 +235,7 @@
                                </div>
                        </div>
                    </div>
-               </div>
+               </div> -->
 
              </form>
 
