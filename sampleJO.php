@@ -22,6 +22,20 @@
 
     return $output;
   }
+
+  function fill_unit_select_box1($conn){
+    $output = '';
+    $query = "SELECT * FROM Customer WHERE customerID != '1' ORDER BY company ASC";
+    $sql = mysqli_query($conn,$query);
+
+    while($row = mysqli_fetch_array($sql)){
+      $output .= '<option value="'.$row["customerID"].'">'.$row["company"].'</option>';
+    }
+
+    return $output;
+  }
+
+  $date = ("Y-m-d");
 ?>
 
 <!-- put all the contents here  -->
@@ -38,17 +52,30 @@
               <hr class="style1">
           </div>
       </div>
+
       <div class="row">
           <div class="col-lg-12">
 
             <form method="post" action="samplejoprint.php" id="insert_form">
+
+              <div class="form-row">
+                <div class="form-group col-sm-6">
+                  <label for="customer"><b>Customer:</b></label>
+                  <select id="customer" class="form-control" name="customer">
+                    <option value="" disabled>Select Customer</option><?php echo fill_unit_select_box1($conn); ?>
+                  </select>
+
+                  <small class="form-text text-muted">Not in the list of Customers? <a href="addCustomerToOrder.php?prod=''">Click here</a></small>
+                </div>
+              </div>
+
               <div class="col-lg-12">
                 <div class="panel panel-default">
                   <div class="panel-body">
                     <div class="table-repsonsive">
                        <table class="table table-borderless" id="item_table">
                         <tr>
-                         <th>Product</th><small class="form-text text-muted">Adding a new product? <a href="addProduct.php">Click here</a></small><br>
+                         <th>Product</th><br>
                          <th>Quantity</th>
                         </tr>
                         <tr>
@@ -56,12 +83,12 @@
                           <td><input type="number" name="quantity[]" class="form-control item_name" required /></td>
                           <td><button type="button" name="add" class="btn btn-success btn-sm add">+</button></td>
                         </tr>
-                       </table>
+                       </table><small class="form-text text-muted">Adding a new product? <a href="addProduct.php">Click here</a></small>
                     </div>
                   </div>
                 </div>
               </div>
-            
+
                <div class="col-lg-12">
                  <div align="center">
                   <a href="#confirm" data-target="#confirm" data-toggle="modal"><button type="button" class="btn btn-success">Submit</button></a>

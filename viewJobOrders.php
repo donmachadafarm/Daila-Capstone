@@ -272,9 +272,21 @@
 
                                               $cost = $row['totalPrice']/2;
                                              ?>
-                                             <h6>Downpayment of <?php echo number_format($cost); ?> is required (50% dp)</h6>
-                                            <input required type="number" name="or" value="" placeholder="OR number" class="form-control"><br>
-                                            <input required type="number" name="cost" value="<?php echo ceil($cost); ?>" placeholder="" class="form-control">
+                                             <b><h6>Downpayment of <?php echo number_format($cost); ?> is required (50% dp)</h6><br></b>
+
+                                             <div class="form-group row">
+                                               <label class="col-sm-2 col-form-label">OR #: </label>
+                                               <div class="col-sm-10">
+                                                 <input required type="number" name="or" value="" placeholder="" class="form-control"><br>
+                                               </div>
+                                             </div>
+
+                                             <div class="form-group row">
+                                               <label class="col-sm-2 col-form-label">Cost: </label>
+                                               <div class="col-sm-10">
+                                                 <input required type="number" name="cost" value="<?php echo ceil($cost); ?>" placeholder="" class="form-control">
+                                               </div>
+                                             </div>
                                           </p>
 
                                         </div>
@@ -318,7 +330,7 @@
                     </div>
 
                     <div id="check<?php echo $id; ?>" class="modal fade" role="dialog">
-                        <div class="modal-dialog">
+                        <div class="modal-dialog modal-lg">
                                 <div class="modal-content">
 
                                     <div class="modal-header">
@@ -335,16 +347,14 @@
                                               <div class="col">
                                                 <b>Ingredient</b>
                                               </div>
-                                              <div class="col">
+                                              <div class="col text-center">
                                                 <b>Needed Quantity</b>
                                               </div>
-                                            </div><br>
+                                            </div>
                                             <?php
                                               $inv = get_need_inventory2($conn,$id);
                                               $count = count($inv);
-											//print_p($inv);
-                                             // print_p($inv);
-											  
+
                                               for ($i=0; $i < $count; $i++) {
                                                 for ($j=0; $j < count($inv[$i]); $j++) {
                                                   $ing = $inv[$i][$j]['ingredientid'];
@@ -368,12 +378,12 @@
                                                       echo "$ingname";
                                                     echo "</div>";
                                                     echo "<div class='col text-center'>";
-														if($cur<0){
-															echo ceil($need-1);
-														}
-														else{
-															echo ceil($need);
-														}
+                          														if($cur<0){
+                          															echo ceil($need-1);
+                          														}
+                          														else{
+                          															echo ceil($need);
+                          														}
                                                     echo "</div>";
                                                   echo "</div>";
                                                 }

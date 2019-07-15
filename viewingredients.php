@@ -94,9 +94,11 @@
                           // FOR WARNINGS COLLAPSE
                           echo "<button class='btn btn-warning' type='button' data-toggle='collapse' data-target='#collapseExample' aria-expanded='false' aria-controls='collapseExample'>Restock Warnings</button>";
                           echo "<br>";
-                            echo "<div class='collapse show' id='collapseExample'>";
+                            echo "<div class='collapse' id='collapseExample'>";
                             echo "<div class='card card-body'>";
                             $count=0;
+
+                            $arrr = array();
                           while($row2 = mysqli_fetch_array($result2)){
                             $id2 = $row2['id'];
                             $name2 = $row2['name'];
@@ -110,33 +112,36 @@
 
                             // set collapse box for notifs
 
-                            foreach($products2 as $prod2){
-                              $prodID2 = $prod2['pid'];
-                              $ave2 = ceil(get_total_average($conn, $prodID2));
+                              foreach($products2 as $prod2){
+                                $prodID2 = $prod2['pid'];
+                                $ave2 = ceil(get_total_average($conn, $prodID2));
 
-                              $mlt2 = get_maxlead($conn, $prodID2);
+                                $mlt2 = get_maxlead($conn, $prodID2);
 
-                              $reorderpoint2 = ($ave2*$mlt2)+100;
+                                $reorderpoint2 = ($ave2*$mlt2)+100;
 
-                              $recipeQuantity2 = $prod2['quantity'];
+                                $recipeQuantity2 = $prod2['quantity'];
 
-                              $inNeeded2 = ceil($recipeQuantity2*$reorderpoint2);
+                                $inNeeded2 = ceil($recipeQuantity2*$reorderpoint2);
 
-                              $total2 += $inNeeded2;
-                            }
-                            $needed2 = ceil($total2-$qty2);
+                                $total2 += $inNeeded2;
+                              }
 
-                            if ($needed2<0) {
-                              $needed2=0;
-                            }
-                            if ($total2>$qty2){
-                              echo "<div class='alert alert-warning'><strong>Warning!</strong> order ";
-                              echo ceil($needed2);
-                              echo " of ";
-                              echo $name2;
-                              echo " to maintain optimal quantity </div>";
-                              $count += 1;
-                          }
+                              $needed2 = ceil($total2-$qty2);
+
+                              if ($needed2<0) {
+                                $needed2=0;
+                              }
+
+                              if ($total2>$qty2){
+                                array_push($arrr,$id2);
+                                echo "<div class='alert alert-warning'><strong>Warning!</strong> order ";
+                                echo ceil($needed2);
+                                echo " of ";
+                                echo $name2;
+                                echo " to maintain optimal quantity </div>";
+                                $count += 1;
+                              }
 
                           }
                           if($count==0){
@@ -156,6 +161,7 @@
                               $total = 0;
                               $unit;
                               $inNeeded = 0;
+
                               foreach($products as $prod){
                                 $prodID = $prod['pid'];
                                 $ave = get_total_average($conn, $prodID);
@@ -176,18 +182,34 @@
                                 $needed=0;
                               }
                                   echo '<tr>';
-                                    echo '<td>';
-                                      echo $name;
-                                    echo '</td>';
-                                    echo '<td>';
-                                      echo abs(ceil($qty));
-                                    echo '</td>';
-                                    echo '<td>';
-                                      echo $uom;
-                                    echo '</td>';
-                                    echo '<td class="text-center">';
-                                      echo '<a href="makeFilteredPO.php?ids='.$id.='&val='.$needed.'&unit='.$uom.'"><button type="button" class="btn btn-primary btn-sm">Restock</button></a> ';
-                                    echo '</td>';
+                                      if (in_array($id,$arrr)) {
+                                        echo '<td class=table-danger>';
+                                          echo $name;
+                                        echo '</td>';
+                                        echo '<td class=table-danger>';
+                                          echo abs(ceil($qty));
+                                        echo '</td>';
+                                        echo '<td class=table-danger>';
+                                          echo $uom;
+                                        echo '</td>';
+                                        echo '<td class="text-center table-danger">';
+                                          echo '<a href="makeFilteredPO.php?ids='.$id.='&val='.$needed.'&unit='.$uom.'"><button type="button" class="btn btn-primary btn-sm">Restock</button></a> ';
+                                        echo '</td>';
+                                      }else {
+                                        echo '<td>';
+                                          echo $name;
+                                        echo '</td>';
+                                        echo '<td>';
+                                          echo abs(ceil($qty));
+                                        echo '</td>';
+                                        echo '<td>';
+                                          echo $uom;
+                                        echo '</td>';
+                                        echo '<td class="text-center">';
+                                          echo '<a href="makeFilteredPO.php?ids='.$id.='&val='.$needed.'&unit='.$uom.'"><button type="button" class="btn btn-primary btn-sm">Restock</button></a> ';
+                                        echo '</td>';
+                                      }
+
                                   echo '</tr>';
 
 

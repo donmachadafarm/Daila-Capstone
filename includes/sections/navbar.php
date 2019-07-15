@@ -151,11 +151,13 @@
             <?php echo $_SESSION['username']; ?>
           </a>
           <div class="dropdown-menu dropdown-menu-right">
-            <?php if ($_SESSION['userType'] == 104 || $_SESSION['userType'] == 100): ?>
-            <a class="dropdown-item" href="addCustomer.php">Add Customer</a>
-            <a class="dropdown-item" href="addSupplier.php">Add Supplier</a>
-            <div class="dropdown-divider"></div>
-          <?php endif; ?>
+            <?php if ($_SESSION['userType'] == 104 || $_SESSION['userType'] == 100 || $_SESSION['userType'] == 101): ?>
+              <a class="dropdown-item" href="addCustomer.php">Add Customer</a>
+              <?php if ($_SESSION['userType'] == 100): ?>
+                <a class="dropdown-item" href="addSupplier.php">Add Supplier</a>
+              <?php endif; ?>
+              <div class="dropdown-divider"></div>
+            <?php endif; ?>
             <a class="nav-item nav-link text-center" href="logout.php"><i class="fas fa-power-off"></i> Logout</a>
           </div>
         </li>

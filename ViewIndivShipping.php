@@ -137,9 +137,13 @@
                                         <input type="hidden" name="productid" value="<?php echo $prodid; ?>">
                                         <div class="text-center">
                                           <p>
-                                            <h6>How many arrived?</h6>
+                                            <h5>How many arrived?</h5>
                                             <br>
-                                            <input type="number" placeholder="Expected: <?php echo $qty; ?>" name="qty" class="form-control" value="">
+                                            <div class="text-left">
+                                              <label class="text-left"><b>Expecting:</b></label>
+                                            </div>
+
+                                            <input type="number" placeholder="<?php echo $qty; ?>" max="<?php echo $qty;?>" min="1" name="qty" class="form-control" value="">
                                           </p>
                                         </div>
                                         <div class="modal-footer">
