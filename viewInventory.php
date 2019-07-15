@@ -1293,8 +1293,18 @@ if (isset($_POST['edit'])) {
                       $year = substr($date[$i], 3, 7);
                       $dateWeight = $weight[$i];
                       $averageSales += get_weighted_average($conn, $id, $month, $year, $weight[$i]);
-                      $reorderPoint += 100+($averageSales*$maxLeadTime);
-                      $needed = $reorderPoint-$quantity;
+                      // $reorderPoint += 100+($averageSales*$maxLeadTime);
+                      // $needed = $reorderPoint-$quantity;
+                      echo $id;
+                      echo "<br>";
+                      echo $month;
+                      echo "<br>";
+                      echo $year;
+                      echo "<br>";
+                      echo $dateWeight;
+                      echo "<br>";
+                      echo $averageSales;
+                      echo "<br>";
                     }
                       
 
