@@ -330,7 +330,7 @@
                     </div>
 
                     <div id="check<?php echo $id; ?>" class="modal fade" role="dialog">
-                        <div class="modal-dialog">
+                        <div class="modal-dialog modal-lg">
                                 <div class="modal-content">
 
                                     <div class="modal-header">
@@ -347,15 +347,13 @@
                                               <div class="col">
                                                 <b>Ingredient</b>
                                               </div>
-                                              <div class="col">
+                                              <div class="col text-center">
                                                 <b>Needed Quantity</b>
                                               </div>
-                                            </div><br>
+                                            </div>
                                             <?php
                                               $inv = get_need_inventory2($conn,$id);
                                               $count = count($inv);
-											//print_p($inv);
-                                             // print_p($inv);
 
                                               for ($i=0; $i < $count; $i++) {
                                                 for ($j=0; $j < count($inv[$i]); $j++) {
@@ -380,12 +378,12 @@
                                                       echo "$ingname";
                                                     echo "</div>";
                                                     echo "<div class='col text-center'>";
-														if($cur<0){
-															echo ceil($need-1);
-														}
-														else{
-															echo ceil($need);
-														}
+                          														if($cur<0){
+                          															echo ceil($need-1);
+                          														}
+                          														else{
+                          															echo ceil($need);
+                          														}
                                                     echo "</div>";
                                                   echo "</div>";
                                                 }

@@ -240,7 +240,7 @@
                   <p><b>Packaging & Delivery Time: 5 Days </b></p>
               </div> -->
               <div class="col">
-                  <p><b class="pull-right">Estimated delivery Date: <?php echo date("M/d/Y h:i:s A",$date); ?></b></p>
+                  <p><b class="pull-right">Estimated delivery Date: <?php echo date("M/d/Y",$date); ?></b></p>
               </div>
             </div>
             <hr class="style1">

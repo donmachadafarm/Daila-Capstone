@@ -90,61 +90,6 @@
                 window.location.replace('salesInvoiceFinish.php?".$prid."&".$prqt."&customer=".$customer."&date=".$date."&counter=".$counter."');
            </script>";
 
-
-      // // next checker if requested qty is more than current quantity
-      // if ($counter>0) {
-      //
-      //   $str = '';
-      //   for ($i=0; $i < $counter; $i++) {
-      //     $str = $str . "" . get_prodname($conn,$prodn[$i]). " ";
-      //   }
-      //   echo "<script>alert('Invoice invalid not enough $str');</script>";
-      //
-      // }else{
-      //   // inserts into sales reduces current inventory based on id
-      //     $query = "INSERT INTO Sales (saleDate,totalPrice) VALUES ('$date',0)";
-      //
-      //       mysqli_query($conn,$query);
-      //
-      //     $query = "SELECT * FROM Sales ORDER BY salesID DESC LIMIT 1";
-      //
-      //       $sql = mysqli_query($conn,$query);
-      //
-      //       $row = mysqli_fetch_array($sql);
-      //
-      //     $salesid = $row['salesID'];
-      //
-      //
-      //       for ($i=0; $i < $count; $i++) {
-      //
-      //         $sql = mysqli_query($conn,"SELECT * FROM Product WHERE productID = $arkey[$i]");
-      //
-      //         $row = mysqli_fetch_array($sql);
-      //
-      //         $subtotal = $result[$arkey[$i]] * $row['productPrice'];
-      //
-      //         $query1 = "INSERT INTO ProductSales(productID,salesID,quantity,subTotal) VALUES('{$arkey[$i]}','{$salesid}','{$result[$arkey[$i]]}','{$subtotal}')";
-      //
-      //           $sql = mysqli_query($conn,$query1);
-      //
-      //           $total += $subtotal;
-      //
-      //         $query2 = "UPDATE Product SET quantity = quantity - '{$result[$arkey[$i]]}' WHERE productID = '{$arkey[$i]}'";
-      //
-      //           mysqli_query($conn,$query2);
-      //
-      //       }
-      //
-      //
-      //         $query3 = "UPDATE Sales SET totalPrice = $total WHERE salesID = $salesid";
-      //
-      //           mysqli_query($conn,$query3);
-      //
-      //
-      //     echo "<script>
-      //       alert('Invoice posted!');
-      //           </script>";
-      //     }
   }
 ?>
 
@@ -206,36 +151,10 @@
 
                <div class="col-lg-12">
                  <div align="center">
-                    <!-- <button type="button" class="btn btn-success">Submit</button> -->
                     <input type="submit" id="submit" name="submit" class="btn btn-success" value="Confirm" />
                  </div>
                </div>
 
-               <!-- // modal -->
-               <!-- <div id="confirm" class="modal fade" role="dialog">
-                   <div class="modal-dialog">
-                           <div class="modal-content">
-
-                               <div class="modal-header">
-                                   <h4>Notice</h4>
-                                   <button type="button" class="close" data-dismiss="modal">&times;</button>
-                               </div>
-
-                               <div class="modal-body">
-                                   <div class="text-center">
-                                     <p>
-                                       <h6>Confirm Invoice?</h6>
-
-                                     </p>
-                                   </div>
-                                   <div class="modal-footer">
-                                       <input type="submit" id="submit" name="submit" class="btn btn-success" value="Confirm" />
-                                       <button type="button" class="btn btn-default btn-outline-secondary" data-dismiss="modal">Close</button>
-                                   </div>
-                               </div>
-                       </div>
-                   </div>
-               </div> -->
 
              </form>
 

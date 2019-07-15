@@ -35,50 +35,67 @@
     $status = $row['status'];
     $date = $row['date'];
 
-
-    // update status PO and add all the requested raw mats into inventory (INVENTORY AND RAW MATERIALS UPDATE)
     if (isset($_POST['update'])) {
-      // query here
-      $ids = $_POST['poitem_id'];
-      $rmid = $_POST['rmid'];
-      $poid = $_POST['poid'];
-      $defect = $_POST['defective'];
-      $ornum = $_POST['delivery'];
+        $rmid = $_POST['rmid'];
+        $poid = $_POST['poid'];
+        $good = $_POST['good'];
+        $ornum = $_POST['delivery'];
 
-      $query = "SELECT * FROM POItem WHERE rawMaterialID = $rmid AND purchaseOrderID = $poid";
+        $query = "SELECT * FROM POItem WHERE rawMaterialID = $rmid AND purchaseOrderID = $poid";
 
-        $sql = mysqli_query($conn,$query);
+          $sql = mysqli_query($conn,$query);
 
-        $row = mysqli_fetch_array($sql);
+          $row = mysqli_fetch_array($sql);
 
-      $qty = $row['quantity'] - $defect;
+          $origqty = $row['quantity'];
+          $shipqty = $row['quantityShipped'];
 
-      $query = "SELECT * FROM RMIngredient WHERE rawMaterialID = $rmid";
+        $defective = $origqty - $good;
 
-        $sql = mysqli_query($conn,$query);
-
-        $row = mysqli_fetch_array($sql);
-
-      $iding = $row['ingredientID'];
-
-      $query = "UPDATE ingredient SET quantity = quantity + $qty WHERE ingredientID = $iding";
-
-        if(mysqli_query($conn,$query)){
-
-          mysqli_query($conn,"UPDATE POItem SET status = 'Delivered',deliveryReceipt = '$ornum',defective = '$defect' WHERE rawMaterialID = $rmid AND purchaseOrderID = $poid");
-
-          echo "<meta http-equiv='refresh' content='0'>";
-
+        if ($defective >= 0) {
+          $query1 = "UPDATE POItem SET quantityShipped = quantityShipped + '$good', defective = defective + '$defective',deliveryReceipt = '$ornum' WHERE rawMaterialID = $rmid AND purchaseOrderID = $poid";
+        }else {
+          $query1 = "UPDATE POItem SET quantityShipped = quantityShipped + '$good', deliveryReceipt = '$ornum' WHERE rawMaterialID = $rmid AND purchaseOrderID = $poid";
         }
 
-      $sql = mysqli_query($conn,"SELECT * FROM POItem WHERE purchaseOrderID = $poid AND status = 'Not Delivered'");
+        mysqli_query($conn,$query1);
 
-      $count = mysqli_num_rows($sql);
+        $query = "SELECT * FROM RMIngredient WHERE rawMaterialID = $rmid";
 
-      if($count == 0){
-        mysqli_query($conn,"UPDATE PurchaseOrder SET status = 'Completed!' WHERE purchaseOrderID = $poid");
-      }
+          $sql = mysqli_query($conn,$query);
 
+          $row = mysqli_fetch_array($sql);
+
+        // ingredient id matched with rawmaterial
+        $iding = $row['ingredientID'];
+
+        $query = "UPDATE ingredient SET quantity = quantity + $good WHERE ingredientID = $iding";
+
+          mysqli_query($conn,$query);
+
+        $query = "SELECT * FROM POItem WHERE rawMaterialID = $rmid AND purchaseOrderID = $poid";
+
+          $sql = mysqli_query($conn,$query);
+
+          $row = mysqli_fetch_array($sql);
+
+          $origqty = $row['quantity'];
+          $shipqty = $row['quantityShipped'];
+
+        if ($origqty == $shipqty) {
+          mysqli_query($conn,"UPDATE POItem SET status = 'Delivered',deliveryReceipt = '$ornum' WHERE rawMaterialID = $rmid AND purchaseOrderID = $poid");
+
+          echo "<meta http-equiv='refresh' content='0'>";
+        }
+
+        // checks if whole PO is completed
+        $sql = mysqli_query($conn,"SELECT * FROM POItem WHERE purchaseOrderID = $poid AND status = 'Not Delivered'");
+
+        $count = mysqli_num_rows($sql);
+
+        if($count == 0){
+          mysqli_query($conn,"UPDATE PurchaseOrder SET status = 'Completed!' WHERE purchaseOrderID = $poid");
+        }
 
     }
 
@@ -114,6 +131,7 @@
               <tr>
                 <th>Raw Material</th>
                 <th>Quantity</th>
+                <th>Shipped</th>
                 <th>Unit of Measurement</th>
                 <th>Price per unit</th>
                 <th>Sub Total</th>
@@ -131,6 +149,8 @@
                                  POItem.purchaseOrderID AS poid,
                                  POItem.quantity AS qty,
                                  POItem.subTotal AS sub,
+                                 POItem.defective AS def,
+                                 POItem.quantityShipped AS remaining,
                                  POItem.status AS status,
                                  POItem.unitOfMeasurement AS uom
                           FROM POItem
@@ -146,9 +166,14 @@
                     $name = $row['rmname'];
                     $qty = $row['qty'];
                     $sub = $row['sub'];
+                    $defe = $row['def'];
                     $ppu = $row['ppu'];
                     $status = $row['status'];
                     $uom = $row['uom'];
+                    $rem = $row['remaining'];
+                    $maxdefe = $qty - $defe;
+                    $actual = $qty - $rem;
+
 
                     echo "<tr>";
                       echo "<td>";
@@ -157,6 +182,10 @@
 
                       echo "<td>";
                         echo $qty;
+                      echo "</td>";
+
+                      echo "<td>";
+                        echo $rem;
                       echo "</td>";
 
                       echo "<td>";
@@ -202,12 +231,23 @@
                                         <input type="hidden" name="poid" value="<?php echo $poid; ?>">
                                         <div class="text-center">
                                           <p>
-                                            <h6>Update Purchase Order Status?</h6>
+                                            <h6><b>Update Purchase Order Status?</h6></b>
                                             <br>
-                                            <input type="number" name="delivery" placeholder="Delivery Receipt" value="" class="form-control" required><br>
-                                            <input type="number" name="defective" placeholder="Number of defects" value="" class="form-control" required>
+                                            <div class="form-group row">
+                                              <label class="col-sm-4 col-form-label">Delivery Receipt: </label>
+                                              <div class="col-sm-8">
+                                                <input required type="number" name="delivery" value="" placeholder="" class="form-control" required><br>
+                                              </div>
+                                            </div>
+
+                                            <div class="form-group row">
+                                              <label class="col-sm-4 col-form-label">Good Condition: </label>
+                                              <div class="col-sm-8">
+                                                <input required type="number" name="good" placeholder="" class="form-control" min="0" max="<?php echo $actual; ?>"required>
+                                              </div>
+                                            </div>
                                           </p>
-                                          <small>Note: This action will add the requested Raw Materials into the inventory!</small>
+                                          <small>Note: This action will add the requested Good Raw Materials into the inventory!</small>
                                         </div>
                                         <div class="modal-footer">
                                             <button type="submit" name="update" class="btn btn-primary">Continue</button>
