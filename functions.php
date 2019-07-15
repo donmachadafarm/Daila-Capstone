@@ -767,7 +767,7 @@ function get_process_sequence($conn,$prodid){
 
 // gets machine ids regardless kung may naka used na sa kanila for queueing
 function get_machine_for_queue($conn,$proc){
-    $query = "SELECT machineID FROM Machine WHERE processTypeID = $proc AND status <> 'Under Maintenance'";
+    $query = "SELECT machineID FROM Machine WHERE processTypeID = $proc AND (status <> 'Under Maintenance' OR status <> 'For Maintenance')";
 
     $sql = mysqli_query($conn,$query);
 
@@ -793,6 +793,11 @@ function get_machine($conn,$proc){
     for ($i=0; $i < mysqli_num_rows($sql); $i++) {
       $row = mysqli_fetch_array($sql);
 
+      // check for the hours worked muna conditional ka here if lumagpas na ng 300hrs
+      // change mo muna status non bago mo i SELECT ulet
+      // yung mga machines para mag update ung status
+      // also make an update function para sa machines pag nacheck na
+      // kung lalagpas ung hours worked
       $arrmach[$i] = $row['machineID'];
     }
 
@@ -1059,7 +1064,7 @@ function get_prodsold($conn){
 function get_delayedJOrdersCount($conn){
   $now  = date('Y-m-d');
 
-  $query = "SELECT count(*) FROM JobOrder WHERE orderDate > '$now'";
+  $query = "SELECT count(*) FROM JobOrder WHERE dueDate > '$now'";
 
     $sql = mysqli_query($conn,$query);
 

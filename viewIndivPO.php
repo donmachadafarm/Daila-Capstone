@@ -243,7 +243,7 @@
                                             <div class="form-group row">
                                               <label class="col-sm-4 col-form-label">Good Condition: </label>
                                               <div class="col-sm-8">
-                                                <input required type="number" name="good" placeholder="" class="form-control" min="0" max="<?php echo $actual; ?>"required>
+                                                <input required type="number" name="good" placeholder="Expected quantity: <?php echo $actual; ?>" class="form-control" min="0" max="<?php echo $actual; ?>"required>
                                               </div>
                                             </div>
                                           </p>
