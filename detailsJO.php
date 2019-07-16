@@ -24,7 +24,7 @@ if (!isset($_SESSION['userType'])){
     $id = $_GET['id'];
 
     $query = "SELECT
-                customer.name AS cName,
+                customer.company AS cName,
                 joborder.orderDate AS od,
                 joborder.dueDate AS dd,
                 joborder.totalPrice AS TOTAL,

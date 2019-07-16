@@ -117,7 +117,7 @@ a {
             </div> -->
 
             <!-- 2nd chart items pinaka mabenta -->
-            <div class="col-lg-6">
+            <!-- <div class="col-lg-6">
               <div class="card">
                    <div class="card-header bg-secondary text-white">
                        <b>Best Selling Products</b>
@@ -126,7 +126,7 @@ a {
                      <div id="second" style="width: 650px; height: 360px;"></div>
                    </div>
                </div>
-            </div>
+            </div> -->
 
       <?php endif; ?>
 

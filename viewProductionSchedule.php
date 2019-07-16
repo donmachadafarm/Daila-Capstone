@@ -541,7 +541,7 @@
                       FROM ProductionProcess
                       JOIN JobOrder ON ProductionProcess.orderID = JobOrder.orderID
                       WHERE ProductionProcess.status <> 'Shipping'
-                      ORDER BY jobOrder.dueDate";
+                      ORDER BY productionProcess.orderID";
 
             $sql = mysqli_query($conn,$query);
 

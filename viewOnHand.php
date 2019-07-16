@@ -13,21 +13,30 @@ if (!isset($_SESSION['userType'])){
 
 <div class="container">
     <div class="row">
-        <div class="col-lg-12">
+        <div class="col-lg-2">
+
+        </div>
+        <div class="col-lg-6">
             <h1 class="text-center"><br><br>
-                On Hand Inventory Report
+                Finished Goods Inventory Report
             </h1><br>
+        </div>
+        <div class="col-lg-2">
+
         </div>
     </div>
     <div class="row">
-        <div class="col-lg-12">
-            <table class="table table-hover">
+        <div class="col-lg-2">
+
+        </div>
+        <div class="col-lg-8">
+            <table class="table table-responsive table-hover">
                 <thead>
                   <tr>
                       <th>Product Name</th>
                       <th>Quantity</th>
                       <th>Price Per Unit</th>
-                      <th>SubTotal</th>
+                      <th class="text-right">SubTotal</th>
                   </tr>
                 </thead>
 
@@ -55,8 +64,8 @@ if (!isset($_SESSION['userType'])){
                         echo "</td>";
 
 
-                        echo "<td>";
-                          echo $row['productPrice'] * $row['quantity'];
+                        echo "<td class='text-right'>";
+                          echo number_format($row['productPrice'] * $row['quantity']);
                         echo "</td>";
 
                       echo "</tr>";
@@ -65,14 +74,19 @@ if (!isset($_SESSION['userType'])){
                   ?>
                 </tbody>
               </table>
-              <br><hr class="style1"><br>
+              <br>
+              <!-- <hr class="style1"> -->
+              <br>
 
 
 
         </div>
+        <div class="col-lg-2">
+
+        </div>
     </div>
     <div class="row">
-      <div class="col-lg-12 text-right">
+      <div class="col-lg-12 text-center">
         <h4>Total: <?php echo number_format($sum); ?></h4><br><br>
       </div>
     </div>

@@ -155,7 +155,7 @@
 
             <?php if ($_SESSION['userType']==100 || $_SESSION['userType']==104): ?>
               <h6 class="dropdown-header text-center"><b> Inventory Report </b></h6>
-              <a class="dropdown-item text-center" href="viewOnHand.php">On Hand Inventory</a>
+              <a class="dropdown-item text-center" href="viewOnHand.php">Finished Goods Inventory</a>
             <?php endif; ?>
 
         </div>
