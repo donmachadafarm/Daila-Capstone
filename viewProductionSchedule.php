@@ -508,9 +508,86 @@
 
 
 
-    </div>
-</div>
+            </div>
+          </div>
 
+
+        <br><br><h3><b>Status:</b></h3>
+<div class="row">
+  <div class="col-lg-12">
+      <table class="display table table-hover table-responsive table-borderless">
+        <thead>
+          <tr>
+            <th>Due Date</th>
+            <th>Order ID</th>
+            <th>Product</th>
+            <th>Machine</th>
+            <th>Process</th>
+            <th>Sequence</th>
+            <th>Time Estimate</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php
+          $query = "SELECT ProductionProcess.productID,
+                           ProductionProcess.machineID,
+                           ProductionProcess.orderID,
+                           ProductionProcess.processTypeID,
+                           ProductionProcess.processSequence,
+                           ProductionProcess.timeEstimate,
+                           ProductionProcess.status,
+                           jobOrder.dueDate
+                      FROM ProductionProcess
+                      JOIN JobOrder ON ProductionProcess.orderID = JobOrder.orderID
+                      WHERE ProductionProcess.status <> 'Shipping'
+                      ORDER BY jobOrder.dueDate";
+
+            $sql = mysqli_query($conn,$query);
+
+            for ($i=0; $i < mysqli_num_rows($sql); $i++) {
+              $row = mysqli_fetch_array($sql);
+
+              echo "<tr>";
+                echo "<td>";
+                  echo $row['dueDate'];
+                echo "</td>";
+
+                echo "<td>";
+                  echo $row['orderID'];
+                echo "</td>";
+
+                echo "<td>";
+                  echo get_prodname($conn,$row['productID']);
+                echo "</td>";
+
+                echo "<td>";
+                  echo get_machinename($conn,$row['machineID']);
+                echo "</td>";
+
+                echo "<td>";
+                  echo get_processname($conn,$row['processTypeID']);
+                echo "</td>";
+
+                echo "<td>";
+                  echo $row['processSequence'];
+                echo "</td>";
+
+                echo "<td>";
+                  echo seconds_datetime($row['timeEstimate']);
+                echo "</td>";
+
+                echo "<td>";
+                  echo $row['status'];
+                echo "</td>";
+              echo "</tr>";
+            }
+           ?>
+        </tbody>
+      </table>
+  </div>
+</div>
+</div><br><br>
 <script type="text/javascript">
   $('#timepicker1').timepicker({
       minuteStep: 1,
@@ -518,6 +595,12 @@
       showMeridian: true,
       defaultTime: 'current'
   });
+</script>
+
+<script type="text/javascript">
+  $(document).ready(function() {
+    $('table.display').DataTable();
+  } );
 </script>
 
 
