@@ -10,11 +10,11 @@
 
   function fill_unit_select_box($conn){
     $output = '';
-    $query = "SELECT Ingredient.name AS iname,Ingredient.ingredientID AS iid FROM Ingredient";
+    $query = "SELECT Ingredient.name AS iname,Ingredient.ingredientID AS iid, rawmaterial.unitOfMeasurement AS uom FROM Ingredient JOIN rmingredient ON rmingredient.ingredientID=ingredient.ingredientID JOIN rawmaterial ON rawmaterial.rawMaterialID=rmingredient.rawMaterialID ";
     $sql = mysqli_query($conn,$query);
 
     while($row = mysqli_fetch_array($sql)){
-      $output .= '<option value="'.$row["iid"].'">'.$row["iname"].'</option>';
+      $output .= '<option value="'.$row["iid"].'">'.$row["iname"].' - '.$row["uom"].'</option>';
     }
 
     return $output;

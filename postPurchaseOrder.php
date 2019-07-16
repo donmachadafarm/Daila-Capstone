@@ -20,7 +20,7 @@
     $sql = mysqli_query($conn,$query);
 
     while($row = mysqli_fetch_array($sql)){
-      $output .= '<option value="'.$row["rawMaterialID"].'">'.$row["name"].'</option>';
+      $output .= '<option value="'.$row["rawMaterialID"].'">'.$row["name"].' - '.$row["unitOfMeasurement"].'</option>';
     }
 
     return $output;
