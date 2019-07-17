@@ -1,10 +1,3 @@
-<?php
-/**
-* Created by PhpStorm.
-* User: jmcervantes02
-* Date: 17/11/2018
-* Time: 4:43 PM
-*/?>
 <?php include "includes/sections/header.php"; ?>
 <?php include "includes/sections/navbar.php"; ?>
 <!-- heading sections -->

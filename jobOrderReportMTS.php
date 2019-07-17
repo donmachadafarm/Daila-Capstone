@@ -49,6 +49,7 @@ if (!isset($_SESSION['userType'])){
                 <tbody>
                 <?php
                 if (isset($_POST['search'])){
+                    $dataArr = array();
                     $startDate = $_POST['startDate'];
                     $endDate = $_POST['endDate'];
                     $result = mysqli_query($conn, "SELECT joborder.orderID AS JOID,
@@ -110,24 +111,35 @@ if (!isset($_SESSION['userType'])){
 
                             echo '</tr>';
 
+                            $dataArr[] = $id;
                         }
+                        $_SESSION['reportMTS'] = $dataArr;
 
                         echo '</tbody>';
                         echo '</table>';
+                        echo '<br />';
 
                         echo '<div class="container">';
-                        echo '<div class="row">';
-                        echo '<div class="col-lg-12">';
-                        echo '<h4 class="text-right">Total Revenue: ';
-                        echo number_format($sum, 2);
-                        echo '</h4>';
-                        echo '</div>';
-                        echo '</div>';
+                          echo '<div class="row">';
+                            echo "<div class='col-lg-6'>";
+                              echo "<div class=text-left>";
+                                echo "<a href='printMTS.php?start=$startDate&end=$endDate' class='btn btn-primary'>Print</a>";
+                              echo "</div>";
+                            echo "</div>";
+                            echo '<div class="col-lg-6">';
+                              echo "<div class='text-right'>";
+                                echo '<h4 class="text-right">Total Revenue: ';
+                                  echo number_format($sum, 2);
+                                echo '</h4>';
+                              echo "</div>";
+                            echo '</div>';
+                          echo '</div>';
                         echo '</div>';
                     }
                 }
 
                 else{
+                    $dataArr = array();
                     $result = mysqli_query($conn, "SELECT joborder.orderID AS JOID,
                                                         customer.company AS cName,
                                                         joborder.orderDate AS orderDate,
@@ -179,7 +191,10 @@ if (!isset($_SESSION['userType'])){
 
                             echo '</tr>';
 
+                            $dataArr[] = $id;
+
                         }
+                        $_SESSION['reportMTS'] = $dataArr;
 
                         echo '</tbody>';
                         echo '</table>';
@@ -187,8 +202,6 @@ if (!isset($_SESSION['userType'])){
                         echo '<div class="container">';
                         echo '<div class="row">';
                         echo '<div class="col-lg-12">';
-                        //echo '<h4 class="text-right">Total Revenue: ';
-                        //echo number_format($sum, 2);
                         echo '</h4>';
                         echo '</div>';
                         echo '</div>';
@@ -200,13 +213,6 @@ if (!isset($_SESSION['userType'])){
 
                 ?>
 
-<!--            <div class="container">-->
-<!--                <div class="row">-->
-<!--                    <div class="col-lg-12">-->
-<!--                        <h4 class="text-right">Total Revenue: --><?php //echo number_format($sum, 2) ?><!--</h4>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
 
         </div>
     </div>

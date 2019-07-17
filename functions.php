@@ -1485,4 +1485,38 @@ function view_po($conn){
         }
     }
 
+  function get_JODetails($conn,$id){
+    $query = "SELECT product.name AS pName,
+                     producttype.name AS type,
+                     receipt.quantity,
+                     product.productPrice,
+                     receipt.subTotal AS total,
+                     jobOrder.orderDate
+              FROM receipt
+              JOIN product on receipt.productID=product.productID
+              JOIN producttype on product.productTypeID=producttype.productTypeID
+              JOIN jobOrder on receipt.orderID = jobOrder.orderID
+              WHERE receipt.orderID=$id";
+
+    $result = mysqli_query($conn,$query);
+
+    $data = array();
+
+    while ($row = mysqli_fetch_array($result)){
+
+        $product = $row['pName'];
+        $quantity = $row['quantity'];
+        $total = $row['total'];
+        $date = $row['orderDate'];
+
+        $data['productName'] = $product;
+        $data['quantity'] = $quantity;
+        $data['total'] = $total;
+        $data['date'] = $date;
+
+      }
+
+      return $data;
+  }
+
  ?>
