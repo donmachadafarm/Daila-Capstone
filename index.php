@@ -372,19 +372,17 @@ a {
             <div class="col-lg-6">
               <div class="card">
                    <div class="card-header bg-secondary text-white">
-                       <b>Ongoing Process</b>
+                       <b>Machines Need Repair</b>
                    </div>
                    <div class="card-body">
                      <table class="table table-borderless table-hover " id="example">
                        <thead>
-                         <th class="text-center">OrderID</th>
-                         <th class="text-center">Product</th>
-                         <th class="text-center">ProcessType</th>
-                         <th class="text-center">Machine</th>
-                         <th class="text-center">Timeneed</th>
+                         <th class="text-center">Name</th>
+                         <th class="text-center">Process</th>
+                         <th class="text-center">Hour Worked</th>
                        </thead>
                        <tbody>
-                         <?php echo view_production($conn); ?>
+                         <?php echo view_machinefor($conn); ?>
                        </tbody>
                      </table>
                    </div>

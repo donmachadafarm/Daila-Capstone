@@ -1206,7 +1206,7 @@ function get_numberofmachinesused($conn){
 }
 
 function get_numberofmachinesrepair($conn){
-  $query = "SELECT count(*) FROM Machine WHERE status = 'Under Maintenance'";
+  $query = "SELECT count(*) FROM Machine WHERE hoursWorked>1080000";
 
     $sql = mysqli_query($conn,$query);
 
@@ -1260,40 +1260,31 @@ function view_machinesrepair($conn){
     }
 }
 
-function view_production($conn){
-  $query = "SELECT orderID, productID, machineID, timeEstimate, processTypeID
-              FROM ProductionProcess
-              WHERE status = 'Ongoing'";
+function view_machinefor($conn){
+  $query = "SELECT *
+              FROM machine
+              WHERE hoursWorked >1080000";
 
     $sql = mysqli_query($conn,$query);
 
     while($row = mysqli_fetch_array($sql)){
-      $id = $row['orderID'];
-      $proid = $row['productID'];
-      $procid = $row['processTypeID'];
-      $machine = $row['machineID'];
-      $time = $row['timeEstimate'];
+      $id = $row['machineID'];
+      $proc = $row['processTypeID'];
+      $hr = $row['hoursWorked'];
 
       echo '<tr>';
         echo '<td class="text-center">';
-          echo $id;
+          echo get_machinename($conn,$id);
         echo '</td>';
 
         echo '<td class="text-center">';
-          echo get_prodname($conn,$proid);
+          echo get_processname($conn,$proc);
         echo'</td>';
 
         echo '<td class="text-center">';
-          echo get_processname($conn,$proid);
+          echo seconds_datetime($hr);
         echo'</td>';
 
-        echo '<td class="text-center">';
-          echo get_machinename($conn,$machine);
-        echo'</td>';
-
-        echo '<td class="text-center">';
-          echo seconds_datetime($time);
-        echo'</td>';
 
       echo '</tr>';
 
