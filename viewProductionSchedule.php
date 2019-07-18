@@ -125,64 +125,70 @@
     $proid = $_POST['prod_id'];
     $stats = $_POST['status'];
 
-    $qry = "SELECT timeEstimate as t FROM ProductionProcess WHERE orderID = $ordid AND machineID = $macid AND productID = $proid";
-    $sql = mysqli_query($conn,$qry);
-    $row = mysqli_fetch_array($sql);
-    $time = $row['t'];
 
-    // update the production process for that row ng specific order machine id at productid  "Ongoing" - > "Done"
-    $query = "UPDATE ProductionProcess SET status = 'Done',machineQueue = machineQueue - 1 WHERE orderID = $ordid AND machineID = $macid AND productID = $proid AND status = 'Ongoing'";
-
-    mysqli_query($conn,$query);
-
-    // adds the timesworked
-    mysqli_query($conn,"UPDATE Machine SET hoursWorked = hoursWorked + $time, lifetimeWorked = lifetimeWorked + $time WHERE machineID = $macid");
-
-    // readjust the queue
-    $query = "SELECT * FROM ProductionProcess WHERE processSequence = 1 AND status = 'Wait' ORDER BY machineQueue DESC LIMIT 1";
-
-      $sql = mysqli_query($conn,$query);
-
-      $row = mysqli_fetch_array($sql);
-
-    $nextorder = $row['orderID'];
-    $pid = $row['productID'];
-
-    if(mysqli_num_rows($sql)>0){
-        // query for first process set status = 'ongoing'
-      $query = "UPDATE ProductionProcess SET status = 'Ongoing' WHERE orderID = $nextorder AND productID = $pid AND processSequence = 1";
-
-        mysqli_query($conn,$query);
-
-      // $sq = mysqli_query($conn,"SELECT machineID FROM ProductionProcess WHERE productID = $pid AND orderID = $nextorder");
-      //
-      // while ($row = mysqli_fetch_array($sq)) {
-      //   $maid = $row['machineID'];
-      //   $query = "UPDATE Machine SET status = 'Used' WHERE machineID = $maid";
-      //
-      //   mysqli_query($conn,$query);
-      // }
-
-    }
-
-    // GETS THE NEXT MACHINE FOR THE SEQUENCE
-    $sql = mysqli_query($conn,"SELECT machineID FROM ProductionProcess WHERE orderID = $ordid AND productID = $proid AND status = 'Wait' ORDER BY processSequence LIMIT 1");
-
-    $row = mysqli_fetch_array($sql);
-
-    // CHECKS IF THERE IS STILL SOME MACHINE IN QUEUE FOR THE PRODUCTION PROCESS
-    if(isset($row)){
-        $query = "UPDATE ProductionProcess SET status = 'Ongoing' WHERE orderID = $ordid AND machineID = $row[0] AND productID = $proid AND status = 'Wait'";
-
-        mysqli_query($conn,$query);
+    if (check_emergency($conn,$macid)) {
+      echo "<script>alert('ERROR: MACHINE UNDER MAINTENANCE');</script>";
     }else {
-        $sql = mysqli_query($conn,"SELECT machineID FROM ProductionProcess WHERE orderID = $ordid AND productID = $proid AND status = 'Done' ORDER BY processSequence DESC LIMIT 1");
+      $qry = "SELECT timeEstimate as t FROM ProductionProcess WHERE orderID = $ordid AND machineID = $macid AND productID = $proid";
+      $sql = mysqli_query($conn,$qry);
+      $row = mysqli_fetch_array($sql);
+      $time = $row['t'];
+
+      // update the production process for that row ng specific order machine id at productid  "Ongoing" - > "Done"
+      $query = "UPDATE ProductionProcess SET status = 'Done',machineQueue = machineQueue - 1 WHERE orderID = $ordid AND machineID = $macid AND productID = $proid AND status = 'Ongoing'";
+
+      mysqli_query($conn,$query);
+
+      // adds the timesworked
+      mysqli_query($conn,"UPDATE Machine SET hoursWorked = hoursWorked + $time, lifetimeWorked = lifetimeWorked + $time WHERE machineID = $macid");
+
+      // readjust the queue
+      $query = "SELECT * FROM ProductionProcess WHERE processSequence = 1 AND status = 'Wait' ORDER BY machineQueue DESC LIMIT 1";
+
+        $sql = mysqli_query($conn,$query);
 
         $row = mysqli_fetch_array($sql);
 
-        mysqli_query($conn,"UPDATE ProductionProcess SET status = 'Finish' WHERE orderID = $ordid AND machineID = $row[0] AND productID = $proid AND status = 'Done'");
+      $nextorder = $row['orderID'];
+      $pid = $row['productID'];
 
+      if(mysqli_num_rows($sql)>0){
+          // query for first process set status = 'ongoing'
+        $query = "UPDATE ProductionProcess SET status = 'Ongoing' WHERE orderID = $nextorder AND productID = $pid AND processSequence = 1";
+
+          mysqli_query($conn,$query);
+
+        // $sq = mysqli_query($conn,"SELECT machineID FROM ProductionProcess WHERE productID = $pid AND orderID = $nextorder");
+        //
+        // while ($row = mysqli_fetch_array($sq)) {
+        //   $maid = $row['machineID'];
+        //   $query = "UPDATE Machine SET status = 'Used' WHERE machineID = $maid";
+        //
+        //   mysqli_query($conn,$query);
+        // }
+
+      }
+
+      // GETS THE NEXT MACHINE FOR THE SEQUENCE
+      $sql = mysqli_query($conn,"SELECT machineID FROM ProductionProcess WHERE orderID = $ordid AND productID = $proid AND status = 'Wait' ORDER BY processSequence LIMIT 1");
+
+      $row = mysqli_fetch_array($sql);
+
+      // CHECKS IF THERE IS STILL SOME MACHINE IN QUEUE FOR THE PRODUCTION PROCESS
+      if(isset($row)){
+          $query = "UPDATE ProductionProcess SET status = 'Ongoing' WHERE orderID = $ordid AND machineID = $row[0] AND productID = $proid AND status = 'Wait'";
+
+          mysqli_query($conn,$query);
+      }else {
+          $sql = mysqli_query($conn,"SELECT machineID FROM ProductionProcess WHERE orderID = $ordid AND productID = $proid AND status = 'Done' ORDER BY processSequence DESC LIMIT 1");
+
+          $row = mysqli_fetch_array($sql);
+
+          mysqli_query($conn,"UPDATE ProductionProcess SET status = 'Finish' WHERE orderID = $ordid AND machineID = $row[0] AND productID = $proid AND status = 'Done'");
+
+      }
     }
+
   }
 
   if(isset($_POST['delay'])){
@@ -203,69 +209,74 @@
 
     $diffinsec = $datediff->format("%S");
 
-    $qry = "SELECT timeEstimate as t FROM ProductionProcess WHERE orderID = $ordid AND machineID = $macid AND productID = $proid";
-    $sql = mysqli_query($conn,$qry);
-    $row = mysqli_fetch_array($sql);
-    $time = $row['t'];
-    $time+=$diffinsec;
-
-    // update the production process for that row ng specific order machine id at productid  "Ongoing" - > "Done"
-    $query = "UPDATE ProductionProcess SET status = 'Done' WHERE orderID = $ordid AND machineID = $macid AND productID = $proid AND status = 'Ongoing'";
-
-    mysqli_query($conn,$query);
-
-    // adds the timesworked
-    mysqli_query($conn,"UPDATE Machine SET hoursWorked = hoursWorked + $time, lifetimeWorked = lifetimeWorked + $time WHERE machineID = $macid");
-
-
-    // DONE UPDATING STATUSES FOR ONE PRODUCT PROCESS
-    // SUGGESTION : REDUCE MACHINE QUEUE AFTER UPDATE
-
-    // readjust the queue
-    $query = "SELECT * FROM ProductionProcess WHERE processSequence = 1 AND status = 'Wait' ORDER BY machineQueue DESC LIMIT 1";
-
-      $sql = mysqli_query($conn,$query);
-
-      $row = mysqli_fetch_array($sql);
-
-    $nextorder = $row['orderID'];
-    $pid = $row['productID'];
-
-    if(mysqli_num_rows($sql)>0){
-        // query for first process set status = 'ongoing'
-      $query = "UPDATE ProductionProcess SET status = 'Ongoing' WHERE orderID = $nextorder AND productID = $pid AND processSequence = 1";
-
-        mysqli_query($conn,$query);
-
-      $sq = mysqli_query($conn,"SELECT machineID FROM ProductionProcess WHERE productID = $pid AND orderID = $nextorder");
-
-      // while ($row = mysqli_fetch_array($sq)) {
-      //   $maid = $row['machineID'];
-      //   $query = "UPDATE Machine SET status = 'Used' WHERE machineID = $maid";
-      //
-      //   mysqli_query($conn,$query);
-      // }
-
-    }
-
-
-    // GETS THE NEXT MACHINE FOR THE SEQUENCE
-    $sql = mysqli_query($conn,"SELECT machineID FROM ProductionProcess WHERE orderID = $ordid AND productID = $proid AND status = 'Wait' ORDER BY processSequence LIMIT 1");
-
-    $row = mysqli_fetch_array($sql);
-
-    // CHECKS IF THERE IS STILL SOME MACHINE IN QUEUE FOR THE PRODUCTION PROCESS
-    if(isset($row)){
-        $query = "UPDATE ProductionProcess SET status = 'Ongoing' WHERE orderID = $ordid AND machineID = $row[0] AND productID = $proid AND status = 'Wait'";
-
-        mysqli_query($conn,$query);
+    if (check_emergency($conn,$macid)) {
+      echo "<script>alert('ERROR: MACHINE UNDER MAINTENANCE');</script>";
     }else {
-        $sql = mysqli_query($conn,"SELECT machineID FROM ProductionProcess WHERE orderID = $ordid AND productID = $proid AND status = 'Done' ORDER BY processSequence DESC LIMIT 1");
+
+      $qry = "SELECT timeEstimate as t FROM ProductionProcess WHERE orderID = $ordid AND machineID = $macid AND productID = $proid";
+      $sql = mysqli_query($conn,$qry);
+      $row = mysqli_fetch_array($sql);
+      $time = $row['t'];
+      $time+=$diffinsec;
+
+      // update the production process for that row ng specific order machine id at productid  "Ongoing" - > "Done"
+      $query = "UPDATE ProductionProcess SET status = 'Done' WHERE orderID = $ordid AND machineID = $macid AND productID = $proid AND status = 'Ongoing'";
+
+      mysqli_query($conn,$query);
+
+      // adds the timesworked
+      mysqli_query($conn,"UPDATE Machine SET hoursWorked = hoursWorked + $time, lifetimeWorked = lifetimeWorked + $time WHERE machineID = $macid");
+
+
+      // DONE UPDATING STATUSES FOR ONE PRODUCT PROCESS
+      // SUGGESTION : REDUCE MACHINE QUEUE AFTER UPDATE
+
+      // readjust the queue
+      $query = "SELECT * FROM ProductionProcess WHERE processSequence = 1 AND status = 'Wait' ORDER BY machineQueue DESC LIMIT 1";
+
+        $sql = mysqli_query($conn,$query);
 
         $row = mysqli_fetch_array($sql);
 
-        mysqli_query($conn,"UPDATE ProductionProcess SET status = 'Finish' WHERE orderID = $ordid AND machineID = $row[0] AND productID = $proid AND status = 'Done'");
+      $nextorder = $row['orderID'];
+      $pid = $row['productID'];
 
+      if(mysqli_num_rows($sql)>0){
+          // query for first process set status = 'ongoing'
+        $query = "UPDATE ProductionProcess SET status = 'Ongoing' WHERE orderID = $nextorder AND productID = $pid AND processSequence = 1";
+
+          mysqli_query($conn,$query);
+
+        $sq = mysqli_query($conn,"SELECT machineID FROM ProductionProcess WHERE productID = $pid AND orderID = $nextorder");
+
+        // while ($row = mysqli_fetch_array($sq)) {
+        //   $maid = $row['machineID'];
+        //   $query = "UPDATE Machine SET status = 'Used' WHERE machineID = $maid";
+        //
+        //   mysqli_query($conn,$query);
+        // }
+
+      }
+
+
+      // GETS THE NEXT MACHINE FOR THE SEQUENCE
+      $sql = mysqli_query($conn,"SELECT machineID FROM ProductionProcess WHERE orderID = $ordid AND productID = $proid AND status = 'Wait' ORDER BY processSequence LIMIT 1");
+
+      $row = mysqli_fetch_array($sql);
+
+      // CHECKS IF THERE IS STILL SOME MACHINE IN QUEUE FOR THE PRODUCTION PROCESS
+      if(isset($row)){
+          $query = "UPDATE ProductionProcess SET status = 'Ongoing' WHERE orderID = $ordid AND machineID = $row[0] AND productID = $proid AND status = 'Wait'";
+
+          mysqli_query($conn,$query);
+      }else {
+          $sql = mysqli_query($conn,"SELECT machineID FROM ProductionProcess WHERE orderID = $ordid AND productID = $proid AND status = 'Done' ORDER BY processSequence DESC LIMIT 1");
+
+          $row = mysqli_fetch_array($sql);
+
+          mysqli_query($conn,"UPDATE ProductionProcess SET status = 'Finish' WHERE orderID = $ordid AND machineID = $row[0] AND productID = $proid AND status = 'Done'");
+
+      }
     }
   }
 

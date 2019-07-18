@@ -255,6 +255,10 @@ include 'includes/sections/header.php';
   //   echo "pwet";
   // }
   // print_p(get_machine_for_queue($conn,3));
+  // $now  = date('Y-m-d');
 
-
+ // echo $now;
+// if (check_emergency($conn,10)) {
+//   echo "true";
+// }
  ?>

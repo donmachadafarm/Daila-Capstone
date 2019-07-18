@@ -9,6 +9,7 @@ if (!isset($_SESSION['userType'])){
 }
 
 $dataArr = array();
+$new = "";
 ?>
 
 <!-- put all the contents here  -->

@@ -781,11 +781,11 @@ function get_process_sequence($conn,$prodid){
 
 // gets machine ids regardless kung may naka used na sa kanila for queueing
 function get_machine_for_queue($conn,$proc){
-    $query = "SELECT machineID FROM Machine WHERE processTypeID = $proc AND (status <> 'Under Maintenance' OR status <> 'For Maintenance')";
-
-    $sql = mysqli_query($conn,$query);
-
     $arrmach = array();
+
+    $query = "SELECT machineID FROM Machine WHERE processTypeID = $proc AND (status <> 'Under Maintenance' AND status <> 'For Maintenance')";
+
+      $sql = mysqli_query($conn,$query);
 
     for ($i=0; $i < mysqli_num_rows($sql); $i++) {
       $row = mysqli_fetch_array($sql);
@@ -1078,7 +1078,7 @@ function get_prodsold($conn){
 function get_delayedJOrdersCount($conn){
   $now  = date('Y-m-d');
 
-  $query = "SELECT count(*) FROM JobOrder WHERE dueDate > '$now'";
+  $query = "SELECT count(*) FROM JobOrder WHERE dueDate < '$now' AND status <> 'removed'";
 
     $sql = mysqli_query($conn,$query);
 
@@ -1588,4 +1588,21 @@ function get_PODetail($conn,$id){
 
         return $data;
     }
+
+  function check_emergency($conn,$id){
+    $query = "SELECT status FROM machine WHERE machineID = $id";
+
+      $sql = mysqli_query($conn,$query);
+
+      $row = mysqli_fetch_array($sql);
+
+    if ($row['status']=='Emergency') {
+      return true;
+    }else {
+      return false;
+    }
+
+  }
+
+
  ?>
