@@ -160,7 +160,7 @@
                                 </tr>
                                 <tr>
                                   <td><select name="rawmat[]" class="form-control item_unit" required><option value="" disabled>Select Raw Material</option><?php echo fill_unit_select_box($conn); ?></select></td>
-                                  <td><input type="number" name="quantity[]" class="form-control item_name" required /></td>
+                                  <td><input type="number" min="1" name="quantity[]" class="form-control item_name" required /></td>
                                   <td><button type="button" name="add" class="btn btn-success btn-sm add">+</button></td>
                                 </tr>
                                </table>
@@ -230,7 +230,7 @@
       var html = '';
       html += '<tr>';
       html += '<td><select name="rawmat[]" class="form-control item_unit"><option value="">Select Raw Material</option><?php echo fill_unit_select_box($conn); ?></select></td>';
-      html += '<td><input type="number" name="quantity[]" class="form-control item_name" required /></td>';
+      html += '<td><input type="number" min="1" name="quantity[]" class="form-control item_name" required /></td>';
       html += '<td><button type="button" name="remove" class="btn btn-danger btn-sm remove">x</button></td></tr>';
       $('#item_table').append(html);
      });

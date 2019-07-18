@@ -7,6 +7,8 @@
 if (!isset($_SESSION['userType'])){
     echo "<script>window.location='logout.php'</script>";
 }
+
+$dataArr = array();
 ?>
 
 <!-- put all the contents here  -->
@@ -68,6 +70,8 @@ if (!isset($_SESSION['userType'])){
                     $result = mysqli_query($conn, "SELECT * FROM AuditTrail WHERE dateChange
                                                     BETWEEN '$startDate' AND '$endDate' ORDER BY dateChange DESC");
 
+                    $count = 0;
+                    $new = "";
                         while ($row = mysqli_fetch_array($result)) {
 
                             $date = $row['dateChange'];
@@ -106,10 +110,28 @@ if (!isset($_SESSION['userType'])){
 
                             echo '</tr>';
 
+                            $dataArr[$count]['date'] = $date;
+                            $dataArr[$count]['prod'] = $prod;
+                            $dataArr[$count]['old'] = $old;
+                            $dataArr[$count]['count'] = $cont;
+                            $dataArr[$count]['remark'] = $remk;
+                            $dataArr[$count]['user'] = $user;
+
+                            $count++;
+
+                            $new = http_build_query(array('data' => $dataArr));
+
                         }
+
+                        echo "<div class='col-lg-12'>";
+                          echo "<div class=text-center>";
+                            echo "<a href='printAudit.php?$new&start=$startDate&end=$endDate' class='btn btn-success'>Print this report</a>";
+                          echo "</div>";
+                        echo "</div>";
                 }else{
                   $result = mysqli_query($conn, "SELECT * FROM AuditTrail WHERE dateChange ORDER BY dateChange DESC");
 
+                  $count = 0;
                       while ($row = mysqli_fetch_array($result)) {
 
                           $date = $row['dateChange'];
@@ -148,7 +170,22 @@ if (!isset($_SESSION['userType'])){
 
                           echo '</tr>';
 
+                          $dataArr[$count]['date'] = $date;
+                          $dataArr[$count]['prod'] = $prod;
+                          $dataArr[$count]['old'] = $old;
+                          $dataArr[$count]['count'] = $cont;
+                          $dataArr[$count]['remark'] = $remk;
+                          $dataArr[$count]['user'] = $user;
+
+                          $count++;
+
+                          $new = http_build_query(array('data' => $dataArr));
                       }
+                      echo "<div class='col-lg-12'>";
+                        echo "<div class=text-center>";
+                          echo "<a href='printAudit.php?$new' class='btn btn-success'>Print this page</a>";
+                        echo "</div>";
+                      echo "</div>";
                 }
 
                 ?>
