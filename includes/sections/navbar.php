@@ -137,6 +137,7 @@
               <h6 class="dropdown-header text-center"><b> Sales Report </b></h6>
               <a class="dropdown-item text-center" href="salesChart.php">Product Sales Chart</a>
               <a class="dropdown-item text-center" href="salesTable.php">Product Sales Table</a>
+              <a class="dropdown-item text-center" href="demandReport.php">Demand Report</a>
               <!-- <a class="dropdown-item text-center" href="salesChart.php">Daily Sales Report</a> -->
               <div class="dropdown-divider"></div>
             <?php endif; ?>

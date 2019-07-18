@@ -190,46 +190,75 @@ include 'includes/sections/header.php';
 // $datestr = date("Y-m-d",strtotime("+10 days"));
 // echo $datestr."<Br />";
 // get_timebeforedeadline($conn,$datestr);
-if (isset($_POST['go'])) {
-  $now = new DateTime("now");
-  $t = $_POST['time'];
-  $d = $_POST['date'];
-  // echo $_POST['time']."<br />";
-  // echo $_POST['date']."<br />";
-  $com = date("Y-m-d H:i:s",strtotime("$d $t"));
-  $after = new DateTime($com);
+// if (isset($_POST['go'])) {
+//   $now = new DateTime("now");
+//   $t = $_POST['time'];
+//   $d = $_POST['date'];
+//   // echo $_POST['time']."<br />";
+//   // echo $_POST['date']."<br />";
+//   $com = date("Y-m-d H:i:s",strtotime("$d $t"));
+//   $after = new DateTime($com);
+//
+//   $diff = $after->diff($now);
+//
+//   print $diff->format("%H %I %S");
+//
+//   $new = $diff->format("%H %I %S");
+//
+//   echo "<br>".datetime_seconds($new);
+//
+//
+// }
+// // $dead = date("Y-m-d H:i",strtotime("+5 days +5 hours"));
+//
+// // echo $dead;
+// ?>
+<!-- // <form class="" method="post">
+//   <input type="date" name="date" max="<?php echo date('Y-m-d'); ?>">
+//     <div class="input-group bootstrap-timepicker timepicker">
+//         <input name="time" id="timepicker1" type="text">
+//     </div>
+//
+//   <input type="submit" name="go" value="yea">
+// </div>
+//
+// </form> -->
 
-  $diff = $after->diff($now);
 
-  print $diff->format("%H %I %S");
+ <?php //echo get_timebeforedeadline($conn,$t); ?>
+<!-- // <script type="text/javascript">
+//   $('#timepicker1').timepicker({
+//       minuteStep: 1,
+//       showSeconds: true,
+//       showMeridian: false,
+//       defaultTime: 'current'
+//   });
+// </script> -->
 
-  $new = $diff->format("%H %I %S");
+<?php
+  // print_p(get_productprocess($conn,12));
 
-  echo "<br>".datetime_seconds($new);
+  // echo count(get_productprocess($conn,12));
 
+//   array (
+//         '0'=>'1',
+//         '1'=>'3',
+//         '2'=>'5',
+//         '3'=>'2'
+// )
+  // print_p(get_machine($conn,2));
+  // $i = array();
+  //
+  // if (empty($i)) {
+  //   echo "empty";
+  // }else {
+  //   echo "pwet";
+  // }
+  // print_p(get_machine_for_queue($conn,3));
+  // $now  = date('Y-m-d');
 
-}
-// $dead = date("Y-m-d H:i",strtotime("+5 days +5 hours"));
-
-// echo $dead;
-?>
-<form class="" method="post">
-  <input type="date" name="date" max="<?php echo date('Y-m-d'); ?>">
-    <div class="input-group bootstrap-timepicker timepicker">
-        <input name="time" id="timepicker1" type="text">
-    </div>
-
-  <input type="submit" name="go" value="yea">
-</div>
-
-</form>
-
-<?php //echo get_timebeforedeadline($conn,$t); ?>
-<script type="text/javascript">
-  $('#timepicker1').timepicker({
-      minuteStep: 1,
-      showSeconds: true,
-      showMeridian: false,
-      defaultTime: 'current'
-  });
-</script>
+ // echo $now;
+// if (check_emergency($conn,10)) {
+//   echo "true";
+// }
+ ?>

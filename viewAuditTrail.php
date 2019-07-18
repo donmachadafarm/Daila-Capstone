@@ -9,6 +9,7 @@ if (!isset($_SESSION['userType'])){
 }
 
 $dataArr = array();
+$new = "";
 ?>
 
 <!-- put all the contents here  -->
@@ -71,6 +72,7 @@ $dataArr = array();
                                                     BETWEEN '$startDate' AND '$endDate' ORDER BY dateChange DESC");
 
                     $count = 0;
+                    $new = "";
                         while ($row = mysqli_fetch_array($result)) {
 
                             $date = $row['dateChange'];

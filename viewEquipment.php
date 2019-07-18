@@ -22,6 +22,15 @@
 
   }
 
+  if (isset($_POST['emergency'])) {
+    $repid = $_POST['repair_id'];
+
+    $query = "UPDATE Machine SET status = 'Emergency' WHERE machineID = $repid";
+
+    $sql = mysqli_query($conn,$query);
+
+  }
+
   // for finished repair
   if (isset($_POST['finish'])) {
     $finishid = $_POST['finish_repair_id'];
@@ -35,9 +44,23 @@
 
     $sql = mysqli_query($conn,$query);
 
-    $query = "UPDATE Machine SET status = 'Available', hoursWorked = 0 WHERE machineID = $finishid";
+    $query = "SELECT * FROM Machine WHERE machineID = $finishid";
 
-    $sql = mysqli_query($conn,$query);
+      $sql = mysqli_query($conn,$query);
+
+      $row = mysqli_fetch_array($sql);
+
+    if ($row['status'] == 'Emergency') {
+      $query = "UPDATE Machine SET status = 'Used', hoursWorked = 0 WHERE machineID = $finishid";
+
+      $sql = mysqli_query($conn,$query);
+    }else {
+      $query = "UPDATE Machine SET status = 'Available', hoursWorked = 0 WHERE machineID = $finishid";
+
+      $sql = mysqli_query($conn,$query);
+    }
+
+
   }
  ?>
 
@@ -107,7 +130,10 @@
                       if ($status == "Available") {
                         echo '<a href="#repair'.$id.'" data-target="#repair'.$id.'" data-toggle="modal"><button type="button" class="btn btn-success btn-sm"><i class="fas fa-wrench"></i> Repair</button></a>';
                       }else if($status == "Used"){
-                        echo '<button type="button" class="btn btn-sm btn-secondary" disabled>In Use</button>';
+                        echo '<button type="button" class="btn btn-sm btn-secondary" disabled>In Use</button> ';
+                        echo '<a href="#emergency'.$id.'" data-target="#emergency'.$id.'" data-toggle="modal"><button type="button" class="btn btn-warning"><i class="fas fa-hammer"></i></button></a>';
+                      }else if($status == "For Maintenance"){
+                        echo '<a href="#repair'.$id.'" data-target="#repair'.$id.'" data-toggle="modal"><button type="button" class="btn btn-danger btn-sm"><i class="fas fa-hammer"></i> Repair</button></a>';
                       }else {
                         echo '<a href="#finish'.$id.'" data-target="#finish'.$id.'" data-toggle="modal"><button type="button" class="btn btn-secondary btn-sm"><i class="fas fa-wrench"></i> Fix</button></a>';
                       }
@@ -171,13 +197,43 @@
                                         <input type="hidden" name="repair_id" value="<?php echo $id; ?>">
                                         <div>
                                           <p>
-                                            <h6 class="text-center">Are you sure you want repair <strong><?php echo $name; ?>?</strong></h6>
+                                            <h6 class="text-center">Are you sure you want to repair <strong><?php echo $name; ?>?</strong></h6>
                                             <br>
                                             <h6 class="text-center">This will put the machine under maintenance status!</h6>
                                           </p>
                                         </div>
                                         <div class="modal-footer">
                                             <button type="submit" name="repair" class="btn btn-primary">YES</button>
+                                            <button type="button" class="btn btn-default" data-dismiss="modal">NO</button>
+                                        </div>
+                                    </div>
+                            </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="emergency<?php echo $id; ?>" class="modal fade" role="dialog">
+                        <div class="modal-dialog">
+                            <form method="post">
+                                <!-- Modal content-->
+                                <div class="modal-content">
+
+                                    <div class="modal-header">
+                                        <h4>Notice</h4>
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    </div>
+
+                                    <div class="modal-body">
+                                        <input type="hidden" name="repair_id" value="<?php echo $id; ?>">
+                                        <div>
+                                          <p>
+                                            <h6 class="text-center">EMERGENCY REPAIR <strong><?php echo $name; ?>?</strong></h6>
+                                            <br>
+                                            <h6 class="text-center">This will put the machine under maintenance!</h6>
+                                          </p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="submit" name="emergency" class="btn btn-primary">YES</button>
                                             <button type="button" class="btn btn-default" data-dismiss="modal">NO</button>
                                         </div>
                                     </div>
