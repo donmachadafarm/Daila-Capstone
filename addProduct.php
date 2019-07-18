@@ -44,7 +44,7 @@
                                ?>
                              </select><br>
                              <label>Price:</label></br>
-                               <input type="number" name="price" class="form-control" required>
+                               <input min="1" type="number" name="price" class="form-control" required>
                              </br>
                              <label>Unit of Measurement:</label></br>
                                <select name="uom" class="form-control item_name" required>

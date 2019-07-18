@@ -1,10 +1,3 @@
-<?php
-/**
-* Created by PhpStorm.
-* User: jmcervantes02
-* Date: 17/11/2018
-* Time: 4:43 PM
-*/?>
 <?php include "includes/sections/header.php"; ?>
 <?php include "includes/sections/navbar.php"; ?>
 <!-- heading sections -->
@@ -14,6 +7,9 @@
 if (!isset($_SESSION['userType'])){
     echo "<script>window.location='logout.php'</script>";
 }
+
+$dataArr = array();
+
 ?>
 
 <!-- put all the contents here  -->
@@ -59,7 +55,7 @@ if (!isset($_SESSION['userType'])){
                                                         purchaseorder.status
                                                     FROM purchaseorder
                                                     WHERE purchaseorder.orderDate BETWEEN '$startDate' AND '$endDate'
-                                                    AND purchaseorder.status!='removed'
+                                                    AND purchaseorder.status!='removed' AND purchaseorder.status!='pending'
                                                     ORDER BY purchaseorder.purchaseOrderID DESC");
                     $count=mysqli_num_rows($result);
 
@@ -117,32 +113,40 @@ if (!isset($_SESSION['userType'])){
                             echo $stat;
                             echo '</td>';
                             echo '</tr>';
+                            $dataArr[] = $id;
 
-                        }
+                            }
+                            unset($_SESSION['reportMTS']);
+                            $_SESSION['reportMTS'] = $dataArr;
 
-                        echo '</tbody>';
-                        echo '</table>';
+                            echo '</tbody>';
+                            echo '</table>';
 
-                        echo '<div class="container">';
-                        echo '<div class="row">';
-                        echo '<div class="col-lg-12">';
-                        echo '<h4 class="text-right">Total Expense: ';
-                        echo number_format($sum, 2);
-                        echo '</h4>';
-                        echo '</div>';
-                        echo '</div>';
-                        echo '</div>';
+                            echo '<div class="container">';
+                            echo '<div class="row">';
+                            echo '<div class="col-lg-12">';
+                            echo '<h4 class="text-right">Total Expense: ';
+                            echo number_format($sum, 2);
+                            echo '</h4>';
+                            echo '</div>';
+                            echo '</div>';
+                            echo '</div>';
 
+                            echo "<div class='col-lg-12'>";
+                            echo "<div class=text-center>";
+                            echo "<a href='printPO.php?start=$startDate&end=$endDate' class='btn btn-success'>Print this report</a>";
+                            echo "</div>";
+                            echo "</div>";
+                            echo "<br /><br /><br />";
                     }
-                }
-                else {
+              }else {
                     $result = mysqli_query($conn, "SELECT purchaseorder.purchaseOrderID AS POID,
                                                         purchaseorder.orderDate AS orderDate,
                                                         purchaseorder.deadline AS dueDate,
                                                         purchaseorder.totalPrice AS total,
-                                                        purchaseorder.status 
+                                                        purchaseorder.status
                                                     FROM purchaseorder
-                                                    WHERE purchaseorder.status!='removed'
+                                                    WHERE purchaseorder.status!='removed' AND purchaseorder.status!='pending'
                                                     ORDER BY purchaseorder.purchaseOrderID DESC");
                     $count = mysqli_num_rows($result);
 
@@ -193,7 +197,11 @@ if (!isset($_SESSION['userType'])){
                             echo '</td>';
                             echo '</tr>';
 
+                            $dataArr[] = $id;
+
                         }
+                        unset($_SESSION['reportMTS']);
+                        $_SESSION['reportMTS'] = $dataArr;
 
                         echo '</tbody>';
                         echo '</table>';
@@ -208,6 +216,12 @@ if (!isset($_SESSION['userType'])){
                         echo '</div>';
                         echo '</div>';
 
+                        echo "<div class='col-lg-12'>";
+                          echo "<div class=text-center>";
+                            echo "<a href='printPO.php' class='btn btn-success'>Print this report</a>";
+                          echo "</div>";
+                        echo "</div>";
+                        echo "<br /><br /><br />";
                     }
                 }
                 ?>

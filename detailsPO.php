@@ -14,7 +14,7 @@ if (!isset($_SESSION['userType'])){
 <?php
 $id = $_GET['id'];
 
-$query = "SELECT Supplier.name AS suppName,
+$query = "SELECT Supplier.company AS suppName,
                                        PurchaseOrder.purchaseOrderID AS id,
                                        PurchaseOrder.totalPrice AS pricez,
                                        PurchaseOrder.orderDate AS date,

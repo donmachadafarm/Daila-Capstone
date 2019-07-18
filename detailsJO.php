@@ -1,12 +1,3 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: jmcervantes02
- * Date: 20/11/2018
- * Time: 9:23 AM
- */
-?>
-
 <?php include "includes/sections/header.php"; ?>
 <?php include "includes/sections/navbar.php"; ?>
 <!-- heading sections -->
@@ -24,7 +15,7 @@ if (!isset($_SESSION['userType'])){
     $id = $_GET['id'];
 
     $query = "SELECT
-                customer.name AS cName,
+                customer.company AS cName,
                 joborder.orderDate AS od,
                 joborder.dueDate AS dd,
                 joborder.totalPrice AS TOTAL,

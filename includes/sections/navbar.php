@@ -117,32 +117,49 @@
       <!-- reports -->
 
 
-      <?php if($_SESSION['userType']==104 || $_SESSION['userType']==100): ?>
       <li class="nav-item dropdown">
         <a class="nav-link text-light" href="#" id="navbardrop" data-toggle="dropdown">Reports</a>
         <div class="dropdown-menu">
-            <h6 class="dropdown-header text-center"><b> Job Order Reports </b></h6>
-            <!-- Add More Links if needed for every functionality -->
-            <a class="dropdown-item text-center" href="jobOrderReportMTS.php">Made-To-Stock</a>
-            <a class="dropdown-item text-center" href="jobOrderReportMTO.php">Made-To-Order</a>
-            <!-- use divider if needed -->
-            <div class="dropdown-divider"></div>
-            <h6 class="dropdown-header text-center"><b> Purchase Order Report </b></h6>
-            <a class="dropdown-item text-center" href="purchaseOrderReport.php">Purchase Order Report</a>
-            <div class="dropdown-divider"></div>
-            <h6 class="dropdown-header text-center"><b> Sales Report </b></h6>
-            <a class="dropdown-item text-center" href="salesChart.php">Product Sales Chart</a>
-            <a class="dropdown-item text-center" href="salesTable.php">Product Sales Table</a>
-            <!-- <a class="dropdown-item text-center" href="salesChart.php">Daily Sales Report</a> -->
-            <div class="dropdown-divider"></div>
-            <h6 class="dropdown-header text-center"><b> Machine Report </b></h6>
-            <a class="dropdown-item text-center" href="viewMachineReport.php">Historical Machine Report</a>
-            <div class="dropdown-divider"></div>
-            <h6 class="dropdown-header text-center"><b> Audit Trail Report </b></h6>
-            <a class="dropdown-item text-center" href="viewAuditTrail.php">Historical Audit Trail</a>
+
+            <?php if ($_SESSION['userType']==101 || $_SESSION['userType']==100 || $_SESSION['userType']==104): ?>
+              <h6 class="dropdown-header text-center"><b> Job Order Reports </b></h6>
+              <!-- Add More Links if needed for every functionality -->
+              <a class="dropdown-item text-center" href="jobOrderReportMTS.php">Made-To-Stock</a>
+              <a class="dropdown-item text-center" href="jobOrderReportMTO.php">Made-To-Order</a>
+              <!-- use divider if needed -->
+              <div class="dropdown-divider"></div>
+            <?php endif; ?>
+
+            <?php if ($_SESSION['userType']==100 || $_SESSION['userType']==104): ?>
+              <h6 class="dropdown-header text-center"><b> Purchase Order Report </b></h6>
+              <a class="dropdown-item text-center" href="purchaseOrderReport.php">Purchase Order Report</a>
+              <div class="dropdown-divider"></div>
+              <h6 class="dropdown-header text-center"><b> Sales Report </b></h6>
+              <a class="dropdown-item text-center" href="salesChart.php">Product Sales Chart</a>
+              <a class="dropdown-item text-center" href="salesTable.php">Product Sales Table</a>
+              <!-- <a class="dropdown-item text-center" href="salesChart.php">Daily Sales Report</a> -->
+              <div class="dropdown-divider"></div>
+            <?php endif; ?>
+
+            <?php if ($_SESSION['userType']==103 || $_SESSION['userType']==100 || $_SESSION['userType']==104): ?>
+              <h6 class="dropdown-header text-center"><b> Machine Report </b></h6>
+              <a class="dropdown-item text-center" href="viewMachineReport.php">Historical Machine Report</a>
+              <div class="dropdown-divider"></div>
+            <?php endif; ?>
+
+            <?php if ($_SESSION['userType']==102 || $_SESSION['userType']==100 || $_SESSION['userType']==104): ?>
+              <h6 class="dropdown-header text-center"><b> Audit Trail Report </b></h6>
+              <a class="dropdown-item text-center" href="viewAuditTrail.php">Historical Audit Trail</a>
+              <div class="dropdown-divider"></div>
+            <?php endif; ?>
+
+            <?php if ($_SESSION['userType']==100 || $_SESSION['userType']==104): ?>
+              <h6 class="dropdown-header text-center"><b> Inventory Report </b></h6>
+              <a class="dropdown-item text-center" href="viewOnHand.php">Finished Goods Inventory</a>
+            <?php endif; ?>
+
         </div>
       </li>
-      <?php endif; ?>
     </ul>
 
     <ul class="navbar-nav">

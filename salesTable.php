@@ -1,10 +1,3 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: jmcervantes02
- * Date: 17/11/2018
- * Time: 4:43 PM
- */?>
 <?php include "includes/sections/header.php"; ?>
 <?php include "includes/sections/navbar.php"; ?>
 <!-- heading sections -->
@@ -14,6 +7,8 @@
 if (!isset($_SESSION['userType'])){
     echo "<script>window.location='logout.php'</script>";
 }
+
+$dataArr = array();
 ?>
 
 <!-- put all the contents here  -->
@@ -78,7 +73,7 @@ if (!isset($_SESSION['userType'])){
                         while($row = mysqli_fetch_array($result2)){
                             $totalSale = $row['subTotal'];
                         }
-
+                        $coun = 0;
                         while ($row = mysqli_fetch_array($result)) {
 
                             $name = $row['name'];
@@ -106,6 +101,15 @@ if (!isset($_SESSION['userType'])){
 
                             echo '</tr>';
 
+                            $dataArr[$coun]['name'] = $name;
+                            $dataArr[$coun]['times'] = $times;
+                            $dataArr[$coun]['unitprice'] = $unitPrice;
+                            $dataArr[$coun]['totalprice'] = $totalPrice;
+
+                            $coun++;
+
+                            $new = http_build_query(array('data' => $dataArr));
+
                         }
 
                         echo '</tbody>';
@@ -120,6 +124,12 @@ if (!isset($_SESSION['userType'])){
                         echo '</div>';
                         echo '</div>';
                         echo '</div>';
+
+                        echo "<div class='col-lg-12'>";
+                          echo "<div class=text-center>";
+                            echo "<a href='printSales.php?$new&start=$startDate&end=$endDate' class='btn btn-success'>Print this report</a>";
+                          echo "</div>";
+                        echo "</div>";
 
 
                     }
@@ -146,7 +156,7 @@ if (!isset($_SESSION['userType'])){
                         while($row = mysqli_fetch_array($result2)){
                             $totalSale = $row['subTotal'];
                         }
-
+                        $coun = 0;
                         while ($row = mysqli_fetch_array($result)) {
 
                             $name = $row['name'];
@@ -174,6 +184,15 @@ if (!isset($_SESSION['userType'])){
 
                             echo '</tr>';
 
+                            $dataArr[$coun]['name'] = $name;
+                            $dataArr[$coun]['times'] = $times;
+                            $dataArr[$coun]['unitprice'] = $unitPrice;
+                            $dataArr[$coun]['totalprice'] = $totalPrice;
+
+                            $coun++;
+
+                            $new = http_build_query(array('data' => $dataArr));
+
                         }
 
                         echo '</tbody>';
@@ -189,7 +208,11 @@ if (!isset($_SESSION['userType'])){
                         echo '</div>';
                         echo '</div>';
 
-
+                        echo "<div class='col-lg-12'>";
+                          echo "<div class=text-center>";
+                            echo "<a href='printSales.php?$new' class='btn btn-success'>Print this report</a>";
+                          echo "</div>";
+                        echo "</div>";
                     }
                 }
 

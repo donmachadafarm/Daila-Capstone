@@ -100,7 +100,7 @@
                              <label>Corresponding Ingredient:</label></br>
                               <select class="form-control" name="ingr">
                               <?php
-                                $result = mysqli_query($conn, 'SELECT * FROM Ingredient');
+                                $result = mysqli_query($conn, 'SELECT * FROM Ingredient ORDER BY name ASC');
 
                                 while($row = mysqli_fetch_array($result)){
                                   echo "<label><option value=\"{$row['ingredientID']}\">{$row['name']}</option></label>
