@@ -1,10 +1,3 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: jmcervantes02
- * Date: 17/11/2018
- * Time: 4:43 PM
- */?>
 <?php include "includes/sections/header.php"; ?>
 <?php include "includes/sections/navbar.php"; ?>
 <!-- heading sections -->
@@ -30,7 +23,7 @@ if (!isset($_SESSION['userType'])){
             <form method="post" class="text-center">
                 <input type="date" id="txtDateMax" name="startDate">
                 <input type="date" max="<?php echo date("Y-m-d"); ?>" name="endDate"><br>
-                <input type="submit" name="search">
+                <input class="btn btn-success" type="submit" name="search">
             </form>
             <h5 class="text-center">*Click on the ID number for more details*</h5>
         </div>
@@ -113,6 +106,7 @@ if (!isset($_SESSION['userType'])){
 
                             $dataArr[] = $id;
                         }
+                        unset($_SESSION['reportMTS']);
                         $_SESSION['reportMTS'] = $dataArr;
 
                         echo '</tbody>';
@@ -123,7 +117,7 @@ if (!isset($_SESSION['userType'])){
                           echo '<div class="row">';
                             echo "<div class='col-lg-6'>";
                               echo "<div class=text-left>";
-                                echo "<a href='printMTS.php?start=$startDate&end=$endDate' class='btn btn-primary'>Print</a>";
+                                echo "<a href='printMTS.php?start=$startDate&end=$endDate' class='btn btn-primary'>Print this report</a>";
                               echo "</div>";
                             echo "</div>";
                             echo '<div class="col-lg-6">';
@@ -135,6 +129,7 @@ if (!isset($_SESSION['userType'])){
                             echo '</div>';
                           echo '</div>';
                         echo '</div>';
+                        echo "<br /><br />";
                     }
                 }
 
@@ -194,17 +189,27 @@ if (!isset($_SESSION['userType'])){
                             $dataArr[] = $id;
 
                         }
+                        unset($_SESSION['reportMTS']);
                         $_SESSION['reportMTS'] = $dataArr;
 
                         echo '</tbody>';
                         echo '</table>';
 
                         echo '<div class="container">';
-                        echo '<div class="row">';
-                        echo '<div class="col-lg-12">';
-                        echo '</h4>';
-                        echo '</div>';
-                        echo '</div>';
+                          echo '<div class="row">';
+                            echo "<div class='col-lg-12'>";
+                              echo "<div class=text-center>";
+                                echo "<a href='printMTS.php' class='btn btn-primary'>Continue for print</a>";
+                              echo "</div>";
+                            echo "</div>";
+                            // echo '<div class="col-lg-6">';
+                            //   echo "<div class='text-right'>";
+                            //     echo '<h4 class="text-right">Total Revenue: ';
+                            //       echo number_format($sum, 2);
+                            //     echo '</h4>';
+                            //   echo "</div>";
+                            // echo '</div>';
+                          echo '</div>';
                         echo '</div>';
 
                     }

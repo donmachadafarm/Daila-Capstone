@@ -7,6 +7,8 @@
 if (!isset($_SESSION['userType'])){
     echo "<script>window.location='logout.php'</script>";
 }
+
+$dataArr = array();
 ?>
 
 <!-- put all the contents here  -->
@@ -55,6 +57,7 @@ if (!isset($_SESSION['userType'])){
                     $result = mysqli_query($conn, "SELECT * FROM MaintenanceTransaction WHERE maintenanceDate
                                                     BETWEEN '$startDate' AND '$endDate' ORDER BY transactionID DESC");
 
+                    $count = 0;
                         while ($row = mysqli_fetch_array($result)) {
 
                             $tranid = $row['transactionID'];
@@ -93,10 +96,25 @@ if (!isset($_SESSION['userType'])){
 
                             echo '</tr>';
 
+                            $dataArr[$count]['tranid'] = $tranid;
+                            $dataArr[$count]['machid'] = $machid;
+                            $dataArr[$count]['cost'] = $cost;
+                            $dataArr[$count]['date'] = $date;
+                            $dataArr[$count]['prob'] = $prob;
+                            $dataArr[$count]['sol'] = $sol;
+
+                            $count++;
+
+                            $new = http_build_query(array('data' => $dataArr));
                         }
+                        echo "<div class='col-lg-12'>";
+                          echo "<div class=text-center>";
+                            echo "<a href='printMachine.php?$new&start=$startDate&end=$endDate' class='btn btn-success'>Print this report</a>";
+                          echo "</div>";
+                        echo "</div>";
                 }else{
                     $result = mysqli_query($conn, "SELECT * FROM MaintenanceTransaction ORDER BY transactionID DESC");
-
+                    $count = 0;
                         while ($row = mysqli_fetch_array($result)) {
 
                             $tranid = $row['transactionID'];
@@ -135,8 +153,22 @@ if (!isset($_SESSION['userType'])){
 
                             echo '</tr>';
 
-                        }
+                            $dataArr[$count]['tranid'] = $tranid;
+                            $dataArr[$count]['machid'] = $machid;
+                            $dataArr[$count]['cost'] = $cost;
+                            $dataArr[$count]['date'] = $date;
+                            $dataArr[$count]['prob'] = $prob;
+                            $dataArr[$count]['sol'] = $sol;
 
+                            $count++;
+
+                            $new = http_build_query(array('data' => $dataArr));
+                        }
+                        echo "<div class='col-lg-12'>";
+                          echo "<div class=text-center>";
+                            echo "<a href='printMachine.php?$new' class='btn btn-success'>Print this report</a>";
+                          echo "</div>";
+                        echo "</div>";
                 }
 
                 ?>

@@ -1485,7 +1485,7 @@ function view_po($conn){
         }
     }
 
-  function get_JODetails($conn,$id){
+function get_JODetails($conn,$id){
     $query = "SELECT product.name AS pName,
                      producttype.name AS type,
                      receipt.quantity,
@@ -1519,4 +1519,59 @@ function view_po($conn){
       return $data;
   }
 
+function get_JODetail($conn,$id){
+  $data = array();
+
+      $query = "SELECT product.name AS pName,
+                       producttype.name AS type,
+                       receipt.quantity,
+                       product.productPrice,
+                       receipt.subTotal AS total,
+                       jobOrder.orderDate,
+                       jobOrder.customerID,
+                       jobOrder.orderID
+                FROM receipt
+                JOIN product on receipt.productID=product.productID
+                JOIN producttype on product.productTypeID=producttype.productTypeID
+                JOIN jobOrder on receipt.orderID = jobOrder.orderID
+                WHERE receipt.orderID=$id";
+
+      $result = mysqli_query($conn,$query);
+
+      for ($i=0; $i < mysqli_num_rows($result); $i++) {
+        $row = mysqli_fetch_array($result);
+
+        $data[] = $row;
+      }
+
+        return $data;
+    }
+function get_PODetail($conn,$id){
+  $data = array();
+
+      $query = "SELECT RawMaterial.rawMaterialID AS rmid,
+                       RawMaterial.name AS rmname,
+                       RawMaterial.pricePerUnit AS ppu,
+                       RawMaterial.supplierID AS suid,
+                       POItem.purchaseOrderID AS poid,
+                       POItem.quantity AS qty,
+                       POItem.subTotal AS sub,
+                       POItem.status AS status,
+                       POItem.unitOfMeasurement AS uom,
+                       PurchaseOrder.orderDate AS odate
+                FROM POItem
+                INNER JOIN RawMaterial ON POItem.rawMaterialID = RawMaterial.rawMaterialID
+                INNER JOIN PurchaseOrder ON POItem.purchaseOrderId = PurchaseOrder.purchaseOrderID
+                WHERE PurchaseOrder.purchaseOrderID =$id";
+
+      $result = mysqli_query($conn,$query);
+
+      for ($i=0; $i < mysqli_num_rows($result); $i++) {
+        $row = mysqli_fetch_array($result);
+
+        $data[] = $row;
+      }
+
+        return $data;
+    }
  ?>

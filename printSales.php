@@ -12,14 +12,18 @@ if (!isset($_SESSION['userType'])){
 <!-- put all the contents here  -->
 
 <?php
-    $dataArr = $_SESSION['reportMTS'];
-
+    // $dataArr = $_SESSION['reportMTS'];
+    //
     if (isset($_GET['start'])) {
       $start = $_GET['start'];
     }
     if (isset($_GET['end'])) {
       $end = $_GET['end'];
     }
+    //
+    // $sum = 0;
+
+    $new = $_GET['data'];
 
 ?>
 <br>
@@ -27,7 +31,7 @@ if (!isset($_SESSION['userType'])){
     <div class="row">
       <div class="col-lg-12">
         <div class="text-center">
-          <h2>Made-To-Stock Job Order Report</h2><br>
+          <h2>Sales Report</h2><br>
         </div>
       </div>
     </div>
@@ -35,46 +39,49 @@ if (!isset($_SESSION['userType'])){
       <div class="col-lg-12">
         <div class="card text-center">
           <div class="card-header">
-            <?php if (isset($_GET['start'])): ?>
-              <h3>Transactions between <?php echo $start; ?> and <?php echo $end; ?></h3>
-            <?php endif; ?>
-              <h3>Transaction Summary</h3>
+              <?php if (isset($_GET['start'])): ?>
+                <h3>Sales between <?php echo $start; ?> and <?php echo $end; ?></h3>
+              <?php else: ?>
+                <h3>Sales Summary</h3>
+              <?php endif; ?>
           </div>
           <div class="card-body">
             <table class="table table-sm table-hover">
               <thead class="thead-light">
                 <tr class="table-active">
-                  <td>Order Date</td>
-                  <td>Job Order ID</td>
-                  <td>Product Name</td>
-                  <td>Quantity</td>
+                  <td class="text-left">Product Name</td>
+                  <td class="text-center">Units Sold</td>
+                  <td class="text-right">Price Per Unit</td>
+                  <td class="text-right">Gross Sales</td>
                 </tr>
               </thead>
               <tbody>
 
                 <?php
-                  foreach ($dataArr as $key => $value) {
-                    $data = get_JODetails($conn,$value);
+                  $sum = 0;
+                  foreach ($new as $key => $value) {
 
-                    echo "<tr>";
-                      echo "<td class='text-left'>";
-                        echo $data['date'];
-                      echo "</td>";
+                      echo '<tr>';
 
-                      echo "<td>";
-                        echo $value;
-                      echo "</td>";
+                          echo '<td class="text-left">';
+                              echo $value['name'];
+                          echo '</td>';
 
-                      echo "<td>";
-                        echo $data['productName'];
-                      echo "</td>";
+                          echo '<td class="text-center">';
+                              echo $value['times'];
+                          echo '</td>';
 
-                      echo "<td>";
-                        echo $data['quantity'];
-                      echo "</td>";
+                          echo '<td class="text-right">';
+                              echo number_format($value['unitprice']);
+                          echo '</td>';
 
-                    echo "</tr>";
+                          echo '<td class="text-right">';
+                              echo number_format($value['totalprice']);
+                          echo '</td>';
 
+                      echo '</tr>';
+
+                      $sum+=$value['totalprice'];
                   }
                  ?>
                </tr>
@@ -83,6 +90,7 @@ if (!isset($_SESSION['userType'])){
           </div>
           <div class="card-footer">
             <div class="text-center">
+              <h3>Total Sales <?php echo number_format($sum); ?></h3>
               <h4>***End of Report***</h4>
             </div><br><br>
             <div class="text-left text-muted">
@@ -101,5 +109,5 @@ if (!isset($_SESSION['userType'])){
 
 
 <?php
-  unset($_SESSION['reportMTS']);
+  // unset($_SESSION['reportMTS']);
  ?>

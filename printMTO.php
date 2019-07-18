@@ -21,13 +21,15 @@ if (!isset($_SESSION['userType'])){
       $end = $_GET['end'];
     }
 
+    $sum = 0;
+
 ?>
 <br>
 <div class="container">
     <div class="row">
       <div class="col-lg-12">
         <div class="text-center">
-          <h2>Made-To-Stock Job Order Report</h2><br>
+          <h2>Made-To-Order Job Order Report</h2><br>
         </div>
       </div>
     </div>
@@ -37,8 +39,9 @@ if (!isset($_SESSION['userType'])){
           <div class="card-header">
             <?php if (isset($_GET['start'])): ?>
               <h3>Transactions between <?php echo $start; ?> and <?php echo $end; ?></h3>
-            <?php endif; ?>
+            <?php else: ?>
               <h3>Transaction Summary</h3>
+            <?php endif; ?>
           </div>
           <div class="card-body">
             <table class="table table-sm table-hover">
@@ -46,34 +49,49 @@ if (!isset($_SESSION['userType'])){
                 <tr class="table-active">
                   <td>Order Date</td>
                   <td>Job Order ID</td>
+                  <td>Customer</td>
                   <td>Product Name</td>
                   <td>Quantity</td>
+                  <td class="text-right">Total</td>
                 </tr>
               </thead>
               <tbody>
 
                 <?php
                   foreach ($dataArr as $key => $value) {
-                    $data = get_JODetails($conn,$value);
+                    $data = get_JODetail($conn,$value);
 
-                    echo "<tr>";
-                      echo "<td class='text-left'>";
-                        echo $data['date'];
-                      echo "</td>";
+                    foreach ($data as $key => $value) {
 
-                      echo "<td>";
-                        echo $value;
-                      echo "</td>";
+                      echo "<tr>";
+                          echo "<td class='text-left'>";
+                            echo $value['orderDate'];
+                          echo "</td>";
 
-                      echo "<td>";
-                        echo $data['productName'];
-                      echo "</td>";
+                          echo "<td>";
+                            echo $value['orderID'];
+                          echo "</td>";
 
-                      echo "<td>";
-                        echo $data['quantity'];
-                      echo "</td>";
+                          echo "<td>";
+                            echo get_customerName($conn,$value['customerID']);
+                          echo "</td>";
 
-                    echo "</tr>";
+                          echo "<td>";
+                            echo $value['pName'];
+                          echo "</td>";
+
+                          echo "<td>";
+                            echo $value['quantity'];
+                          echo "</td>";
+
+                          echo "<td class='text-right'>";
+                            echo number_format($value['total']);
+                          echo "</td>";
+
+                      echo "</tr>";
+
+                      $sum += $value['total'];
+                    }
 
                   }
                  ?>
@@ -83,6 +101,7 @@ if (!isset($_SESSION['userType'])){
           </div>
           <div class="card-footer">
             <div class="text-center">
+              <h3>Total Sales <?php echo number_format($sum); ?></h3>
               <h4>***End of Report***</h4>
             </div><br><br>
             <div class="text-left text-muted">
@@ -101,5 +120,5 @@ if (!isset($_SESSION['userType'])){
 
 
 <?php
-  unset($_SESSION['reportMTS']);
+  // unset($_SESSION['reportMTS']);
  ?>

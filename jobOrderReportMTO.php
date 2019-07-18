@@ -7,6 +7,8 @@
 if (!isset($_SESSION['userType'])){
     echo "<script>window.location='logout.php'</script>";
 }
+
+$dataArr = array();
 ?>
 
 <!-- put all the contents here  -->
@@ -45,16 +47,11 @@ if (!isset($_SESSION['userType'])){
                 if (isset($_POST['search'])){
                     $startDate = $_POST['startDate'];
                     $endDate = $_POST['endDate'];
-                    $result = mysqli_query($conn, "SELECT joborder.orderID AS JOID,
-                                                        customer.company AS cName,
-                                                        joborder.orderDate AS orderDate,
-                                                        joborder.totalPrice AS totalPrice,
-                                                        joborder.status AS status
+                    $result = mysqli_query($conn, "SELECT *
                                                     FROM joborder
-                                                    JOIN customer on joborder.customerID=customer.customerID
                                                     WHERE joborder.orderDate BETWEEN '$startDate' AND '$endDate'
                                                     AND joborder.type = 'Made to Order'
-                                                    AND joborder.status !='Pending for approval'");
+                                                    AND joborder.status = 'Finished'");
                     $count=mysqli_num_rows($result);
 
                     $result2 = mysqli_query($conn, "SELECT SUM(joborder.totalPrice) AS sum
@@ -79,8 +76,8 @@ if (!isset($_SESSION['userType'])){
 
                         while ($row = mysqli_fetch_array($result)) {
 
-                            $id = $row['JOID'];
-                            $name = $row['cName'];
+                            $id = $row['orderID'];
+                            $name = $row['customerID'];
                             $totalPrice = $row['totalPrice'];
                             $date = $row['orderDate'];
                             $status = $row['status'];
@@ -94,7 +91,7 @@ if (!isset($_SESSION['userType'])){
                                 echo '</td>';
 
                                 echo '<td class="text-center">';
-                                    echo $name;
+                                    echo get_customerName($conn,$name);
                                 echo '</td>';
 
                                 echo '<td class="text-center">';
@@ -111,34 +108,40 @@ if (!isset($_SESSION['userType'])){
 
                             echo '</tr>';
 
+                            $dataArr[] = $id;
                         }
+                        unset($_SESSION['reportMTS']);
+                        $_SESSION['reportMTS'] = $dataArr;
 
                         echo '</tbody>';
                         echo '</table>';
+                        echo '<br />';
 
                         echo '<div class="container">';
-                        echo '<div class="row">';
-                        echo '<div class="col-lg-12">';
-                        echo '<h4 class="text-right">Total Revenue: ';
-                        echo number_format($sum, 2);
-                        echo '</h4>';
+                          echo '<div class="row">';
+                            echo "<div class='col-lg-6'>";
+                              echo "<div class=text-left>";
+                                echo "<a href='printMTO.php?start=$startDate&end=$endDate' class='btn btn-primary'>Print this report</a>";
+                              echo "</div>";
+                            echo "</div>";
+                            echo '<div class="col-lg-6">';
+                              echo "<div class='text-right'>";
+                                echo '<h4 class="text-right">Total Revenue: ';
+                                  echo number_format($sum, 2);
+                                echo '</h4>';
+                              echo "</div>";
+                            echo '</div>';
+                          echo '</div>';
                         echo '</div>';
-                        echo '</div>';
-                        echo '</div>';
+                        echo "<br /><br />";
 
                     }
                 }
 
                 else{
-                    $result = mysqli_query($conn, "SELECT joborder.orderID AS JOID,
-                                                        customer.company AS cName,
-                                                        joborder.orderDate AS orderDate,
-                                                        joborder.totalPrice AS totalPrice,
-                                                        joborder.status AS status
-                                                    FROM joborder
-                                                    JOIN customer on joborder.customerID=customer.customerID
-                                                    WHERE joborder.type = 'Made to Order'
-                                                    AND joborder.status!='Pending for approval'");
+                    $result = mysqli_query($conn, "SELECT * FROM `joborder`
+                                                    WHERE joborder.type = 'Made to ORder' AND joborder.status = 'finished'
+                                                    ORDER BY `type` ASC");
                     $count=mysqli_num_rows($result);
 
                     $result2 = mysqli_query($conn, "SELECT SUM(joborder.totalPrice) AS sum
@@ -157,8 +160,8 @@ if (!isset($_SESSION['userType'])){
 
                         while ($row = mysqli_fetch_array($result)) {
 
-                            $id = $row['JOID'];
-                            $name = $row['cName'];
+                            $id = $row['orderID'];
+                            $name = $row['customerID'];
                             $totalPrice = $row['totalPrice'];
                             $date = $row['orderDate'];
                             $status = $row['status'];
@@ -172,7 +175,7 @@ if (!isset($_SESSION['userType'])){
                                 echo '</td>';
 
                                 echo '<td class="text-center">';
-                                    echo $name;
+                                    echo get_customerName($conn,$name);
                                 echo '</td>';
 
                                 echo '<td class="text-center">';
@@ -180,7 +183,7 @@ if (!isset($_SESSION['userType'])){
                                 echo '</td>';
 
                                 echo '<td class="text-center">';
-                                    echo number_format($totalPrice, 2);
+                                    echo number_format($totalPrice);
                                 echo '</td>';
 
                                 echo '<td class="text-center">';
@@ -189,36 +192,37 @@ if (!isset($_SESSION['userType'])){
 
                             echo '</tr>';
 
+                            $dataArr[] = $id;
+
                         }
+                        unset($_SESSION['reportMTS']);
+                        $_SESSION['reportMTS'] = $dataArr;
 
                         echo '</tbody>';
                         echo '</table>';
+                        echo '<br />';
 
                         echo '<div class="container">';
-                        echo '<div class="row">';
-                        echo '<div class="col-lg-12">';
-                        echo '<h4 class="text-right">Total Revenue: ';
-                        echo number_format($sum, 2);
-                        echo '</h4>';
+                          echo '<div class="row">';
+                            echo "<div class='col-lg-12'>";
+                              echo "<div class=text-center>";
+                                echo "<a href='printMTO.php' class='btn btn-primary'>Print this report</a>";
+                              echo "</div>";
+                            echo "</div>";
+                            // echo '<div class="col-lg-6">';
+                              // echo "<div class='text-right'>";
+                                // echo '<h4 class="text-right">Total Revenue: ';
+                                  // echo number_format($sum, 2);
+                                // echo '</h4>';
+                              // echo "</div>";
+                            // echo '</div>';
+                          echo '</div>';
                         echo '</div>';
-                        echo '</div>';
-                        echo '</div>';
-
+                        echo "<br /><br />";
                     }
                 }
 
                 ?>
-<!--                </tbody>-->
-<!--            </table>-->
-<!---->
-<!--            <div class="container">-->
-<!--                <div class="row">-->
-<!--                    <div class="col-lg-12">-->
-<!--                        <h4 class="text-right">Total Revenue: --><?php //echo number_format($sum, 2) ?><!--</h4>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-
         </div>
     </div>
 </div>
