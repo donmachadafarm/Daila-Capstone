@@ -36,9 +36,16 @@
 
           while ($row = mysqli_fetch_array($sql)) {
             $mid = $row['machineID'];
-            $query3 = "UPDATE Machine SET status = 'Available' WHERE machineID = $mid";
 
-            mysqli_query($conn,$query3);
+            if (check_machine($conn,$mid)) {
+              $query3 = "UPDATE Machine SET status = 'For Maintenance' WHERE machineID = $mid";
+
+              mysqli_query($conn,$query3);
+            }else {
+              $query3 = "UPDATE Machine SET status = 'Available' WHERE machineID = $mid";
+
+              mysqli_query($conn,$query3);
+            }
           }
 
           $query = "UPDATE ProductionProcess SET status = 'Shipping', machineQueue = 0 WHERE orderID = $ordid AND productID = $pid";
@@ -79,6 +86,7 @@
 
           while ($row = mysqli_fetch_array($sq)) {
             $maid = $row['machineID'];
+
             $query = "UPDATE Machine SET status = 'Used' WHERE machineID = $maid";
 
             mysqli_query($conn,$query);
@@ -128,7 +136,7 @@
     mysqli_query($conn,$query);
 
     // adds the timesworked
-    mysqli_query($conn,"UPDATE Machine SET hoursWorked = hoursWorked + $time, lifetimeWorked = lifetimeWorked + $time, status = 'Available' WHERE machineID = $macid");
+    mysqli_query($conn,"UPDATE Machine SET hoursWorked = hoursWorked + $time, lifetimeWorked = lifetimeWorked + $time WHERE machineID = $macid");
 
     // readjust the queue
     $query = "SELECT * FROM ProductionProcess WHERE processSequence = 1 AND status = 'Wait' ORDER BY machineQueue DESC LIMIT 1";
@@ -146,14 +154,14 @@
 
         mysqli_query($conn,$query);
 
-      $sq = mysqli_query($conn,"SELECT machineID FROM ProductionProcess WHERE productID = $pid AND orderID = $nextorder");
-
-      while ($row = mysqli_fetch_array($sq)) {
-        $maid = $row['machineID'];
-        $query = "UPDATE Machine SET status = 'Used' WHERE machineID = $maid";
-
-        mysqli_query($conn,$query);
-      }
+      // $sq = mysqli_query($conn,"SELECT machineID FROM ProductionProcess WHERE productID = $pid AND orderID = $nextorder");
+      //
+      // while ($row = mysqli_fetch_array($sq)) {
+      //   $maid = $row['machineID'];
+      //   $query = "UPDATE Machine SET status = 'Used' WHERE machineID = $maid";
+      //
+      //   mysqli_query($conn,$query);
+      // }
 
     }
 
@@ -207,7 +215,7 @@
     mysqli_query($conn,$query);
 
     // adds the timesworked
-    mysqli_query($conn,"UPDATE Machine SET hoursWorked = hoursWorked + $time, lifetimeWorked = lifetimeWorked + $time, status = 'Available' WHERE machineID = $macid");
+    mysqli_query($conn,"UPDATE Machine SET hoursWorked = hoursWorked + $time, lifetimeWorked = lifetimeWorked + $time WHERE machineID = $macid");
 
 
     // DONE UPDATING STATUSES FOR ONE PRODUCT PROCESS
@@ -231,12 +239,12 @@
 
       $sq = mysqli_query($conn,"SELECT machineID FROM ProductionProcess WHERE productID = $pid AND orderID = $nextorder");
 
-      while ($row = mysqli_fetch_array($sq)) {
-        $maid = $row['machineID'];
-        $query = "UPDATE Machine SET status = 'Used' WHERE machineID = $maid";
-
-        mysqli_query($conn,$query);
-      }
+      // while ($row = mysqli_fetch_array($sq)) {
+      //   $maid = $row['machineID'];
+      //   $query = "UPDATE Machine SET status = 'Used' WHERE machineID = $maid";
+      //
+      //   mysqli_query($conn,$query);
+      // }
 
     }
 
@@ -484,7 +492,7 @@
                                         <input type="number" name="yield" value="<?php if ($row['quantity']<100) { echo round($row['quantity']); }else {echo round($row['quantity']+($row['quantity']*0.01)); } ?>" class="form-control" readonly>
                                       </br>
                                       <label>Total Good:</label></br>
-                                        <input type="number" name="good" value="<?php if ($row['quantity']<100) { echo round($row['quantity']); }else {echo round($row['quantity']+($row['quantity']*0.01)); } ?>" class="form-control" required>
+                                        <input min="1" type="number" name="good" value="<?php if ($row['quantity']<100) { echo round($row['quantity']); }else {echo round($row['quantity']+($row['quantity']*0.01)); } ?>" class="form-control" required>
                                       </br>
                                       <small>items less than 100 will not have 1% extra</small>
                                       <div class="modal-footer">
@@ -515,7 +523,7 @@
         <br><br><h3><b>Status:</b></h3>
 <div class="row">
   <div class="col-lg-12">
-      <table class="display table table-hover table-responsive table-borderless">
+      <table class="display table table-hover table-borderless">
         <thead>
           <tr>
             <th>Due Date</th>
@@ -587,6 +595,7 @@
       </table>
   </div>
 </div>
+
 </div><br><br>
 <script type="text/javascript">
   $('#timepicker1').timepicker({

@@ -538,6 +538,20 @@ function reduce_inventory_rawmats_production($conn,$orderid){
     }
 }
 
+function check_machine($conn,$id){
+  $query = "SELECT hoursWorked FROM machine WHERE machineID = $id";
+
+    $sql = mysqli_query($conn,$query);
+
+    $row = mysqli_fetch_array($sql);
+
+  if ($row[0]>1080000) {
+    return true;
+  }else {
+    return false;
+  }
+}
+
 function start_production($conn,$orderid){
   $query = "SELECT Receipt.orderID,
               	   Receipt.productID,

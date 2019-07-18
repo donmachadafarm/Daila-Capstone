@@ -71,6 +71,7 @@ $dataArr = array();
                                                     BETWEEN '$startDate' AND '$endDate' ORDER BY dateChange DESC");
 
                     $count = 0;
+                    $new = "";
                         while ($row = mysqli_fetch_array($result)) {
 
                             $date = $row['dateChange'];
