@@ -125,64 +125,73 @@
     $proid = $_POST['prod_id'];
     $stats = $_POST['status'];
 
-    $qry = "SELECT timeEstimate as t FROM ProductionProcess WHERE orderID = $ordid AND machineID = $macid AND productID = $proid";
-    $sql = mysqli_query($conn,$qry);
-    $row = mysqli_fetch_array($sql);
-    $time = $row['t'];
+    echo $proid;
 
-    // update the production process for that row ng specific order machine id at productid  "Ongoing" - > "Done"
-    $query = "UPDATE ProductionProcess SET status = 'Done',machineQueue = machineQueue - 1 WHERE orderID = $ordid AND machineID = $macid AND productID = $proid AND status = 'Ongoing'";
 
-    mysqli_query($conn,$query);
-
-    // adds the timesworked
-    mysqli_query($conn,"UPDATE Machine SET hoursWorked = hoursWorked + $time, lifetimeWorked = lifetimeWorked + $time WHERE machineID = $macid");
-
-    // readjust the queue
-    $query = "SELECT * FROM ProductionProcess WHERE processSequence = 1 AND status = 'Wait' ORDER BY machineQueue DESC LIMIT 1";
-
-      $sql = mysqli_query($conn,$query);
-
+    if (!check_emergency($conn,$macid)) {
+      $qry = "SELECT timeEstimate as t FROM ProductionProcess WHERE orderID = $ordid AND machineID = $macid AND productID = $proid";
+      $sql = mysqli_query($conn,$qry);
       $row = mysqli_fetch_array($sql);
+      $time = $row['t'];
 
-    $nextorder = $row['orderID'];
-    $pid = $row['productID'];
+      // update the production process for that row ng specific order machine id at productid  "Ongoing" - > "Done"
+      $query = "UPDATE ProductionProcess SET status = 'Done',machineQueue = machineQueue - 1 WHERE orderID = $ordid AND machineID = $macid AND productID = $proid AND status = 'Ongoing'";
 
-    if(mysqli_num_rows($sql)>0){
-        // query for first process set status = 'ongoing'
-      $query = "UPDATE ProductionProcess SET status = 'Ongoing' WHERE orderID = $nextorder AND productID = $pid AND processSequence = 1";
+      mysqli_query($conn,$query);
 
-        mysqli_query($conn,$query);
+      // adds the timesworked
+      mysqli_query($conn,"UPDATE Machine SET hoursWorked = hoursWorked + $time, lifetimeWorked = lifetimeWorked + $time WHERE machineID = $macid");
 
-      // $sq = mysqli_query($conn,"SELECT machineID FROM ProductionProcess WHERE productID = $pid AND orderID = $nextorder");
-      //
-      // while ($row = mysqli_fetch_array($sq)) {
-      //   $maid = $row['machineID'];
-      //   $query = "UPDATE Machine SET status = 'Used' WHERE machineID = $maid";
-      //
-      //   mysqli_query($conn,$query);
-      // }
+      // readjust the queue
+      $query = "SELECT * FROM ProductionProcess WHERE processSequence = 1 AND status = 'Wait' ORDER BY machineQueue DESC LIMIT 1";
 
-    }
-
-    // GETS THE NEXT MACHINE FOR THE SEQUENCE
-    $sql = mysqli_query($conn,"SELECT machineID FROM ProductionProcess WHERE orderID = $ordid AND productID = $proid AND status = 'Wait' ORDER BY processSequence LIMIT 1");
-
-    $row = mysqli_fetch_array($sql);
-
-    // CHECKS IF THERE IS STILL SOME MACHINE IN QUEUE FOR THE PRODUCTION PROCESS
-    if(isset($row)){
-        $query = "UPDATE ProductionProcess SET status = 'Ongoing' WHERE orderID = $ordid AND machineID = $row[0] AND productID = $proid AND status = 'Wait'";
-
-        mysqli_query($conn,$query);
-    }else {
-        $sql = mysqli_query($conn,"SELECT machineID FROM ProductionProcess WHERE orderID = $ordid AND productID = $proid AND status = 'Done' ORDER BY processSequence DESC LIMIT 1");
+        $sql = mysqli_query($conn,$query);
 
         $row = mysqli_fetch_array($sql);
 
-        mysqli_query($conn,"UPDATE ProductionProcess SET status = 'Finish' WHERE orderID = $ordid AND machineID = $row[0] AND productID = $proid AND status = 'Done'");
+      $nextorder = $row['orderID'];
+      $pid = $row['productID'];
 
+      if(mysqli_num_rows($sql)>0){
+          // query for first process set status = 'ongoing'
+        $query = "UPDATE ProductionProcess SET status = 'Ongoing' WHERE orderID = $nextorder AND productID = $pid AND processSequence = 1";
+
+          mysqli_query($conn,$query);
+
+        // $sq = mysqli_query($conn,"SELECT machineID FROM ProductionProcess WHERE productID = $pid AND orderID = $nextorder");
+        //
+        // while ($row = mysqli_fetch_array($sq)) {
+        //   $maid = $row['machineID'];
+        //   $query = "UPDATE Machine SET status = 'Used' WHERE machineID = $maid";
+        //
+        //   mysqli_query($conn,$query);
+        // }
+
+      }
+
+      // GETS THE NEXT MACHINE FOR THE SEQUENCE
+      $sql = mysqli_query($conn,"SELECT machineID FROM ProductionProcess WHERE orderID = $ordid AND productID = $proid AND status = 'Wait' ORDER BY processSequence LIMIT 1");
+
+      $row = mysqli_fetch_array($sql);
+
+      // CHECKS IF THERE IS STILL SOME MACHINE IN QUEUE FOR THE PRODUCTION PROCESS
+      if(isset($row)){
+          $query = "UPDATE ProductionProcess SET status = 'Ongoing' WHERE orderID = $ordid AND machineID = $row[0] AND productID = $proid AND status = 'Wait'";
+
+          mysqli_query($conn,$query);
+      }else {
+          $sql = mysqli_query($conn,"SELECT machineID FROM ProductionProcess WHERE orderID = $ordid AND productID = $proid AND status = 'Done' ORDER BY processSequence DESC LIMIT 1");
+
+          $row = mysqli_fetch_array($sql);
+
+          mysqli_query($conn,"UPDATE ProductionProcess SET status = 'Finish' WHERE orderID = $ordid AND machineID = $row[0] AND productID = $proid AND status = 'Done'");
+
+      }
+
+    }else {
+      echo "<script>alert('ERROR MACHINE $macid UNDER MAINTENANCE');</script>";
     }
+
   }
 
   if(isset($_POST['delay'])){
@@ -203,69 +212,74 @@
 
     $diffinsec = $datediff->format("%S");
 
-    $qry = "SELECT timeEstimate as t FROM ProductionProcess WHERE orderID = $ordid AND machineID = $macid AND productID = $proid";
-    $sql = mysqli_query($conn,$qry);
-    $row = mysqli_fetch_array($sql);
-    $time = $row['t'];
-    $time+=$diffinsec;
-
-    // update the production process for that row ng specific order machine id at productid  "Ongoing" - > "Done"
-    $query = "UPDATE ProductionProcess SET status = 'Done' WHERE orderID = $ordid AND machineID = $macid AND productID = $proid AND status = 'Ongoing'";
-
-    mysqli_query($conn,$query);
-
-    // adds the timesworked
-    mysqli_query($conn,"UPDATE Machine SET hoursWorked = hoursWorked + $time, lifetimeWorked = lifetimeWorked + $time WHERE machineID = $macid");
-
-
-    // DONE UPDATING STATUSES FOR ONE PRODUCT PROCESS
-    // SUGGESTION : REDUCE MACHINE QUEUE AFTER UPDATE
-
-    // readjust the queue
-    $query = "SELECT * FROM ProductionProcess WHERE processSequence = 1 AND status = 'Wait' ORDER BY machineQueue DESC LIMIT 1";
-
-      $sql = mysqli_query($conn,$query);
-
-      $row = mysqli_fetch_array($sql);
-
-    $nextorder = $row['orderID'];
-    $pid = $row['productID'];
-
-    if(mysqli_num_rows($sql)>0){
-        // query for first process set status = 'ongoing'
-      $query = "UPDATE ProductionProcess SET status = 'Ongoing' WHERE orderID = $nextorder AND productID = $pid AND processSequence = 1";
-
-        mysqli_query($conn,$query);
-
-      $sq = mysqli_query($conn,"SELECT machineID FROM ProductionProcess WHERE productID = $pid AND orderID = $nextorder");
-
-      // while ($row = mysqli_fetch_array($sq)) {
-      //   $maid = $row['machineID'];
-      //   $query = "UPDATE Machine SET status = 'Used' WHERE machineID = $maid";
-      //
-      //   mysqli_query($conn,$query);
-      // }
-
-    }
-
-
-    // GETS THE NEXT MACHINE FOR THE SEQUENCE
-    $sql = mysqli_query($conn,"SELECT machineID FROM ProductionProcess WHERE orderID = $ordid AND productID = $proid AND status = 'Wait' ORDER BY processSequence LIMIT 1");
-
-    $row = mysqli_fetch_array($sql);
-
-    // CHECKS IF THERE IS STILL SOME MACHINE IN QUEUE FOR THE PRODUCTION PROCESS
-    if(isset($row)){
-        $query = "UPDATE ProductionProcess SET status = 'Ongoing' WHERE orderID = $ordid AND machineID = $row[0] AND productID = $proid AND status = 'Wait'";
-
-        mysqli_query($conn,$query);
+    if (check_emergency($conn,$macid)) {
+      echo "<script>alert('ERROR: MACHINE UNDER MAINTENANCE');</script>";
     }else {
-        $sql = mysqli_query($conn,"SELECT machineID FROM ProductionProcess WHERE orderID = $ordid AND productID = $proid AND status = 'Done' ORDER BY processSequence DESC LIMIT 1");
+
+      $qry = "SELECT timeEstimate as t FROM ProductionProcess WHERE orderID = $ordid AND machineID = $macid AND productID = $proid";
+      $sql = mysqli_query($conn,$qry);
+      $row = mysqli_fetch_array($sql);
+      $time = $row['t'];
+      $time+=$diffinsec;
+
+      // update the production process for that row ng specific order machine id at productid  "Ongoing" - > "Done"
+      $query = "UPDATE ProductionProcess SET status = 'Done' WHERE orderID = $ordid AND machineID = $macid AND productID = $proid AND status = 'Ongoing'";
+
+      mysqli_query($conn,$query);
+
+      // adds the timesworked
+      mysqli_query($conn,"UPDATE Machine SET hoursWorked = hoursWorked + $time, lifetimeWorked = lifetimeWorked + $time WHERE machineID = $macid");
+
+
+      // DONE UPDATING STATUSES FOR ONE PRODUCT PROCESS
+      // SUGGESTION : REDUCE MACHINE QUEUE AFTER UPDATE
+
+      // readjust the queue
+      $query = "SELECT * FROM ProductionProcess WHERE processSequence = 1 AND status = 'Wait' ORDER BY machineQueue DESC LIMIT 1";
+
+        $sql = mysqli_query($conn,$query);
 
         $row = mysqli_fetch_array($sql);
 
-        mysqli_query($conn,"UPDATE ProductionProcess SET status = 'Finish' WHERE orderID = $ordid AND machineID = $row[0] AND productID = $proid AND status = 'Done'");
+      $nextorder = $row['orderID'];
+      $pid = $row['productID'];
 
+      if(mysqli_num_rows($sql)>0){
+          // query for first process set status = 'ongoing'
+        $query = "UPDATE ProductionProcess SET status = 'Ongoing' WHERE orderID = $nextorder AND productID = $pid AND processSequence = 1";
+
+          mysqli_query($conn,$query);
+
+        $sq = mysqli_query($conn,"SELECT machineID FROM ProductionProcess WHERE productID = $pid AND orderID = $nextorder");
+
+        // while ($row = mysqli_fetch_array($sq)) {
+        //   $maid = $row['machineID'];
+        //   $query = "UPDATE Machine SET status = 'Used' WHERE machineID = $maid";
+        //
+        //   mysqli_query($conn,$query);
+        // }
+
+      }
+
+
+      // GETS THE NEXT MACHINE FOR THE SEQUENCE
+      $sql = mysqli_query($conn,"SELECT machineID FROM ProductionProcess WHERE orderID = $ordid AND productID = $proid AND status = 'Wait' ORDER BY processSequence LIMIT 1");
+
+      $row = mysqli_fetch_array($sql);
+
+      // CHECKS IF THERE IS STILL SOME MACHINE IN QUEUE FOR THE PRODUCTION PROCESS
+      if(isset($row)){
+          $query = "UPDATE ProductionProcess SET status = 'Ongoing' WHERE orderID = $ordid AND machineID = $row[0] AND productID = $proid AND status = 'Wait'";
+
+          mysqli_query($conn,$query);
+      }else {
+          $sql = mysqli_query($conn,"SELECT machineID FROM ProductionProcess WHERE orderID = $ordid AND productID = $proid AND status = 'Done' ORDER BY processSequence DESC LIMIT 1");
+
+          $row = mysqli_fetch_array($sql);
+
+          mysqli_query($conn,"UPDATE ProductionProcess SET status = 'Finish' WHERE orderID = $ordid AND machineID = $row[0] AND productID = $proid AND status = 'Done'");
+
+      }
     }
   }
 
@@ -318,6 +332,7 @@
                         $id = $row['productID'];
                         $deadline = $row['dueDate'];
                         $timeest = $row['timeEstimate'];
+                        $machine = $row['machineID'];
 
 
                         echo '<tr>';
@@ -345,32 +360,32 @@
                               echo get_timebeforedeadline($conn,$deadline,$timeest);
                           echo'</td>';
 
-                    if ($_SESSION['userType'] == '103' || $_SESSION['userType'] == '104') {
-                          echo '<td class="text-center">';
-                            if (!check_complete_proc($conn,$row['orderID'],$row['productID'])) {
-                                // finish button na mag sabi tapos na process
-                                echo '<a href="#check'.$id.'" data-target="#check'.$id.'" data-toggle="modal">
-                                  <button type="button" class="btn btn-secondary btn-sm">
-                                    <i class="fas fa-arrow-right"></i>
-                                  </button></a>  ';
-                                echo '<a href="#delay'.$id.'" data-target="#delay'.$id.'" data-toggle="modal">
-                                  <button type="button" class="btn btn-warning btn-sm" style="color:white">
-                                    <i class="fas fa-clock"></i>
-                                  </button></a>  ';
-                              } else {
-                                // finish button for final add ng product
-                                echo '<a href="#finish'.$id.'" data-target="#finish'.$id.'" data-toggle="modal">
-                                  <button type="button" class="btn btn-success btn-sm">
-                                    Finish
-                                  </button></a>  ';
-                              }
-                          echo '</td>';
-                        }
+                        if ($_SESSION['userType'] == '103' || $_SESSION['userType'] == '104') {
+                              echo '<td class="text-center">';
+                                if (!check_complete_proc($conn,$row['orderID'],$row['productID'])) {
+                                    // finish button na mag sabi tapos na process
+                                    echo '<a href="#check'.$id.$machine.'" data-target="#check'.$id.$machine.'" data-toggle="modal">
+                                      <button type="button" class="btn btn-secondary btn-sm">
+                                        <i class="fas fa-arrow-right"></i>
+                                      </button></a>  ';
+                                    echo '<a href="#delay'.$id.$machine.'" data-target="#delay'.$id.$machine.'" data-toggle="modal">
+                                      <button type="button" class="btn btn-warning btn-sm" style="color:white">
+                                        <i class="fas fa-clock"></i>
+                                      </button></a>  ';
+                                  } else {
+                                    // finish button for final add ng product
+                                    echo '<a href="#finish'.$id.'" data-target="#finish'.$id.'" data-toggle="modal">
+                                      <button type="button" class="btn btn-success btn-sm">
+                                        Finish
+                                      </button></a>  ';
+                                  }
+                              echo '</td>';
+                            }
 
                         echo '</tr>';
                     ?>
 
-                    <div id="check<?php echo $id; ?>" class="modal fade" role="dialog">
+                    <div id="check<?php echo $id.$machine; ?>" class="modal fade" role="dialog">
                         <div class="modal-dialog">
                           <form method="post">
                               <div class="modal-content">
@@ -382,7 +397,7 @@
 
                                   <div class="modal-body">
                                       <input type="hidden" name="order_id" value="<?php echo $row['orderID']; ?>">
-                                      <input type="hidden" name="mach_id" value="<?php echo $row['machineID']; ?>">
+                                      <input type="hidden" name="mach_id" value="<?php echo $machine; ?>">
                                       <input type="hidden" name="prod_id" value="<?php echo $row['productID']; ?>">
                                       <input type="hidden" name="status" value="<?php echo $row['status']; ?>">
                                       <div class="text-center">
@@ -403,7 +418,7 @@
                     </div>
                   </div>
 
-                  <div id="delay<?php echo $id; ?>" class="modal fade" role="dialog">
+                  <div id="delay<?php echo $id.$machine; ?>" class="modal fade" role="dialog">
                       <div class="modal-dialog">
                         <form method="post">
                             <div class="modal-content">
@@ -504,6 +519,7 @@
                           </div>
                       </div>
                   </div>
+
                   <?php
                 }
                   }

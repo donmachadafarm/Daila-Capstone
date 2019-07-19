@@ -44,9 +44,23 @@
 
     $sql = mysqli_query($conn,$query);
 
-    $query = "UPDATE Machine SET status = 'Available', hoursWorked = 0 WHERE machineID = $finishid";
+    $query = "SELECT * FROM Machine WHERE machineID = $finishid";
 
-    $sql = mysqli_query($conn,$query);
+      $sql = mysqli_query($conn,$query);
+
+      $row = mysqli_fetch_array($sql);
+
+    if ($row['status'] == 'Emergency') {
+      $query = "UPDATE Machine SET status = 'Used', hoursWorked = 0 WHERE machineID = $finishid";
+
+      $sql = mysqli_query($conn,$query);
+    }else {
+      $query = "UPDATE Machine SET status = 'Available', hoursWorked = 0 WHERE machineID = $finishid";
+
+      $sql = mysqli_query($conn,$query);
+    }
+
+
   }
  ?>
 
