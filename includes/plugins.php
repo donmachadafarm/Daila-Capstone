@@ -12,6 +12,9 @@
 <!-- Bootstrap Core JavaScript -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.bundle.js" type="text/javascript">
+
+</script>
 
 <!-- timepicker -->
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-timepicker/0.5.2/js/bootstrap-timepicker.min.js"></script>
@@ -24,6 +27,7 @@
 
 <!-- fA icons -->
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+
 
 <!-- Page-Level Demo Scripts - Tables - Use for reference -->
 <script>
@@ -72,6 +76,27 @@ function goBack() {
     window.history.back();
 }
 
+jQuery(document).ready( function($) {
+
+    // Disable scroll when focused on a number input.
+    $('form').on('focus', 'input[type=number]', function(e) {
+        $(this).on('wheel', function(e) {
+            e.preventDefault();
+        });
+    });
+
+    // Restore scroll on number inputs.
+    $('form').on('blur', 'input[type=number]', function(e) {
+        $(this).off('wheel');
+    });
+
+    // Disable up and down keys.
+    $('form').on('keydown', 'input[type=number]', function(e) {
+        if ( e.which == 38 || e.which == 40 )
+            e.preventDefault();
+    });
+
+});
 </script>
 
 

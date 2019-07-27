@@ -149,8 +149,8 @@
             <?php endif; ?>
 
             <?php if ($_SESSION['userType']==102 || $_SESSION['userType']==100 || $_SESSION['userType']==104): ?>
-              <h6 class="dropdown-header text-center"><b> Audit Trail Report </b></h6>
-              <a class="dropdown-item text-center" href="viewAuditTrail.php">Historical Audit Trail</a>
+              <h6 class="dropdown-header text-center"><b> Discrepancy Report </b></h6>
+              <a class="dropdown-item text-center" href="viewAuditTrail.php">Inventory Discrepancy</a>
               <div class="dropdown-divider"></div>
             <?php endif; ?>
 

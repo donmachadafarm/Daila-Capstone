@@ -35,7 +35,7 @@
               <h1 class="page-header"><br><br>
                   View Ingredients
               </h1>
-              <label for="chooseAlgo">Choose Forecasting Algorithm:</label>
+              <label for="chooseAlgo">Choose Forecasting Method:</label>
             <form method="post">
               <div class="row">
                 <div class="col-md-5">

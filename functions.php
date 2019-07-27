@@ -1496,7 +1496,8 @@ function get_JODetails($conn,$id){
                      receipt.quantity,
                      product.productPrice,
                      receipt.subTotal AS total,
-                     jobOrder.orderDate
+                     jobOrder.orderDate,
+                     jobOrder.dueDate
               FROM receipt
               JOIN product on receipt.productID=product.productID
               JOIN producttype on product.productTypeID=producttype.productTypeID
@@ -1512,7 +1513,7 @@ function get_JODetails($conn,$id){
         $product = $row['pName'];
         $quantity = $row['quantity'];
         $total = $row['total'];
-        $date = $row['orderDate'];
+        $date = $row['dueDate'];
 
         $data['productName'] = $product;
         $data['quantity'] = $quantity;
@@ -1534,12 +1535,14 @@ function get_JODetail($conn,$id){
                        receipt.subTotal AS total,
                        jobOrder.orderDate,
                        jobOrder.customerID,
-                       jobOrder.orderID
+                       jobOrder.orderID,
+                       jobOrder.dueDate
                 FROM receipt
                 JOIN product on receipt.productID=product.productID
                 JOIN producttype on product.productTypeID=producttype.productTypeID
                 JOIN jobOrder on receipt.orderID = jobOrder.orderID
-                WHERE receipt.orderID=$id";
+                WHERE receipt.orderID=$id
+                ORDER BY jobOrder.dueDate ASC";
 
       $result = mysqli_query($conn,$query);
 
@@ -1594,6 +1597,42 @@ function get_PODetail($conn,$id){
     }
 
   }
+
+  function getQuarter(\DateTime $DateTime) {
+      $y = $DateTime->format('Y');
+      $m = $DateTime->format('m');
+      switch($m) {
+          case $m >= 1 && $m <= 3:
+              $start = '01/01/'.$y;
+              $end = (new DateTime('03/1/'.$y))->modify('Last day of this month')->format('m/d/Y');
+              $title = 'Q1 '.$y;
+              break;
+          case $m >= 4 && $m <= 6:
+              $start = '04/01/'.$y;
+              $end = (new DateTime('06/1/'.$y))->modify('Last day of this month')->format('m/d/Y');
+              $title = 'Q2 '.$y;
+              break;
+          case $m >= 7 && $m <= 9:
+              $start = '07/01/'.$y;
+              $end = (new DateTime('09/1/'.$y))->modify('Last day of this month')->format('m/d/Y');
+              $title = 'Q3 '.$y;
+              break;
+          case $m >= 10 && $m <= 12:
+              $start = '10/01/'.$y;
+              $end = (new DateTime('12/1/'.$y))->modify('Last day of this month')->format('m/d/Y');
+              $title = 'Q4 '.$y;
+              break;
+      }
+      return array(
+              'start' => $start,
+              'end' => $end,
+              'title'=>$title,
+              'start_nix' => strtotime($start),
+              'end_nix' => strtotime($end)
+      );
+  }
+
+  
 
 
  ?>

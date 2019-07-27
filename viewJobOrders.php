@@ -186,30 +186,30 @@
                             if ($cusid == 1) {
                               if (check_for_inventory_match($conn,$id)>0) {
                                   echo '<a href="#check'.$id.'" data-target="#check'.$id.'" data-toggle="modal"  style="color: #FFFFFF;text-decoration: none;">
-                                    <button type="button" class="btn btn-secondary btn-sm">
+                                    <button type="button" class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="top" title="Insufficient Ingredients">
                                       <i class="fas fa-exclamation-circle"></i>
                                     </button></a>  ';
                               }else {
                                   echo '<a href="#approved'.$id.'" data-target="#approved'.$id.'" data-toggle="modal"  style="color: #FFFFFF;text-decoration: none;">
-                                    <button type="button" class="btn btn-success btn-sm">
+                                    <button type="button" class="btn btn-success btn-sm" data-toggle="tooltip" data-placement="top" title="Sufficient Ingredients">
                                       <i class="fas fa-check-circle"></i>
                                     </button></a>  ';
                               }
                             }else {
                               if ($status != 'Paid') {
                                 echo '<a href="#pay'.$id.'" data-target="#pay'.$id.'" data-toggle="modal" style="color: #FFFFFF;text-decoration: none;">
-                                      <button type="button" class="btn btn-secondary btn-sm">
+                                      <button type="button" class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="top" title="Pay Downpayment">
                                         <i class="fas fa-money-bill-alt"></i>
                                       </button></a>  ';
                               }else {
                                 if (check_for_inventory_match($conn,$id)>0) {
                                   echo '<a href="#check'.$id.'" data-target="#check'.$id.'" data-toggle="modal"  style="color: #FFFFFF;text-decoration: none;">
-                                    <button type="button" class="btn btn-secondary btn-sm">
+                                    <button type="button" class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="top" title="Insufficient Ingredients">
                                       <i class="fas fa-exclamation-circle"></i>
                                     </button></a>  ';
                                 }else {
                                   echo '<a href="#approve'.$id.'" data-target="#approve'.$id.'" data-toggle="modal"  style="color: #FFFFFF;text-decoration: none;">
-                                        <button type="button" class="btn btn-success btn-sm">
+                                        <button type="button" class="btn btn-success btn-sm" data-toggle="tooltip" data-placement="top" title="Sufficient Ingredients">
                                           <i class="fas fa-check-circle"></i>
                                         </button></a>  ';
                                 }
@@ -448,6 +448,12 @@
 
 
 <!-- end of content -->
+
+<script type="text/javascript">
+$(function () {
+$('[data-toggle="tooltip"]').tooltip()
+})
+</script>
 
 
 <?php include "includes/sections/footer.php"; ?>

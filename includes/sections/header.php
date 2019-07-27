@@ -49,6 +49,15 @@ if (session_status() == PHP_SESSION_NONE) {
      margin: -10px;
    }
 
+   /* Hide HTML5 Up and Down arrows. */
+    input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    input[type="number"] {
+        -moz-appearance: textfield;
+    }
     </style>
 
     <title>Daila Herbals</title>

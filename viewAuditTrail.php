@@ -18,7 +18,7 @@ $new = "";
     <div class="row">
         <div class="col-lg-12">
             <h2 class="text-center"><br><br>
-                Audit Trail
+                Inventory Discrepancy Report
             </h2>
             <h6 class="text-center">
                 Enter a Date Range

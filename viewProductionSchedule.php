@@ -365,17 +365,17 @@
                                 if (!check_complete_proc($conn,$row['orderID'],$row['productID'])) {
                                     // finish button na mag sabi tapos na process
                                     echo '<a href="#check'.$id.$machine.'" data-target="#check'.$id.$machine.'" data-toggle="modal">
-                                      <button type="button" class="btn btn-secondary btn-sm">
+                                      <button type="button" class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="top" title="Next Process">
                                         <i class="fas fa-arrow-right"></i>
                                       </button></a>  ';
                                     echo '<a href="#delay'.$id.$machine.'" data-target="#delay'.$id.$machine.'" data-toggle="modal">
-                                      <button type="button" class="btn btn-warning btn-sm" style="color:white">
+                                      <button type="button" class="btn btn-warning btn-sm" data-toggle="tooltip" data-placement="top" title="Delay" style="color:white">
                                         <i class="fas fa-clock"></i>
                                       </button></a>  ';
                                   } else {
                                     // finish button for final add ng product
                                     echo '<a href="#finish'.$id.'" data-target="#finish'.$id.'" data-toggle="modal">
-                                      <button type="button" class="btn btn-success btn-sm">
+                                      <button type="button" class="btn btn-success btn-sm"  data-toggle="tooltip" data-placement="top" title="Finish Process">
                                         Finish
                                       </button></a>  ';
                                   }
@@ -625,7 +625,15 @@
 <script type="text/javascript">
   $(document).ready(function() {
     $('table.display').DataTable();
+
   } );
+
+  $(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+})
+
+
+
 </script>
 
 

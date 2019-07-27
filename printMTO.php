@@ -47,7 +47,7 @@ if (!isset($_SESSION['userType'])){
             <table class="table table-sm table-hover">
               <thead class="thead-light">
                 <tr class="table-active">
-                  <td>Order Date</td>
+                  <td>Due Date</td>
                   <td>Job Order ID</td>
                   <td>Customer</td>
                   <td>Product Name</td>
@@ -65,7 +65,7 @@ if (!isset($_SESSION['userType'])){
 
                       echo "<tr>";
                           echo "<td class='text-left'>";
-                            echo $value['orderDate'];
+                            echo $value['dueDate'];
                           echo "</td>";
 
                           echo "<td>";

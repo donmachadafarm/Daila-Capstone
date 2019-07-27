@@ -125,9 +125,86 @@ if (isset($_POST['submit'])){
                     <input type="submit" name="submit" value="Select Supplier" class="btn btn-success"/></div>
                   </form>
 
-                <?php
-                } else{
-                ?>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+              <div class="col-lg-12">
+          <hr class="style1"><br>
+          <h2 class="text-center">Supplier info</h2>
+          <table class="table table-hover" id="dataTables-example">
+              <thead>
+                  <tr>
+                      <th>Supplier Name</th>
+                      <th>Supplied RawMaterial</th>
+                      <th>Matching Ingredient</th>
+                      <th>Price per Unit</th>
+                      <th>UOM</th>
+
+                      <th>Delivery Days</th>
+                  </tr>
+              </thead>
+              <tbody>
+
+              <?php
+                  $result = mysqli_query($conn,'SELECT RawMaterial.name AS name,
+                                                       RawMaterial.unitOfMeasurement AS uom,
+
+                                                       RawMaterial.pricePerUnit AS price,
+                                                       Supplier.company AS suppName,
+                                                       Supplier.duration AS days,
+                                                       Ingredient.name AS ingname
+                                                FROM RawMaterial
+
+                                                INNER JOIN Supplier ON Supplier.supplierID=Rawmaterial.supplierID
+                                                INNER JOIN RMIngredient ON RawMaterial.rawMaterialID=RMIngredient.rawMaterialID
+                                                INNER JOIN Ingredient ON Ingredient.ingredientID=RMIngredient.ingredientID');
+
+
+                  while($row = mysqli_fetch_array($result)){
+                    $ingname = $row['ingname'];
+                    $name = $row['name'];
+                    $price = $row['price'];
+                    $uom = $row['uom'];
+                    $supp = $row['suppName'];
+                    $days = $row['days'];
+
+
+                        echo '<tr>';
+                          echo '<td>';
+                            echo $supp;
+                          echo '</td>';
+                          echo '<td>';
+                            echo $name;
+                          echo '</td>';
+                          echo '<td>';
+                            echo $ingname;
+                          echo '</td>';
+                          echo '<td>';
+                            echo $price;
+                          echo '</td>';
+                          echo '<td>';
+                            echo $uom;
+                          echo '</td>';
+
+                          echo '<td>';
+                            echo $days;
+                          echo'</td>';
+                        echo '</tr>';
+
+
+                  }
+
+
+                  echo '<br /><br />';
+
+                  ?>
+                  </tbody></table>
+
+                </div>
+            </div><br><br>
+
+            <?php }else{ ?>
                   <div class="panel-body"><br>
                       <div class='row'>
                           <div class='col'>Product:</div>
@@ -153,14 +230,17 @@ if (isset($_POST['submit'])){
                         $inv = get_need_inventory2($conn,$id);
                         $count = count($inv);
 
-                        //
+                        $arr = array();
+                        // print_p($inv);
+                        //iterrate per product ingredient
                         for ($i=0; $i < $count; $i++) {
+                          //iterrate per product ingredient deets
                           for ($j=0; $j < count($inv[$i]); $j++) {
                             $ing = $inv[$i][$j]['ingredientid'];
                             $cur = $inv[$i][$j]['currentInventory'];
                             $pro = $inv[$i][$j]['productid'];
                             $nid = $inv[$i][$j]['needquantityforPO'];
-
+                            $arr[] = $inv[$i][$j]['ingredientid'];
                             $need = ($nid-$cur);
 
                             echo "<div class='row'>";
@@ -209,27 +289,38 @@ if (isset($_POST['submit'])){
                   <br>
                     <input type="submit" name="submit" value="Proceed" class="btn btn-success"/></div>
                     </form>
-                  <?php } ?>
-                  </div>
-              </div>
-          </div>
-      </div>
 
-      <!--                                                                                   -->
-      <!--                                                                                   -->
-      <!--                                                                                   -->
-      <!--                               N O T    I N C L U D E D                            -->
-      <!--                                                                                   -->
-      <!--                                                                                   -->
-      <!--                                                                                   -->
-      <!--                                                                                   -->
-      <!--                                                                                   -->
-      <!--                                                                                   -->
+                    <?php
 
-      <hr class="style1"><br>
-      <h2 class="text-center">Supplier info</h2>
-      <div class="row">
-          <div class="col-lg-12">
+                    $suparr = array();
+
+                    foreach ($arr as $key => $value) {
+                      $result = mysqli_query($conn,"SELECT RawMaterial.name AS name,
+                                                           RawMaterial.unitOfMeasurement AS uom,
+                                                           RawMaterial.pricePerUnit AS price,
+                                                           Supplier.company AS suppName,
+                                                           Supplier.duration AS days,
+                                                           Ingredient.name AS ingname
+                                                    FROM RawMaterial
+                                                    INNER JOIN Supplier ON Supplier.supplierID=Rawmaterial.supplierID
+                                                    INNER JOIN RMIngredient ON RawMaterial.rawMaterialID=RMIngredient.rawMaterialID
+                                                    INNER JOIN Ingredient ON Ingredient.ingredientID=RMIngredient.ingredientID
+                                                    WHERE Ingredient.ingredientID = '$value'
+                                                    ORDER BY price ASC");
+
+                       while($p = mysqli_fetch_array($result)){
+                        $suparr[] = $p;
+                       }
+                    }
+
+
+
+
+                    ?>
+                    <div class="row">
+                        <div class="col-lg-12">
+                    <hr class="style1"><br>
+                    <h2 class="text-center">Supplier info</h2>
                     <table class="table table-hover" id="dataTables-example">
                         <thead>
                             <tr>
@@ -238,69 +329,67 @@ if (isset($_POST['submit'])){
                                 <th>Matching Ingredient</th>
                                 <th>Price per Unit</th>
                                 <th>UOM</th>
-
                                 <th>Delivery Days</th>
                             </tr>
                         </thead>
                         <tbody>
 
                         <?php
-                            $result = mysqli_query($conn,'SELECT RawMaterial.name AS name,
-                                                                 RawMaterial.unitOfMeasurement AS uom,
+                            $tar = array();
 
-                                                                 RawMaterial.pricePerUnit AS price,
-                                                                 Supplier.company AS suppName,
-                                                                 Supplier.duration AS days,
-                                                                 Ingredient.name AS ingname
-                                                          FROM RawMaterial
-
-                                                          INNER JOIN Supplier ON Supplier.supplierID=Rawmaterial.supplierID
-                                                          INNER JOIN RMIngredient ON RawMaterial.rawMaterialID=RMIngredient.rawMaterialID
-                                                          INNER JOIN Ingredient ON Ingredient.ingredientID=RMIngredient.ingredientID');
-
-
-                            while($row = mysqli_fetch_array($result)){
-                              $ingname = $row['ingname'];
-                              $name = $row['name'];
-                              $price = $row['price'];
-                              $uom = $row['uom'];
-                              $supp = $row['suppName'];
-                              $days = $row['days'];
-
-
-                                  echo '<tr>';
-                                    echo '<td>';
-                                      echo $supp;
-                                    echo '</td>';
-                                    echo '<td>';
-                                      echo $name;
-                                    echo '</td>';
-                                    echo '<td>';
-                                      echo $ingname;
-                                    echo '</td>';
-                                    echo '<td>';
-                                      echo $price;
-                                    echo '</td>';
-                                    echo '<td>';
-                                      echo $uom;
-                                    echo '</td>';
-
-                                    echo '<td>';
-                                      echo $days;
-                                    echo'</td>';
-                                  echo '</tr>';
-
-
+                            foreach ($suparr as $key => $value) {
+                              $tar[] = $value;
                             }
 
+                              // print_p($tar);
+                              for ($i=0; $i < count($tar); $i++) {
+
+                                $ingname = $tar[$i]['ingname'];
+                                $name = $tar[$i]['name'];
+                                $price = $tar[$i]['price'];
+                                $uom = $tar[$i]['uom'];
+                                $supp = $tar[$i]['suppName'];
+                                $days = $tar[$i]['days'];
+
+
+                                    echo '<tr>';
+                                      echo '<td>';
+                                        echo $supp;
+                                      echo '</td>';
+                                      echo '<td>';
+                                        echo $name;
+                                      echo '</td>';
+                                      echo '<td>';
+                                        echo $ingname;
+                                      echo '</td>';
+                                      echo '<td>';
+                                        echo $price;
+                                      echo '</td>';
+                                      echo '<td>';
+                                        echo $uom;
+                                      echo '</td>';
+                                      echo '<td>';
+                                        echo $days;
+                                      echo'</td>';
+                                    echo '</tr>';
+                              }
 
                             echo '<br /><br />';
 
                             ?>
                             </tbody></table>
+                          </div>
+                      </div><br><br>
+                  <?php } ?>
 
+
+                  </div>
+              </div>
           </div>
-      </div><br><br>
+      </div>
+
+
+
   </div>
 
 
