@@ -159,10 +159,10 @@ else{
             pieHole: 0
         };
 
-        var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+        var chart = new google.visualization.ColumnChart(document.getElementById('piechart'));
         chart.draw(data, options);
 
-        var chart2 = new google.visualization.PieChart(document.getElementById('piechart2'));
+        var chart2 = new google.visualization.ColumnChart(document.getElementById('piechart2'));
         chart2.draw(data2, options2);
     }
 </script>

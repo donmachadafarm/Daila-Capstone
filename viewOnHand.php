@@ -42,7 +42,7 @@ if (!isset($_SESSION['userType'])){
 
                 <tbody>
                   <?php
-                    $query = "SELECT * FROM Product";
+                    $query = "SELECT * FROM Product ORDER BY quantity desc";
 
                       $sql = mysqli_query($conn,$query);
                       $sum = 0;

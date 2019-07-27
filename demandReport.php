@@ -23,7 +23,7 @@ if (!isset($_SESSION['userType'])){
     <div class="row">
         <div class="col-lg-12" align="center">
             <h1 class="text-center" align="center"><br>
-                Product Sales Chart
+                Top Products    
             </h1>
             <h6 class="text-center">
                 Enter a Date Range
@@ -184,7 +184,7 @@ else{
 
     echo            '<tr>';
     echo            '<td>Products Not Sold: </td>';
-                    while($row = mysqli_fetch_array($result3x)){
+                    while($row = mysqli_fetch_array($result3)){
                         $productName = $row['name'];
     echo                '<td>';
     echo                $productName;
