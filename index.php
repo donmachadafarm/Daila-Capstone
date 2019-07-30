@@ -138,7 +138,7 @@ a {
                     <div class="rotate">
                         <i class="fa fa-archive fa-7x"></i>
                     </div>
-                    <h6 class="text-uppercase"><a href="viewingredients.php" style="color: #FFFFFF;text-decoration: none;">Ingredients to restock</a></h6>
+                    <h6 class="text-uppercase"><a href="viewIngredientsRestock.php" style="color: #FFFFFF;text-decoration: none;">Ingredients to restock</a></h6>
                     <h1 class="display-6"><?php echo get_ingrrestockcount($conn); ?></h1>
                 </div>
             </div>
@@ -149,7 +149,7 @@ a {
                     <div class="rotate">
                         <i class="fa fa-laptop-medical fa-7x"></i>
                     </div>
-                    <h6 class="text-uppercase"><a href="viewinventory.php" style="color: #FFFFFF;text-decoration: none;">Products to restock</a></h6>
+                    <h6 class="text-uppercase"><a href="viewInventoryRestock.php" style="color: #FFFFFF;text-decoration: none;">Products to restock</a></h6>
                     <h1 class="display-6"><?php echo get_prodrestockcount($conn); ?></h1>
                 </div>
             </div>
