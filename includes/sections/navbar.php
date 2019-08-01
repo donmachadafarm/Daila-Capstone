@@ -125,7 +125,11 @@
               <h6 class="dropdown-header text-center"><b> Job Order Reports </b></h6>
               <!-- Add More Links if needed for every functionality -->
               <a class="dropdown-item text-center" href="jobOrderReportMTS.php">Made-To-Stock</a>
+            <?php  if($_SESSION['userType']==100): ?>
+              <a class="dropdown-item text-center" href="presReportMTO.php">Made-To-Order</a>
+            <?php else: ?>
               <a class="dropdown-item text-center" href="jobOrderReportMTO.php">Made-To-Order</a>
+            <?php endif; ?>
               <!-- use divider if needed -->
               <div class="dropdown-divider"></div>
             <?php endif; ?>
