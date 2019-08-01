@@ -36,7 +36,7 @@ $dataArr = array();
     </div>
     <div class="row">
         <div class="col-lg-12">
-            <table class="table table-bordered table-hover" id="dataTables-example">
+            <table class="table table-bordered table-hover" id="example">
                 <thead>
                 <tr>
                     <th>Job Order ID</th>
@@ -552,4 +552,9 @@ $dataArr = array();
     document.getElementById('txtDateMax').onchange = function () {
         document.getElementById('endPicker').setAttribute('min',  this.value);
     };
+
+      $('#example').DataTable( {
+          "order": [[ 3, "asc" ]]
+      } );
+
 </script>
