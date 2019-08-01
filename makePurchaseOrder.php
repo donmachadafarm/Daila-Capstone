@@ -135,9 +135,10 @@ if (isset($_POST['submit'])){
           <table class="table table-hover" id="dataTables-example">
               <thead>
                   <tr>
+                    <th>Matching Ingredient</th>
+
                       <th>Supplier Name</th>
                       <th>Supplied RawMaterial</th>
-                      <th>Matching Ingredient</th>
                       <th>Price per Unit</th>
                       <th>UOM</th>
 
@@ -171,15 +172,16 @@ if (isset($_POST['submit'])){
 
 
                         echo '<tr>';
+                        echo '<td>';
+                          echo $ingname;
+                        echo '</td>';
                           echo '<td>';
                             echo $supp;
                           echo '</td>';
                           echo '<td>';
                             echo $name;
                           echo '</td>';
-                          echo '<td>';
-                            echo $ingname;
-                          echo '</td>';
+
                           echo '<td>';
                             echo $price;
                           echo '</td>';
@@ -324,9 +326,10 @@ if (isset($_POST['submit'])){
                     <table class="table table-hover" id="dataTables-example">
                         <thead>
                             <tr>
+                                <th>Matching Ingredient</th>
                                 <th>Supplier Name</th>
                                 <th>Supplied RawMaterial</th>
-                                <th>Matching Ingredient</th>
+
                                 <th>Price per Unit</th>
                                 <th>UOM</th>
                                 <th>Delivery Days</th>
@@ -353,15 +356,16 @@ if (isset($_POST['submit'])){
 
 
                                     echo '<tr>';
+                                    echo '<td>';
+                                      echo $ingname;
+                                    echo '</td>';
                                       echo '<td>';
                                         echo $supp;
                                       echo '</td>';
                                       echo '<td>';
                                         echo $name;
                                       echo '</td>';
-                                      echo '<td>';
-                                        echo $ingname;
-                                      echo '</td>';
+
                                       echo '<td>';
                                         echo $price;
                                       echo '</td>';
